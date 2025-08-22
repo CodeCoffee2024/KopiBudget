@@ -22,10 +22,12 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore Dependencies
-        run: dotnet restore ./KopiBudget.Api/KopiBudget.sln
+        working-directory: ./KopiBudget.Api
+        run: dotnet restore
 
       - name: Build
-        run: dotnet build ./KopiBudget.Api/KopiBudget.sln --configuration Release --no-restore
+        working-directory: ./KopiBudget.Api
+        run: dotnet build --configuration Release --no-restore
 
 
   deploy:
