@@ -1,4 +1,4 @@
-namespace KopiBudget
+namespace KopiBudget.Api
 {
     public class WeatherForecast
     {

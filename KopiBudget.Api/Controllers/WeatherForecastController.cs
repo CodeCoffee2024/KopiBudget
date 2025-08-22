@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace KopiBudget.Controllers
+namespace KopiBudget.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
