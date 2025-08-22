@@ -1,0 +1,61 @@
+### .NET Core / ASP.NET
+bin/
+obj/
+out/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+*.dll
+*.exe
+*.app
+*.log
+*.vspscc
+*.vssscc
+_TestResults/
+TestResult.xml
+*.coverage
+*.coveragexml
+
+# Visual Studio
+.vs/
+*.dbmdl
+*.bak
+*.ldf
+*.mdf
+
+# Others
+.env
+appsettings.*.json
+launchSettings.json
+
+### Angular / Node.js
+node_modules/
+dist/
+tmp/
+temp/
+coverage/
+*.log
+*.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Angular cache
+.angular/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+### Supabase
+.supabase/
