@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ui  # 👈 ensures it builds inside ui folder
+        working-directory: ./KopiBudget.Ui
     steps:
       - uses: actions/checkout@v3
 
