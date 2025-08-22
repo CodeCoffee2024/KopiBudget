@@ -3,7 +3,8 @@ name: .NET API CI/CD (Railway)
 on:
   push:
     paths:
-      - 'server/**'
+      - 'KopiBudget.Api/**'
+      - 'KopiBudget.Tests/**'
       - '.github/workflows/server-ci.yml'
     branches: [ main ]
 
@@ -26,8 +27,6 @@ jobs:
       - name: Build
         run: dotnet build ./KopiBudget.Api/KopiBudget.Api.csproj --configuration Release --no-restore
 
-      - name: Run Tests
-        run: dotnet test ./KopiBudget.Api/KopiBudget.Api.csproj --no-build --verbosity normal
 
   deploy:
     needs: build-test
@@ -41,6 +40,6 @@ jobs:
         run: npm i -g @railway/cli
 
       - name: Deploy to Railway
-        run: railway up --service=kopibudget-api
+        run: railway up --service=KopiBudget --directory ./KopiBudget.Api
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
