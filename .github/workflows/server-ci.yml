@@ -21,13 +21,13 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore Dependencies
-        run: dotnet restore ./KopiBudget.Api/KopiBudget.sln
+        run: dotnet restore ./KopiBudget.Api/KopiBudget.Api.csproj
 
       - name: Build
-        run: dotnet build ./KopiBudget.Api/KopiBudget.sln --configuration Release --no-restore
+        run: dotnet build ./KopiBudget.Api/KopiBudget.Api.csproj --configuration Release --no-restore
 
       - name: Run Tests
-        run: dotnet test ./KopiBudget.Api/KopiBudget.sln --no-build --verbosity normal
+        run: dotnet test ./KopiBudget.Api/KopiBudget.Api.csproj --no-build --verbosity normal
 
   deploy:
     needs: build-test
