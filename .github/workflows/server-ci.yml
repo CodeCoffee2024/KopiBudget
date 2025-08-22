@@ -23,11 +23,11 @@ jobs:
 
       - name: Restore Dependencies
         working-directory: ./KopiBudget.Api
-        run: dotnet restore
+        run: dotnet restore KopiBudget.Api.csproj
 
       - name: Build
         working-directory: ./KopiBudget.Api
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build KopiBudget.Api.csproj --configuration Release --no-restore
 
 
   deploy:
