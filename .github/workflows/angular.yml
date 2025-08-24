@@ -22,14 +22,14 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run:
+        run: |
           cd KopiBudget.Ui
           npm install
 
       - name: Build Angular app
-        run:
+        run: |
           cd KopiBudget.Ui
-          npm run build -- --base-href /KopiBudget/
+          npm run build -- --configuration production --base-href "/KopiBudget/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
