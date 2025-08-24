@@ -2,18 +2,18 @@
     "version": 2,
     "builds": [
         {
-        "src": "KopiBudget.Ui/package.json",
-        "use": "@vercel/static-build",
-        "config": {
-            "distDir": "dist/kopi-budget.ui",
-            "buildCommand": "cd KopiBudget.Ui && npm install && npm run build"
-        }
+            "src": "KopiBudget.Ui/package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "dist/kopi-budget.ui",
+                "buildCommand": "cd KopiBudget.Ui && npm install && npm run build"
+            }
         }
     ],
     "routes": [
         {
-        "src": "/(.*)",
-        "dest": "/index.html"
+            "source": "/(.*)",
+            "dest": "/index.html"
         }
     ]
 }
