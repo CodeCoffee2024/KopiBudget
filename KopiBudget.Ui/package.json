@@ -4,9 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "vercel-build": "npm run build && echo 'Build contents:' && ls -la dist/kopi-budget.ui/",
     "test": "ng test"
   },
   "private": true,
