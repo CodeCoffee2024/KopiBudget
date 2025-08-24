@@ -5,7 +5,7 @@
         "src": "KopiBudget.Ui/package.json",
         "use": "@vercel/static-build",
         "config": {
-            "distDir": "dist/kopibudget.ui",
+            "distDir": "dist/kopi-budget.ui",
             "buildCommand": "cd KopiBudget.Ui && npm install && npm run build"
         }
         }
