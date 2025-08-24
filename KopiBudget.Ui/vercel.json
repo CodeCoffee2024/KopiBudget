@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build -- --configuration production",
+  "buildCommand": "npm run build -- --configuration production --base-href /KopiBudget/",
   "outputDirectory": "dist/kopi-budget.ui",
   "rewrites": [
     { "source": "/KopiBudget/(.*)", "destination": "/KopiBudget/index.html" }
