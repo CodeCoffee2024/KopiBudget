@@ -2,7 +2,7 @@
   "buildCommand": "npm run build -- --configuration production",
   "outputDirectory": "dist/kopi-budget.ui",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/KopiBudget/(.*)", "destination": "/KopiBudget/index.html" }
   ],
   "cleanUrls": true
 }
