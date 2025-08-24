@@ -13,19 +13,24 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
 
+      - name: Clear NuGet cache
+        run: dotnet nuget locals all --clear
+
       - name: Restore Dependencies
         working-directory: ./KopiBudget.Api
-        run: dotnet restore KopiBudget.Api.csproj
+        run: dotnet restore --force-evaluate
 
       - name: Build
         working-directory: ./KopiBudget.Api
-        run: dotnet build KopiBudget.Api.csproj --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore
 
   deploy:
     needs: build-test
