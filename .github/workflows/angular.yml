@@ -31,8 +31,12 @@ jobs:
           cd KopiBudget.Ui
           npm run build -- --configuration production --base-href "/KopiBudget/"
 
+      - name: Create 404.html for SPA routing
+        run: |
+          cp KopiBudget.Ui/dist/kopi-budget.ui/index.html KopiBudget.Ui/dist/kopi-budget.ui/404.html
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/kopi-budget.ui
+          publish_dir: KopiBudget.Ui/dist/kopi-budget.ui
