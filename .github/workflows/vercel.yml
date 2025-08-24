@@ -1,24 +1,33 @@
-name: Angular CI
+name: Angular CI/CD (Vercel)
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - 'KopiBudget.Ui/**'
+      - '.github/workflows/angular-vercel.yml'
+    branches: [ main ]
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./KopiBudget.Ui
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Use Node.js
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 20
 
-      - run: npm ci
-      - run: npm run build --if-present
+      - name: Install Dependencies
+        working-directory: ./KopiBudget.Ui
+        run: npm install
+
+      - name: Build Angular App
+        working-directory: ./KopiBudget.Ui
+        run: npm run build -- --configuration production
+
+      - name: Deploy to Vercel
+        working-directory: ./KopiBudget.Ui
+        run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --confirm --cwd=dist/kopi-budget.ui
