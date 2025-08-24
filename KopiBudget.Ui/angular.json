@@ -17,8 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/kopiBudget.ui",
-            "baseHref": "/",
+            "outputPath": "dist/kopi-budget.ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [

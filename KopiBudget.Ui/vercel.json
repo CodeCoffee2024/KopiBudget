@@ -1,5 +1,0 @@
-{
-  "version": 3,
-  "buildCommand": "docker build -t angular-app . && docker run --rm -v $(pwd)/dist:/app/dist angular-app",
-  "outputDirectory": "dist/kopiBudget.ui"
-}
