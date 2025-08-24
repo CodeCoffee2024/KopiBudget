@@ -5,7 +5,7 @@
         "src": "KopiBudget.Ui/package.json",
         "use": "@vercel/static",
         "config": {
-            "distDir": "dist/kopiBudget.ui"
+            "distDir": "dist/kopi-budget.ui"
         }
         }
     ],
