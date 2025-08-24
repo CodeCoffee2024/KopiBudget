@@ -1,11 +1,5 @@
 {
   "version": 3,
-  "buildCommand": "npm install -g @angular/cli && ng build --configuration production",
-  "outputDirectory": "dist/kopiBudget.ui",
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "buildCommand": "docker build -t angular-app . && docker run --rm -v $(pwd)/dist:/app/dist angular-app",
+  "outputDirectory": "dist/kopiBudget.ui"
 }
