@@ -2,17 +2,14 @@
     "version": 2,
     "builds": [
         {
-        "src": "KopiBudget.Ui/package.json",
-        "use": "@vercel/static",
-        "config": {
-            "distDir": "dist/kopi-budget.ui"
-        }
+            "src": "KopiBudget.Ui/package.json",
+            "use": "@vercel/static",
+            "config": {
+                "distDir": "dist/kopi-budget.ui"
+            }
         }
     ],
     "routes": [
-        {
-        "handle": "filesystem"
-        },
         {
         "src": "/(.*)",
         "dest": "/index.html"
