@@ -1,24 +1,40 @@
-name: Angular CI
-
+name: Deploy to Vercel
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [main]
+    paths:
+      - 'KopiBudget.Ui/**'
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./KopiBudget.Ui
     steps:
       - uses: actions/checkout@v3
 
-      - name: Use Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - run: npm ci
-      - run: npm run build --if-present
+      - name: Install dependencies
+        run: |
+          cd KopiBudget.Ui
+          npm install
+
+      - name: Build Angular app
+        run: |
+          cd KopiBudget.Ui
+          npm run build
+
+      - name: Prepare deployment files
+        run: |
+          mkdir -p vercel-deploy
+          cp -r KopiBudget.Ui/dist/kopiBudget.ui/* vercel-deploy/
+          cp vercel.json vercel-deploy/
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-args: '--prod'
+          working-directory: vercel-deploy
