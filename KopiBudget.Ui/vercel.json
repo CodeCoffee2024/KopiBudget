@@ -1,5 +1,6 @@
 {
-  "buildCommand": "npm run build",
+  "version": 3,
+  "buildCommand": "npm install -g @angular/cli && ng build --configuration production",
   "outputDirectory": "dist/kopiBudget.ui",
   "routes": [
     {
