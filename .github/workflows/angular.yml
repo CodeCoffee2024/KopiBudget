@@ -1,32 +1,34 @@
-name: Deploy to GitHub Pages
+name: Deploy Angular app to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build-and-deploy:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 20
 
       - name: Install dependencies
-        run: |
-          cd KopiBudget.Ui
-          npm install
+        run: npm install
 
       - name: Build Angular app
-        run: |
-          cd KopiBudget.Ui
-          npm run build -- --configuration production --base-href "/KopiBudget/"
+        run: npm run build -- --base-href /KopiBudget/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}
-          publish_dir: ./KopiBudget.Ui/dist/kopiBudget.ui
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/kopi-budget.ui
