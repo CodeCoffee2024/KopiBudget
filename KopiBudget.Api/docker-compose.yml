@@ -1,0 +1,6 @@
+services:
+  kopibudget.api:
+    image: ${DOCKER_REGISTRY-}kopibudgetapi
+    build:
+      context: .
+      dockerfile: KopiBudget.Api/Dockerfile
