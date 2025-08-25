@@ -25,11 +25,11 @@ jobs:
         run: dotnet nuget locals all --clear
 
       - name: Restore Dependencies
-        working-directory: ./KopiBudget.Api
+        working-directory: ./KopiBudget.Api/KopiBudget.Api
         run: dotnet restore --force-evaluate
 
       - name: Build
-        working-directory: ./KopiBudget.Api
+        working-directory: ./KopiBudget.Api/KopiBudget.Api
         run: dotnet build --configuration Release --no-restore
 
   deploy:
