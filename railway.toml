@@ -1,3 +1,2 @@
-[build]
-builder = "dockerfile"
-dockerfilePath = "KopiBudget.Api/docker/Dockerfile"
+[deploy]
+startCommand = "dotnet KopiBudget.Api.dll"
