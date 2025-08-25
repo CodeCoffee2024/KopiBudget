@@ -3,7 +3,7 @@ WORKDIR /src
 
 # Copy project file and restore
 COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
-RUN dotnet restore "KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj"
+RUN dotnet restore "KopiBudget.Api/KopiBudget.Api.csproj"
 
 # Copy everything else and build
 COPY . .
