@@ -62,7 +62,7 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Run Database Migrations
-        run: railway run --service=KopiBudget dotnet ef database update -p KopiBudget.Infrastructure -s KopiBudget.Api --no-build
+        run: railway run --service=KopiBudget dotnet ef database update -p KopiBudget.Infrastructure -s KopiBudget.Api --no-build --msbuildprojectextensionspath ./obj
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           ConnectionStrings__DefaultConnection: ${{ secrets.SUPABASE_CONNECTION }}
