@@ -12,6 +12,18 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Add this before "RUN dotnet build"
+COPY ["KopiBudget.Tests/KopiBudget.Tests.csproj", "KopiBudget.Tests/"]
+RUN dotnet restore "./KopiBudget.Tests/KopiBudget.Tests.csproj"
+
+# Copy rest of the files
+COPY . .
+
+# Run tests (fail build if tests fail)
+WORKDIR "/src/KopiBudget.Tests"
+RUN dotnet test --no-restore --no-build -c $BUILD_CONFIGURATION
+
 COPY ["KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
 RUN dotnet restore "./KopiBudget.Api/KopiBudget.Api.csproj"
 COPY . .
