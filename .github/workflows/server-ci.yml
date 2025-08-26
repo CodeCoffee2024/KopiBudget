@@ -39,7 +39,6 @@ jobs:
   deploy:
     needs: build-test
     runs-on: ubuntu-latest
-    # Only deploy when pushing to main branch
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout Repo
@@ -48,16 +47,17 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
+      - name: Install EF Core CLI
+        run: dotnet tool install --global dotnet-ef
+      - name: Add EF tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Deploy to Railway
         run: railway up --service=KopiBudget
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Run Database Migrations
-        run: |
-          railway run --service=KopiBudget \
-          dotnet ef database update \
-          --project KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj \
-          --startup-project KopiBudget.Api/KopiBudget.Api.csproj
+        run: railway run --service=KopiBudget dotnet ef database update -p KopiBudget.Infrastructure -s KopiBudget.Api
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
