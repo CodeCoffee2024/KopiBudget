@@ -1,22 +1,15 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# Base image for runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-# Build image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy project files first (for better caching)
-COPY ["KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
+# Copy all csproj files (API + dependencies + tests)
+COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
+COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
+COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
+COPY ["KopiBudget.Common/KopiBudget.Common.csproj", "KopiBudget.Common/"]
+COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
 COPY ["KopiBudget.Tests/KopiBudget.Tests.csproj", "KopiBudget.Tests/"]
 
-# Restore dependencies
+# Restore dependencies at solution level
 RUN dotnet restore "KopiBudget.Api/KopiBudget.Api.csproj"
 
 # Copy the rest of the source code
@@ -24,20 +17,18 @@ COPY . .
 
 # Build API
 WORKDIR "/src/KopiBudget.Api"
-RUN dotnet build "KopiBudget.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "KopiBudget.Api.csproj" -c Release -o /app/build
 
-# Run tests (fail the build if they fail)
-WORKDIR /src/KopiBudget.Tests
-RUN dotnet test --no-build -c $BUILD_CONFIGURATION
+# Run tests
+WORKDIR "/src/KopiBudget.Tests"
+RUN dotnet test "KopiBudget.Tests.csproj" -c Release --no-build --verbosity normal
 
 # Publish API
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
 WORKDIR "/src/KopiBudget.Api"
-RUN dotnet publish "KopiBudget.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "KopiBudget.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime image
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "KopiBudget.Api.dll"]
