@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy csproj files first (for restore layer caching)
-COPY ["KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
+COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
 COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
 COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
 COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
