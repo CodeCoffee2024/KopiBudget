@@ -53,7 +53,6 @@ jobs:
       - name: Add EF tools to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
-      # 🧹 Clean bin/obj before migrations
       - name: Clean build artifacts
         run: dotnet clean KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj && rm -rf KopiBudget.Api/KopiBudget.Api/bin KopiBudget.Api/KopiBudget.Api/obj
 
@@ -63,6 +62,7 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Run Database Migrations
-        run: railway run --service=KopiBudget dotnet ef database update -p KopiBudget.Infrastructure -s KopiBudget.Api
+        run: railway run --service=KopiBudget dotnet ef database update -p KopiBudget.Infrastructure -s KopiBudget.Api --no-build
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          ConnectionStrings__DefaultConnection: ${{ secrets.SUPABASE_CONNECTION }}
