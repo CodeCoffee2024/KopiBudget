@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql("Host=db.hjsepjjcvdiypqjieseh.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=Mn#m0n1c5123;Trust Server Certificate=true;Include Error Detail=true;SSL Mode=Require");
+    options.UseNpgsql("Host=db.hjsepjjcvdiypqjieseh.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=Mn#m0n1c5123;Trust Server Certificate=true;Include Error Detail=true;SSL Mode=Require"));
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
