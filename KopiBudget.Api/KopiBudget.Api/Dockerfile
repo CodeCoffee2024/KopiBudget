@@ -27,4 +27,5 @@ RUN dotnet publish "./KopiBudget.Api.csproj" -c $BUILD_CONFIGURATION -o /app/pub
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "KopiBudget.Api.dll"]

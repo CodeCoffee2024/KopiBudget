@@ -1,3 +1,10 @@
 [build]
 builder = "dockerfile"
 dockerfilePath = "Dockerfile"
+name = "KopiBudget"
+startCommand = "dotnet KopiBudget.Api.dll"
+
+[variables]
+ASPNETCORE_ENVIRONMENT = "Production"
+ConnectionStrings__DefaultConnection = "Host=db.hjsepjjcvdiypqjieseh.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=Mn#m0n1c5123;Include Error Detail=true"
+Jwt__Key = "apPWYbSDFU84HjehZogH/ZCXbFDmhL2g68iv8Guyicv8vJgiAipYuX7Mw3a0KSX60gSRxjlnMyAmNs9F/TpGrQ=="
