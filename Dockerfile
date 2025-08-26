@@ -1,20 +1,23 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy csproj files first (for restore layer caching)
-COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
+# Copy solution file
+COPY *.sln ./
+
+# Copy csproj files (note the nested structure)
+COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/KopiBudget.Api/"]
 COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
 COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
 COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
 COPY ["KopiBudget.Common/KopiBudget.Common.csproj", "KopiBudget.Common/"]
 
 # Restore dependencies
-RUN dotnet restore "KopiBudget.Api/KopiBudget.Api.csproj"
+RUN dotnet restore "KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj"
 
 # Copy the rest of the source code
 COPY . .
 
-WORKDIR "/src/KopiBudget.Api"
+WORKDIR "/src/KopiBudget.Api/KopiBudget.Api"
 
 # Build and publish
 RUN dotnet publish "KopiBudget.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
