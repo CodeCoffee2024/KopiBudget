@@ -29,7 +29,6 @@ TestResult.xml
 
 # Others
 .env
-appsettings.*.json
 launchSettings.json
 
 ### Angular / Node.js
