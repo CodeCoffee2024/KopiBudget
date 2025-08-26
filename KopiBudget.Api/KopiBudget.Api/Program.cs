@@ -95,31 +95,46 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    try
-    {
-        var services = scope.ServiceProvider;
-        db.Database.Migrate();  // <--- Apply migrations on startup
-        Console.WriteLine("Database migrated successfully.");
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        var passwordHasher = services.GetRequiredService<IPasswordHasherService>();
-        await Seeder.SeedAsync(db, logger, passwordHasher);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error migrating database: {ex.Message}");
-        // Optional: log error
-    }
-}
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
+await ApplyMigrationsAsync(app.Services);
 app.Run();
+
+async Task ApplyMigrationsAsync(IServiceProvider serviceProvider)
+{
+    using var scope = serviceProvider.CreateScope();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        logger.LogInformation("Checking for pending migrations...");
+
+        var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+        if (pendingMigrations.Any())
+        {
+            logger.LogInformation("Applying {Count} pending migrations...", pendingMigrations.Count());
+            await context.Database.MigrateAsync();
+            logger.LogInformation("Migrations applied successfully.");
+            var services = scope.ServiceProvider;
+            var passwordHasher = services.GetRequiredService<IPasswordHasherService>();
+            await Seeder.SeedAsync(context, logger, passwordHasher);
+        }
+        else
+        {
+            logger.LogInformation("Database is up to date.");
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while applying migrations");
+        // Don't crash the app - might be running without database connection
+    }
+}
 
 public partial class Program
 { }
