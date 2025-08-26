@@ -1,6 +1,31 @@
+version: "3.9"
+
 services:
+  db:
+    image: postgres:16
+    container_name: kopibudget-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: kopibudget
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
   kopibudget.api:
     image: ${DOCKER_REGISTRY-}kopibudgetapi
     build:
       context: .
       dockerfile: KopiBudget.Api/Dockerfile
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=kopibudget;Username=dev;Password=dev
+    ports:
+      - "5000:8080"
+
+volumes:
+  db_data:
