@@ -55,8 +55,7 @@ jobs:
 
       # 🧹 Clean bin/obj before migrations
       - name: Clean build artifacts
-        run: |
-          dotnet clean KopiBudget.Api/KopiBudget.Api.csproj
+        run: dotnet clean KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj
           rm -rf **/bin **/obj
 
       - name: Deploy to Railway
