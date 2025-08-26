@@ -52,3 +52,12 @@ jobs:
         run: railway up --service=KopiBudget
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Run Database Migrations
+        run: |
+          railway run --service=KopiBudget \
+          dotnet ef database update \
+          --project KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj \
+          --startup-project KopiBudget.Api/KopiBudget.Api.csproj
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
