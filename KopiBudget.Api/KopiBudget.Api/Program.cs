@@ -121,15 +121,15 @@ async Task ApplyMigrationsAsync(IServiceProvider serviceProvider)
             logger.LogInformation("Applying {Count} pending migrations...", pendingMigrations.Count());
             await context.Database.MigrateAsync();
             logger.LogInformation("Migrations applied successfully.");
-            var services = scope.ServiceProvider;
-            var passwordHasher = services.GetRequiredService<IPasswordHasherService>();
-            var userRepository = services.GetRequiredService<IUserRepository>();
-            await Seeder.SeedAsync(context, logger, passwordHasher, userRepository);
         }
         else
         {
             logger.LogInformation("Database is up to date.");
         }
+        var services = scope.ServiceProvider;
+        var passwordHasher = services.GetRequiredService<IPasswordHasherService>();
+        var userRepository = services.GetRequiredService<IUserRepository>();
+        await Seeder.SeedAsync(context, logger, passwordHasher, userRepository);
     }
     catch (Exception ex)
     {
