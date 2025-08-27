@@ -72,6 +72,35 @@ namespace KopiBudget.Infrastructure.Data
                     logger.LogInformation("Seeded permissions for Modules.");
                 }
             }
+            if (!context.Roles.Any())
+            {
+                var adminRole = Role.Create("Admin", admin!.Id!.Value);
+                var userRole = Role.Create("User", admin!.Id!.Value);
+
+                adminRole.FlagAsSystemGenerated();
+                userRole.FlagAsSystemGenerated();
+
+                context.Roles.AddRange(adminRole, userRole);
+                await context.SaveChangesAsync();
+
+                logger.LogInformation("Seeded roles.");
+
+                var allPermissions = await context.Permissions.ToListAsync();
+
+                foreach (var permission in allPermissions)
+                {
+                    adminRole.AddPermission(permission!);
+                    await context.SaveChangesAsync();
+                }
+
+                await context.SaveChangesAsync();
+                logger.LogInformation("Assigned all permissions to Admin role.");
+
+                admin.AssignRole(adminRole);
+                await context.SaveChangesAsync();
+
+                logger.LogInformation("Assigned admin user to Admin role.");
+            }
         }
 
         #endregion Public Methods
