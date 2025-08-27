@@ -1,5 +1,6 @@
 ﻿using KopiBudget.Application.Interfaces.Common;
 using KopiBudget.Domain.Entities;
+using KopiBudget.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -9,7 +10,7 @@ namespace KopiBudget.Infrastructure.Data
     {
         #region Public Methods
 
-        public static async Task SeedAsync(AppDbContext context, ILogger logger, IPasswordHasherService passwordHasherService)
+        public static async Task SeedAsync(AppDbContext context, ILogger logger, IPasswordHasherService passwordHasherService, IUserRepository userRepository)
         {
             await context.Database.MigrateAsync();
 
@@ -17,19 +18,23 @@ namespace KopiBudget.Infrastructure.Data
 
             if (!context.Users.Any())
             {
-                var admin = User.Register("admin", "admin@email.com", passwordHasherService.HashPassword("password"), "admin", "admin", "");
-                context.Users.Add(admin);
-                admin.FlagAsSystemGenerated();
+                var user = User.Register("admin", "admin@email.com", passwordHasherService.HashPassword("password"), "admin", "admin", "");
+                context.Users.Add(user);
+                user.FlagAsSystemGenerated();
                 await context.SaveChangesAsync();
                 logger.LogInformation("Seeded default user.");
+            }
+            var admin = await userRepository.GetByUsernameAsync("admin");
 
+            if (!context.Modules.Any())
+            {
                 // Create module
                 Module[] modules = [
                     Module.Create("Modules", "/modules", admin.Id !.Value),
-                    Module.Create("Posts", "/posts", admin.Id !.Value),
-                    Module.Create("Categories", "/categories", admin.Id !.Value),
-                    Module.Create("Users", "/users", admin.Id !.Value),
-                    Module.Create("Dashboard", "/admin/dashboard", admin.Id !.Value)
+                        Module.Create("Posts", "/posts", admin.Id !.Value),
+                        Module.Create("Categories", "/categories", admin.Id !.Value),
+                        Module.Create("Users", "/users", admin.Id !.Value),
+                        Module.Create("Dashboard", "/admin/dashboard", admin.Id !.Value)
                 ];
                 var module = modules[0];
                 var post = modules[1];
@@ -73,29 +78,29 @@ namespace KopiBudget.Infrastructure.Data
                 await context.Modules.AddRangeAsync(modules);
                 await context.Roles.AddAsync(adminRole);
                 await context.SaveChangesAsync();
-                // Seed Categories
-                if (!context.Categories.Any())
-                {
-                    context.Categories.AddRange(
-                        Category.Create("Food", true, admin.Id!.Value, DateTime.Now),
-                        Category.Create("Transport", true, admin.Id!.Value, DateTime.Now),
-                        Category.Create("Utilities", true, admin.Id!.Value, DateTime.Now),
-                        Category.Create("Investment", true, admin.Id!.Value, DateTime.Now),
-                        Category.Create("Salary", false, admin.Id!.Value, DateTime.Now)
-                    );
+            }
+            // Seed Categories
+            if (!context.Categories.Any())
+            {
+                context.Categories.AddRange(
+                    Category.Create("Food", true, admin.Id!.Value, DateTime.Now),
+                    Category.Create("Transport", true, admin.Id!.Value, DateTime.Now),
+                    Category.Create("Utilities", true, admin.Id!.Value, DateTime.Now),
+                    Category.Create("Investment", true, admin.Id!.Value, DateTime.Now),
+                    Category.Create("Salary", false, admin.Id!.Value, DateTime.Now)
+                );
 
-                    await context.SaveChangesAsync();
-                }
+                await context.SaveChangesAsync();
+            }
 
-                // Seed Budgets
-                if (!context.Budgets.Any())
-                {
-                    var foodCategory = context.Categories.First(c => c.Name == "Food");
-                    var transportCategory = context.Categories.First(c => c.Name == "Transport");
-                    var entity1 = Budget.Create(10000, "Monthly Food Budget", DateTime.UtcNow, DateTime.UtcNow.AddMonths(1), foodCategory.Id!.Value!, null, null, null);
-                    var entity2 = Budget.Create(3000, "Transport Budget", DateTime.UtcNow, DateTime.UtcNow.AddMonths(1), foodCategory.Id!.Value!, null, null, null);
-                    context.Budgets.AddRange(entity1, entity2);
-                }
+            // Seed Budgets
+            if (!context.Budgets.Any())
+            {
+                var foodCategory = context.Categories.First(c => c.Name == "Food");
+                var transportCategory = context.Categories.First(c => c.Name == "Transport");
+                var entity1 = Budget.Create(10000, "Monthly Food Budget", DateTime.UtcNow, DateTime.UtcNow.AddMonths(1), foodCategory.Id!.Value!, null, null, null);
+                var entity2 = Budget.Create(3000, "Transport Budget", DateTime.UtcNow, DateTime.UtcNow.AddMonths(1), foodCategory.Id!.Value!, null, null, null);
+                context.Budgets.AddRange(entity1, entity2);
             }
             await context.SaveChangesAsync();
         }
