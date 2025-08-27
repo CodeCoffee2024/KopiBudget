@@ -1,4 +1,4 @@
-﻿using KopiBudget.Application.Queries.Auth;
+﻿using KopiBudget.Application.Queries.Auth.Login;
 
 namespace KopiBudget.Application.Requests
 {

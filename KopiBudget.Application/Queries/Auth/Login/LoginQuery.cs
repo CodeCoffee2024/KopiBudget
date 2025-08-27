@@ -2,7 +2,7 @@
 using KopiBudget.Domain.Abstractions;
 using MediatR;
 
-namespace KopiBudget.Application.Queries.Auth
+namespace KopiBudget.Application.Queries.Auth.Login
 {
     public class LoginQuery : IRequest<Result<AuthDto>>
     {

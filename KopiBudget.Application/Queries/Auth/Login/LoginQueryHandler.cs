@@ -4,7 +4,7 @@ using KopiBudget.Domain.Abstractions;
 using KopiBudget.Domain.Interfaces;
 using MediatR;
 
-namespace KopiBudget.Application.Queries.Auth
+namespace KopiBudget.Application.Queries.Auth.Login
 {
     public class LoginQueryHandler(
         IUserRepository _repository,
@@ -31,7 +31,7 @@ namespace KopiBudget.Application.Queries.Auth
                 return Result.Failure<AuthDto>(Error.FormControl("password", "Invalid password"));
             }
             var token = _jwtTokenGenerator.GenerateToken(user!);
-            return Result.Success<AuthDto>(token);
+            return Result.Success(token);
         }
 
         #endregion Public Methods

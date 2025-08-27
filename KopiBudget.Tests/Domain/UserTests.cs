@@ -31,6 +31,14 @@ namespace KopiBudget.Tests.Domain
             Assert.Equal("test@example.com", user.Email);
         }
 
+        [Fact]
+        public void Register_ShouldSucceed_WhenEmailIsValid()
+        {
+            var user = User.Register("username", "test@example.com", "status", "firstName", "lastName", "");
+
+            Assert.Equal("test@example.com", user.Email);
+        }
+
         #endregion Public Methods
     }
 }
