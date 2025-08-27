@@ -87,11 +87,11 @@ namespace KopiBudget.Infrastructure.Data
             if (!context.Categories.Any())
             {
                 context.Categories.AddRange(
-                    Category.Create("Food", true, admin.Id!.Value, DateTime.Now),
-                    Category.Create("Transport", true, admin.Id!.Value, DateTime.Now),
-                    Category.Create("Utilities", true, admin.Id!.Value, DateTime.Now),
-                    Category.Create("Investment", true, admin.Id!.Value, DateTime.Now),
-                    Category.Create("Salary", false, admin.Id!.Value, DateTime.Now)
+                    Category.Create("Food", true, admin.Id!.Value, DateTime.UtcNow),
+                    Category.Create("Transport", true, admin.Id!.Value, DateTime.UtcNow),
+                    Category.Create("Utilities", true, admin.Id!.Value, DateTime.UtcNow),
+                    Category.Create("Investment", true, admin.Id!.Value, DateTime.UtcNow),
+                    Category.Create("Salary", false, admin.Id!.Value, DateTime.UtcNow)
                 );
 
                 await context.SaveChangesAsync();

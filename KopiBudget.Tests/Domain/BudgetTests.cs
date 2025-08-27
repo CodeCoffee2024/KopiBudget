@@ -13,8 +13,8 @@ namespace KopiBudget.Tests.Domain
             // Arrange
             var name = "Food Budget";
             var amount = 1000m;
-            var startDate = DateTime.Now.AddDays(-1);
-            var endDate = DateTime.Now;
+            var startDate = DateTime.UtcNow.AddDays(-1);
+            var endDate = DateTime.UtcNow;
 
             // Act
             var budget = Budget.Create(amount, name, startDate, endDate, null, null, null, null);
@@ -32,8 +32,8 @@ namespace KopiBudget.Tests.Domain
             // Arrange
             var name = "Invalid Budget";
             var amount = -100;
-            var startDate = DateTime.Now.AddDays(-1);
-            var endDate = DateTime.Now;
+            var startDate = DateTime.UtcNow.AddDays(-1);
+            var endDate = DateTime.UtcNow;
 
             // Act & Assert
             var entity = Budget.Create(amount, name, startDate, endDate, null, null, null, null);
@@ -45,19 +45,19 @@ namespace KopiBudget.Tests.Domain
         {
             var name = "Invalid Budget";
             var amount = -100;
-            var startDate = DateTime.Now.AddDays(-1);
-            var endDate = DateTime.Now;
+            var startDate = DateTime.UtcNow.AddDays(-1);
+            var endDate = DateTime.UtcNow;
             // Arrange
             var budget = Budget.Create(amount, name, startDate, endDate, null, null, null, null);
 
             // Act
-            budget.Update(750, "Update Name", DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1), null, null, null, null);
+            budget.Update(750, "Update Name", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1), null, null, null, null);
 
             // Assert
             Assert.Equal(750, budget.Amount);
             Assert.Equal("Update Name", budget.Name);
-            Assert.Equal(DateTime.Now.AddDays(-2), budget.StartDate);
-            Assert.Equal(DateTime.Now.AddDays(-1), budget.EndDate);
+            Assert.Equal(DateTime.UtcNow.AddDays(-2), budget.StartDate);
+            Assert.Equal(DateTime.UtcNow.AddDays(-1), budget.EndDate);
         }
 
         [Fact]
@@ -67,10 +67,10 @@ namespace KopiBudget.Tests.Domain
 
             var amount = -100;
 
-            var entity = Budget.Create(amount, "Invalid", DateTime.Now, DateTime.Now.AddDays(30), null, null, null, null);
+            var entity = Budget.Create(amount, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null, null);
             // Act & Assert
             Assert.Throws<InvalidDateRangeException>(() =>
-                entity.Update(-10, "Invalid", DateTime.Now, DateTime.Now.AddDays(30), null, null, null, null));
+                entity.Update(-10, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null, null));
         }
 
         #endregion Public Methods

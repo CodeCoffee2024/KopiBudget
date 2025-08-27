@@ -34,7 +34,7 @@ namespace KopiBudget.Domain.Entities
         public static Module Create(string name, string link, Guid createdById)
         {
             var module = new Module(name, link);
-            module.SetCreated(createdById, DateTime.Now);
+            module.SetCreated(createdById, DateTime.UtcNow);
             return module;
         }
 

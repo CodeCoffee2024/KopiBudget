@@ -27,14 +27,14 @@ namespace KopiBudget.Domain.Entities
         public static Role Create(string name, Guid createdById)
         {
             var entity = new Role(name);
-            entity.SetCreated(createdById, DateTime.Now);
+            entity.SetCreated(createdById, DateTime.UtcNow);
             return entity;
         }
 
         public Role Update(string name, Guid updatedById)
         {
             Name = name;
-            SetUpdated(updatedById, DateTime.Now);
+            SetUpdated(updatedById, DateTime.UtcNow);
             return this;
         }
 
