@@ -1,6 +1,7 @@
 ﻿using KopiBudget.Application;
 using KopiBudget.Application.Interfaces.Common;
 using KopiBudget.Common.Entities;
+using KopiBudget.Domain.Interfaces;
 using KopiBudget.Infrastructure;
 using KopiBudget.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -122,7 +123,8 @@ async Task ApplyMigrationsAsync(IServiceProvider serviceProvider)
             logger.LogInformation("Migrations applied successfully.");
             var services = scope.ServiceProvider;
             var passwordHasher = services.GetRequiredService<IPasswordHasherService>();
-            await Seeder.SeedAsync(context, logger, passwordHasher);
+            var userRepository = services.GetRequiredService<IUserRepository>();
+            await Seeder.SeedAsync(context, logger, passwordHasher, userRepository);
         }
         else
         {
