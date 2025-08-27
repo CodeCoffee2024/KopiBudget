@@ -37,6 +37,8 @@ namespace KopiBudget.Infrastructure.Data
                         Module.Create("Users", "/users", admin.Id !.Value),
                         Module.Create("Dashboard", "/admin/dashboard", admin.Id !.Value)
                 ];
+                context.Modules.AddRange(modules);
+                await context.SaveChangesAsync();
                 var module = modules[0];
                 var post = modules[1];
                 var category = modules[2];
