@@ -35,20 +35,21 @@ namespace KopiBudget.Infrastructure.Data
                 await context.SaveChangesAsync();
 
                 logger.LogInformation("Seeded default user.");
-                admin = user; // assign back
+                admin = user;
             }
 
-            // --- Seed modules ---
             if (!context.Modules.Any())
             {
                 var modules = new[]
                 {
-                Module.Create("Modules", "/modules", admin.Id!.Value),
-                Module.Create("Posts", "/posts", admin.Id!.Value),
-                Module.Create("Categories", "/categories", admin.Id!.Value),
-                Module.Create("Users", "/users", admin.Id!.Value),
-                Module.Create("Dashboard", "/admin/dashboard", admin.Id!.Value)
-            };
+                    Module.Create("Modules", "/modules", admin.Id!.Value),
+                    Module.Create("Categories", "/categories", admin.Id!.Value),
+                    Module.Create("Account", "/accounts", admin.Id!.Value),
+                    Module.Create("Transaction", "/transactions", admin.Id!.Value),
+                    Module.Create("Budget", "/budgets", admin.Id!.Value),
+                    Module.Create("Users", "/users", admin.Id!.Value),
+                    Module.Create("Dashboard", "/admin/dashboard", admin.Id!.Value)
+                };
 
                 foreach (var module in modules)
                     module.FlagAsSystemGenerated();
@@ -58,7 +59,6 @@ namespace KopiBudget.Infrastructure.Data
 
                 logger.LogInformation("Seeded modules.");
 
-                // --- Seed permissions for Modules ---
                 var modulesModule = modules.First(m => m.Name == "Modules");
 
                 if (!modulesModule.Permissions.Any())

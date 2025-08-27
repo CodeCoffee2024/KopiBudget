@@ -9,6 +9,7 @@ namespace KopiBudget.Domain.Entities
         public Module(string name, string link)
         {
             Name = name;
+            Link = link;
         }
 
         #endregion Public Constructors

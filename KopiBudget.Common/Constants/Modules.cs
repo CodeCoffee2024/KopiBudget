@@ -5,6 +5,7 @@
         #region Fields
 
         public const string DASHBOARD = "Dashboard";
+        public const string CATEGORY = "Category";
         public const string TRASACTION = "Transaction";
         public const string BUDGET = "Budget";
         public const string ACCOUNT = "Account";

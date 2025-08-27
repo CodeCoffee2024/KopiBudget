@@ -12,7 +12,7 @@
         {
             { DASHBOARD, new[] { Modules.DASHBOARD } },
             { CONTENT, new[] { Modules.ACCOUNT, Modules.BUDGET, Modules.TRASACTION } },
-            { SYSTEM, new[] { Modules.USER, Modules.ROLE } }
+            { SYSTEM, new[] { Modules.USER, Modules.ROLE, Modules.CATEGORY } }
         };
 
         #endregion Fields
