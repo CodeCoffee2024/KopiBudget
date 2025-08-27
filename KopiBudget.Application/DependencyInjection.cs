@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -17,6 +18,8 @@ namespace KopiBudget.Application
                     Assembly.GetExecutingAssembly()
                 );
             });
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
+
             return services;
         }
 

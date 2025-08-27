@@ -17,7 +17,7 @@ namespace KopiBudget.Infrastructure.Data
 
             if (!context.Users.Any())
             {
-                var admin = User.Seed("admin", "admin@email.com", passwordHasherService.HashPassword("password"), "activ", "admin", "admin", "");
+                var admin = User.Register("admin", "admin@email.com", passwordHasherService.HashPassword("password"), "admin", "admin", "");
                 context.Users.Add(admin);
                 admin.FlagAsSystemGenerated();
                 await context.SaveChangesAsync();

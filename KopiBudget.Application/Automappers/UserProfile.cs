@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using KopiBudget.Application.Dtos;
+using KopiBudget.Domain.Entities;
 
 namespace KopiBudget.Application.Automappers
 {
@@ -8,6 +10,7 @@ namespace KopiBudget.Application.Automappers
 
         public UserProfile()
         {
+            CreateMap<User, UserRegisterDto>().ReverseMap();
         }
 
         #endregion Public Constructors

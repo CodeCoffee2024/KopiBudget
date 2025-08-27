@@ -53,15 +53,9 @@ namespace KopiBudget.Domain.Entities
 
         public virtual ICollection<Budget> Budgets { get; set; } = new List<Budget>();
 
-        public static User Register(string userName, string email, string password, string status, string firstName, string lastName, string middleName)
+        public static User Register(string userName, string email, string password, string firstName, string lastName, string middleName)
         {
-            User user = new User(userName, email, password, status, firstName, lastName, middleName);
-            return user;
-        }
-
-        public static User Seed(string userName, string email, string password, string status, string firstName, string lastName, string middleName)
-        {
-            User user = new User(userName, email, password, status, firstName, lastName, middleName);
+            User user = new User(userName, email, password, "activ", firstName, lastName, middleName);
             return user;
         }
 

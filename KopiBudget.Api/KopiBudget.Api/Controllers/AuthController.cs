@@ -27,13 +27,13 @@ namespace KopiBudget.Api.Controllers
             return HandleResponse(result);
         }
 
-        //[HttpPost("Register")]
-        //public async Task<IActionResult> Register([FromBody] UserRequest request, CancellationToken cancellationToken)
-        //{
-        //    var command = request.SetRegisterCommand();
-        //    var result = await _sender.Send(command, cancellationToken);
-        //    return HandleResponse(result);
-        //}
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] UserRequest request, CancellationToken cancellationToken)
+        {
+            var command = request.SetRegisterCommand();
+            var result = await _sender.Send(command, cancellationToken);
+            return HandleResponse(result);
+        }
 
         //[HttpGet("Refresh/{refreshToken}")]
         //public async Task<IActionResult> RefreshToken([FromRoute] string refreshToken, CancellationToken cancellationToken)
