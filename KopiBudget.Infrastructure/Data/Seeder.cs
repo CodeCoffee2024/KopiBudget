@@ -78,6 +78,7 @@ namespace KopiBudget.Infrastructure.Data
                 await context.Modules.AddRangeAsync(modules);
                 await context.Roles.AddAsync(adminRole);
                 await context.SaveChangesAsync();
+                logger.LogInformation("Seeded module.");
             }
             // Seed Categories
             if (!context.Categories.Any())
@@ -91,6 +92,7 @@ namespace KopiBudget.Infrastructure.Data
                 );
 
                 await context.SaveChangesAsync();
+                logger.LogInformation("Seeded category.");
             }
 
             // Seed Budgets
@@ -101,6 +103,7 @@ namespace KopiBudget.Infrastructure.Data
                 var entity1 = Budget.Create(10000, "Monthly Food Budget", DateTime.UtcNow, DateTime.UtcNow.AddMonths(1), foodCategory.Id!.Value!, null, null, null);
                 var entity2 = Budget.Create(3000, "Transport Budget", DateTime.UtcNow, DateTime.UtcNow.AddMonths(1), foodCategory.Id!.Value!, null, null, null);
                 context.Budgets.AddRange(entity1, entity2);
+                logger.LogInformation("Seeded budget.");
             }
             await context.SaveChangesAsync();
         }
