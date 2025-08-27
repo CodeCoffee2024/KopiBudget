@@ -11,6 +11,8 @@ namespace KopiBudget.Infrastructure.Configuration
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
             builder.HasKey(t => t.Id);
+            builder.Property(t => t.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(t => t.Amount)
                 .HasColumnType("decimal(18,2)");

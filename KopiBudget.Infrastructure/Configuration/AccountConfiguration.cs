@@ -11,6 +11,8 @@ namespace KopiBudget.Infrastructure.Configuration
         public void Configure(EntityTypeBuilder<Account> builder)
         {
             builder.HasKey(a => a.Id);
+            builder.Property(a => a.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(a => a.Name)
                 .IsRequired()

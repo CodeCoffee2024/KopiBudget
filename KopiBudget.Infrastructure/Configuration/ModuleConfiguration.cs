@@ -13,6 +13,8 @@ namespace KopiBudget.Infrastructure.Configuration
             builder.ToTable("Modules");
 
             builder.HasKey(m => m.Id);
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(m => m.Name)
                 .IsRequired()
