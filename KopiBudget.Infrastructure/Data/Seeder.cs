@@ -26,6 +26,7 @@ namespace KopiBudget.Infrastructure.Data
             }
             var admin = await userRepository.GetByUsernameAsync("admin");
 
+            logger.LogInformation("Seeding module: " + !context.Modules.Any());
             if (!context.Modules.Any())
             {
                 // Create module
