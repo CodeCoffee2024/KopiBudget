@@ -40,7 +40,7 @@ namespace KopiBudget.Infrastructure
         this IServiceCollection services,
         IConfiguration configuration)
         {
-            var connectionString = "Host=db.hjsepjjcvdiypqjieseh.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=Mn#m0n1c5123;Trust Server Certificate=true;Include Error Detail=true;SSL Mode=Require";
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new ArgumentNullException(nameof(configuration), "Database connection string is missing!");
