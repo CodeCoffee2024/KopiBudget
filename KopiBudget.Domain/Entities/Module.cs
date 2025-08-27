@@ -48,9 +48,9 @@ namespace KopiBudget.Domain.Entities
             return this;
         }
 
-        public Permission AddPermission(string permissionName)
+        public Permission AddPermission(string permissionName, Guid? moduleId)
         {
-            var permission = new Permission(permissionName, Id!.Value!);
+            var permission = new Permission(permissionName, moduleId!.Value!);
             Permissions.Add(permission);
             return permission;
         }

@@ -44,23 +44,23 @@ namespace KopiBudget.Infrastructure.Data
                 var dashboard = modules[4];
                 dashboard.FlagAsSystemGenerated();
                 // Add permissions module
-                var viewPermissionModule = module.AddPermission("View");
-                var editPermissionModule = module.AddPermission("Modify");
+                var viewPermissionModule = module.AddPermission("View", module.Id);
+                var editPermissionModule = module.AddPermission("Modify", module.Id);
                 module.FlagAsSystemGenerated();
 
                 // Add permissions post
-                var viewPermissionPost = post.AddPermission("View");
-                var editPermissionPost = post.AddPermission("Modify");
+                var viewPermissionPost = post.AddPermission("View", post.Id);
+                var editPermissionPost = post.AddPermission("Modify", post.Id);
                 post.FlagAsSystemGenerated();
 
                 // Add permissions category
-                var viewPermissionCategory = category.AddPermission("View");
-                var editPermissionCategory = category.AddPermission("Modify");
+                var viewPermissionCategory = category.AddPermission("View", category.Id);
+                var editPermissionCategory = category.AddPermission("Modify", category.Id);
                 category.FlagAsSystemGenerated();
 
                 // Add permissions user
-                var viewPermissionUser = user.AddPermission("View");
-                var editPermissionUser = user.AddPermission("Modify");
+                var viewPermissionUser = user.AddPermission("View", user.Id);
+                var editPermissionUser = user.AddPermission("Modify", user.Id);
                 user.FlagAsSystemGenerated();
 
                 // Create role
