@@ -8,7 +8,7 @@ using KopiBudget.Domain.Abstractions;
 using KopiBudget.Domain.Interfaces;
 using MediatR;
 
-namespace KopiBudget.Application.Commands.User
+namespace KopiBudget.Application.Commands.User.UserRegister
 {
     internal sealed class UserRegisterCommandHandler(
         IUserRepository _repository,
@@ -37,7 +37,7 @@ namespace KopiBudget.Application.Commands.User
             {
                 return Result.Failure<List<UserRegisterDto>>(Error.Validation, validationResult.ToErrorList());
             }
-            var entity = KopiBudget.Domain.Entities.User.Register(
+            var entity = Domain.Entities.User.Register(
                 request.UserName,
                 request.Email,
                 _passwordHasherService.HashPassword(request.Password),

@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
-using KopiBudget.Application.Commands.User.UserRegister;
+using KopiBudget.Application.Commands.User.UserUpdateProfile;
 
 namespace KopiBudget.Application.Validators.User
 {
-    public class RegisterUserValidator : AbstractValidator<UserRegisterCommand>
+    public class UserUpdateProfileValidator : AbstractValidator<UserUpdateProfileCommand>
     {
         #region Public Constructors
 
-        public RegisterUserValidator()
+        public UserUpdateProfileValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First Name is required.")
@@ -16,10 +16,6 @@ namespace KopiBudget.Application.Validators.User
             RuleFor(x => x.LastName)
                 .NotEmpty().WithMessage("Last Name is required.")
                 .MaximumLength(100);
-
-            RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("Invalid email format.");
 
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("Username is required.");

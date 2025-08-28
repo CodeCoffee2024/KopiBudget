@@ -11,6 +11,7 @@ namespace KopiBudget.Application.Automappers
         public UserProfile()
         {
             CreateMap<User, UserRegisterDto>().ReverseMap();
+            CreateMap<User, UserUpdateProfileDto>().ReverseMap();
         }
 
         #endregion Public Constructors

@@ -1,5 +1,6 @@
 ﻿using KopiBudget.Api.Shared;
 using KopiBudget.Application.Requests;
+using KopiBudget.Domain.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,18 @@ namespace KopiBudget.Api.Controllers
             var command = request.SetRegisterCommand();
             var result = await _sender.Send(command, cancellationToken);
             return HandleResponse(result);
+        }
+
+        [HttpPost("UpdateProfile/{id}")]
+        public async Task<IActionResult> UpdateProfile([FromRoute] string id, [FromForm] UserRequest request, CancellationToken cancellationToken)
+        {
+            if (Guid.TryParse(id, out var userId))
+            {
+                var command = request.SetUpdateUserProfileCommand(userId, userId);
+                var result = await _sender.Send(command, cancellationToken);
+                return HandleResponse(result);
+            }
+            return HandleResponse(Result.Failure(Error.NullValue));
         }
 
         #endregion Public Methods

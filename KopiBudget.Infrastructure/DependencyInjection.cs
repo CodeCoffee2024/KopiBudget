@@ -26,7 +26,7 @@ namespace KopiBudget.Infrastructure
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             services.AddScoped<IModuleGroupService, ModuleGroupService>();
-            //services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IFileService, FileService>();
 
             // --- Repositories ---
             services.AddScoped<IUserRepository, UserRepository>();

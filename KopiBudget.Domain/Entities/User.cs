@@ -41,6 +41,7 @@ namespace KopiBudget.Domain.Entities
         public string LastName { get; private set; } = string.Empty;
 
         public string MiddleName { get; private set; } = string.Empty;
+        public string Img { get; private set; } = string.Empty;
 
         public bool IsSystemGenerated { get; private set; } = false;
 
@@ -84,6 +85,8 @@ namespace KopiBudget.Domain.Entities
         {
             UserRoles.Add(new UserRole { User = this, Role = role });
         }
+
+        public void UpdateImage(string img) => Img = img;
 
         private static bool IsValidEmail(string email)
         {
