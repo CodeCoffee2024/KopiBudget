@@ -19,8 +19,8 @@ namespace KopiBudget.Api.Controllers
 
         #region Public Methods
 
-        [HttpGet("Login")]
-        public async Task<IActionResult> Login([FromQuery] AuthRequest request, CancellationToken cancellationToken)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] AuthRequest request, CancellationToken cancellationToken)
         {
             var query = request.LoginQuery();
             var result = await _sender.Send(query, cancellationToken);

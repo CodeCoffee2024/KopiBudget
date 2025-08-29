@@ -21,11 +21,9 @@ export class AuthService extends GenericService {
 	}
 
 	login(payload): Observable<ApiResult<LoginResponse>> {
-		const queryParams = this.setQueryParameters(payload);
-		return this.get(
-			`/${this.controller}login?` + queryParams,
-			null,
-			false
+		return this.post(
+			`/${this.controller}login`,payload,
+			null
 		);
 	}
   logout(): void {
