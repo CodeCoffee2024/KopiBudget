@@ -1,1 +1,120 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+:root {
+	--default-background: #ffffff;
+	--default-text-color: #171717;
+	--default-secondary-text-color: #eeeeee;
+}
+* {
+	font-family: 'Roboto' !important;
+	font-optical-sizing: auto;
+	font-style: normal;
+}
+*:not(.text-danger) {
+	color: var(--default-text-color);
+}
+.theme-light {
+	div.theme {
+		background-color: var(--default-background);
+		color: var(--default-text-color);
+	}
+
+	.hover-text::after {
+		background-color: var(--default-text-color);
+	}
+	.form-check-input:checked {
+		background-color: var(--default-text-color) !important;
+		border-color: var(--default-text-color) !important;
+	}
+	.form-check-input,
+	.form-check-input::before {
+		background-color: var(--default-background) !important;
+		border-color: var(--default-text-color) !important;
+	}
+}
+
+.form-check-input:focus {
+	box-shadow: none !important;
+}
+.system-secondary-bg {
+	background-color: var(--default-secondary-text-color);
+}
+
+.hover-text {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.hover-text::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: -2px; /* adjust spacing under text */
+	width: 0;
+	height: 2px;
+	transition: width 0.2s linear;
+}
+
+.hover-text:hover::after,
+.hover-text:focus::after {
+	width: 100%;
+}
+
+.custom-alert-box {
+	border-radius: 0.75rem !important;
+	padding: 1.5rem !important;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15) !important;
+	font-size: 1rem !important;
+}
+
+.loader {
+	width: 20px;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background: #000;
+	box-shadow: 0 0 0 0 #0004;
+	animation: l2 1.5s infinite linear;
+	position: relative;
+}
+.loader:before,
+.loader:after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	box-shadow: 0 0 0 0 #0004;
+	animation: inherit;
+	animation-delay: -0.5s;
+}
+.loader:after {
+	animation-delay: -1s;
+}
+@keyframes l2 {
+	100% {
+		box-shadow: 0 0 0 40px #0000;
+	}
+}
+.logo {
+	font-size: 2rem;
+}
+ul {
+	padding: 0px !important;
+}
+ul,
+li {
+	list-style-type: none;
+	text-decoration: none;
+}
+a {
+	text-decoration: none !important;
+}
+
+.table-responsive {
+	min-height: 500px;
+}
