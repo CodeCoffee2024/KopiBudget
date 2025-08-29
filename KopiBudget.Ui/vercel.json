@@ -1,5 +1,4 @@
 {
-  "rootDirectory": "kopibudget.ui",
   "buildCommand": "npm run build -- --configuration production",
   "outputDirectory": "dist/kopi-budget.ui",
   "rewrites": [
