@@ -30,4 +30,4 @@ jobs:
 
       - name: Deploy to Vercel
         working-directory: ./KopiBudget.Ui
-        run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --confirm --cwd=dist/kopi-budget.ui
+        run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --confirm
