@@ -13,7 +13,7 @@
         [id]="inputId"
         [formControl]="formControl"
         [type]="isPasswordVisible ? 'text' : 'password'"
-        [ngClass]="{'border-danger': formControl.invalid && formGroup.dirty && formGroup.dirty}"
+        [ngClass]="{'border-danger': formControl.invalid && formControl.dirty && formControl.dirty}"
         />
         <div class="input-group-append">
             <button type="button" class="btn btn-sm btn-outline-secondary" (click)="togglePasswordVisibility()">
@@ -30,13 +30,13 @@
         [id]="inputId"
         [formControl]="formControl"
         [type]="inputType"
-        [ngClass]="{'border-danger': formControl.invalid && formGroup.dirty && formGroup.dirty}"
+        [ngClass]="{'border-danger': formControl.invalid && formControl.dirty && formControl.dirty}"
         (input)="onInput($event)"
         (blur)="onBlur()"
         [attr.pattern]="inputType === 'number' ? '^\\d*(\\.\\d{0,2})?$' : null"
         />
     </ng-template>
-    <div *ngIf="errors && (formControl.invalid && formGroup.dirty) && formGroup.dirty">
+    <div *ngIf="errors && (formControl.invalid && formControl.dirty) && formControl.dirty">
         <div *ngFor="let error of errors" class="text-danger">
         {{ error }}
         </div>
