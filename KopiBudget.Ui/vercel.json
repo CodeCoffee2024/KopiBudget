@@ -1,4 +1,5 @@
 {
+  "name": "kopibudget_ui",
   "buildCommand": "npm run build -- --configuration=production  --verbose",
   "outputDirectory": "dist/kopibudget_ui",
   "rewrites": [
