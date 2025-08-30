@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'KopiBudget.Ui'`, () => {
+  it(`should have as title 'kopibudget_ui'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('KopiBudget.Ui');
+    expect(app.title).toEqual('kopibudget_ui');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('KopiBudget.Ui app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('kopibudget_ui app is running!');
   });
 });

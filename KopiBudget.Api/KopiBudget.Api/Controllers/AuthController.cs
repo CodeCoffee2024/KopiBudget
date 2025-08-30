@@ -35,13 +35,13 @@ namespace KopiBudget.Api.Controllers
             return HandleResponse(result);
         }
 
-        //[HttpGet("Refresh/{refreshToken}")]
-        //public async Task<IActionResult> RefreshToken([FromRoute] string refreshToken, CancellationToken cancellationToken)
-        //{
-        //    var userAccessQuery = new RefreshTokenQuery(refreshToken);
-        //    var result = await _sender.Send(userAccessQuery);
-        //    return HandleResponse(result);
-        //}
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] AuthRequest request, CancellationToken cancellationToken)
+        {
+            var userAccessQuery = request.SetRefreshToken();
+            var result = await _sender.Send(userAccessQuery);
+            return HandleResponse(result);
+        }
 
         #endregion Public Methods
     }

@@ -15,7 +15,6 @@ namespace KopiBudget.Infrastructure.Services
     {
         #region Public Methods
 
-
         public AuthDto GenerateToken(User user)
         {
             AuthDto response = new AuthDto();
@@ -42,23 +41,32 @@ namespace KopiBudget.Infrastructure.Services
             var principal = GetPrincipalFromExpiredToken(refreshToken);
             if (principal == null)
             {
-                return null!;
+                throw new SecurityException("Invalid refresh token.");
             }
 
             var identity = principal.Identity as ClaimsIdentity;
-            var userId = identity!.Claims.First(it => it.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = identity!.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
             {
-                return null!;
-                throw new SecurityException("Invalid refresh token");
+                throw new SecurityException("Invalid refresh token: no user identifier.");
+            }
+
+            // Extract expiration from JWT claims
+            var expClaim = identity.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
+            if (expClaim != null && long.TryParse(expClaim, out var expUnix))
+            {
+                var expDate = DateTimeOffset.FromUnixTimeSeconds(expUnix).UtcDateTime;
+                if (expDate < DateTime.UtcNow)
+                {
+                    throw new SecurityException("Refresh token has expired.");
+                }
             }
 
             var user = await _userRepository.GetByIdAsync(Guid.Parse(userId));
-
             if (user == null)
             {
-                return null!;
+                throw new SecurityException("User not found for this refresh token.");
             }
 
             return GenerateToken(user);
@@ -85,10 +93,11 @@ namespace KopiBudget.Infrastructure.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var validationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = false, // Disabled to allow expired tokens
-                ValidateAudience = false, // Disabled for refresh token validation
-                ValidateLifetime = false, // Allow expired tokens
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Key))
             };
 

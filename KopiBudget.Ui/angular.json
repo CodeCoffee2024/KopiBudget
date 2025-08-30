@@ -111,10 +111,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "KopiBudget.Ui:build:production"
+              "browserTarget": "kopibudget_ui:build:production"
             },
             "development": {
-              "browserTarget": "KopiBudget.Ui:build:development"
+              "browserTarget": "kopibudget_ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -122,7 +122,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "KopiBudget.Ui:build"
+            "browserTarget": "kopibudget_ui:build"
           }
         },
         "test": {

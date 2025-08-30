@@ -1,4 +1,5 @@
-﻿using KopiBudget.Application.Queries.Auth.Login;
+﻿using KopiBudget.Application.Commands.Auth.AuthRefreshToken;
+using KopiBudget.Application.Queries.Auth.Login;
 
 namespace KopiBudget.Application.Requests
 {
@@ -11,6 +12,7 @@ namespace KopiBudget.Application.Requests
         public string? Password { get; set; } = default!;
         public string? UsernameEmail { get; set; } = default!;
         public string? Token { get; set; } = default!;
+        public string? RefreshToken { get; set; } = default!;
         public DateTime? ExpiresAt { get; set; }
 
         #endregion Properties
@@ -18,6 +20,8 @@ namespace KopiBudget.Application.Requests
         #region Public Methods
 
         public LoginQuery LoginQuery() => new(UsernameEmail!, Password!);
+
+        public AuthRefreshTokenCommand SetRefreshToken() => new(RefreshToken!);
 
         #endregion Public Methods
     }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { ApiResult } from '../../domain/models/api-result';
 import { GenericService } from '../services/generic.service';
 import { AuthUser, LoginResponse } from './auth.model';
@@ -9,8 +9,9 @@ import { AuthUser, LoginResponse } from './auth.model';
   providedIn: 'root'
 })
 export class AuthService extends GenericService {
-  private readonly tokenKey = 'access_token';
-  private readonly userKey = 'auth_user';
+  private readonly tokenKey = 'token';
+  private readonly refreshTokenKey = 'refreshToken';
+  private readonly userKey = 'user';
 	private controller = 'auth/';
 
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getStoredUser());
@@ -26,9 +27,30 @@ export class AuthService extends GenericService {
 			null
 		);
 	}
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.refreshTokenKey);
+  }
+  refreshToken(): Observable<LoginResponse> {
+    const refreshToken = this.getRefreshToken();
+
+    return this.post<ApiResult<LoginResponse>>(
+        `/${this.controller}refresh`,
+        { "refreshToken": refreshToken }
+      ).pipe(
+        map(response => {
+          const loginResponse = response.data;
+          console.log(loginResponse)
+          if (loginResponse) {
+            this.setSession(loginResponse);
+          }
+
+          return loginResponse;
+        })
+      );
+  }
   logout(): void {
     localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.userKey);
+    // localStorage.removeItem(this.userKey);
     this.currentUserSubject.next(null);
   }
 
@@ -40,8 +62,9 @@ export class AuthService extends GenericService {
     return localStorage.getItem(this.tokenKey);
   }
 
-  private setSession(response: LoginResponse) {
+  setSession(response: LoginResponse) {
     localStorage.setItem(this.tokenKey, response.token);
+    localStorage.setItem(this.refreshTokenKey, response.refreshToken);
     // this.currentUserSubject.next(user);
   }
 
