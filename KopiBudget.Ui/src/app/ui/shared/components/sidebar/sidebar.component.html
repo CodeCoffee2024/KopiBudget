@@ -1,0 +1,39 @@
+<!-- BACKDROP (Only for Mobile) -->
+<div
+	*ngIf="isSidebarOpen && !isDesktop"
+	class="backdrop"
+	(click)="onClose()"
+	(keydown.escape)="onClose()"
+	tabindex="0"
+></div>
+
+<!-- SIDEBAR -->
+<aside
+	class="admin-sidebar bg-white border border-secondary"
+	[class.open]="isSidebarOpen"
+>
+	<div class="sidebar-logo">
+		<img
+			src="/assets/sidebar-logo.png"
+			alt="sidebar-logo"
+		/>
+	</div>
+	<nav class="pt-3">
+		<ul class="ps-2 pe-2" *ngFor="let module of modules">
+			<div class="module-key fw-bold text-secondary pl-3">
+				{{ module.key }}
+			</div>
+			<li
+				class="navbar-item cursor-pointer"
+				*ngFor="let module of module.modules"
+			>
+				<a
+					class="color-main color-highlight"
+					(click)="navigate(module.link)"
+				>
+					{{ module.name }}
+				</a>
+			</li>
+		</ul>
+	</nav>
+</aside>

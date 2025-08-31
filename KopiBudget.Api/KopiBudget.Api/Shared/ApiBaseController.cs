@@ -35,17 +35,18 @@ namespace KopiBudget.Api.Shared
             {
                 return result.Error switch
                 {
-                    { StatusCode: StatusCodes.Status404NotFound } => NotFound(result.Error),
-                    { StatusCode: StatusCodes.Status400BadRequest } => BadRequest(result.Error),
-                    { StatusCode: StatusCodes.Status409Conflict } => Conflict(result.Error),
-                    { StatusCode: StatusCodes.Status401Unauthorized } => Unauthorized(result.Error),
+                    { StatusCode: StatusCodes.Status404NotFound } => NotFound(result),
+                    { StatusCode: StatusCodes.Status400BadRequest } => BadRequest(result),
+                    { StatusCode: StatusCodes.Status409Conflict } => Conflict(result),
+                    { StatusCode: StatusCodes.Status401Unauthorized } => Unauthorized(result),
                     { StatusCode: StatusCodes.Status403Forbidden } => Forbid(),
-                    _ => StatusCode(result.Error?.StatusCode ?? StatusCodes.Status500InternalServerError, result.Error)
+                    _ => StatusCode(result.Error?.StatusCode ?? StatusCodes.Status500InternalServerError, result)
                 };
             }
 
             return result.Data != null ? Ok(result) : NotFound(result);
         }
+
 
         protected IActionResult HandleResponse(Result result)
         {

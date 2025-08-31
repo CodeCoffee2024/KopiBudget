@@ -1,0 +1,22 @@
+<div class="wrapper">
+	<app-header
+		[isSidebarOpen]="isSidebarOpen"
+		[isDesktop]="isDesktop"
+		(toggleSidebar)="toggleSidebar()"
+	>
+	</app-header>
+	<app-sidebar
+		[isSidebarOpen]="isSidebarOpen"
+		[isDesktop]="isDesktop"
+		(closeSidebar)="closeSidebar()"
+	>
+	</app-sidebar>
+	<div
+		class="container"
+		[class]="
+			isDesktop && isSidebarOpen ? 'open-sidebar' : ''
+		"
+	>
+		<router-outlet></router-outlet>
+	</div>
+</div>

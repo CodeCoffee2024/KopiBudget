@@ -1,6 +1,8 @@
 using KopiBudget.Api.Shared;
+using KopiBudget.Application.Queries.Auth.AuthUserDetail;
 using KopiBudget.Application.Requests;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KopiBudget.Api.Controllers
@@ -40,6 +42,13 @@ namespace KopiBudget.Api.Controllers
         {
             var userAccessQuery = request.SetRefreshToken();
             var result = await _sender.Send(userAccessQuery);
+            return HandleResponse(result);
+        }
+        [Authorize]
+        [HttpGet("user-detail")]
+        public async Task<IActionResult> GetUserDetails(CancellationToken cancellationToken)
+        {
+            var result = await _sender.Send(new AuthUserDetailQuery(UserId));
             return HandleResponse(result);
         }
 

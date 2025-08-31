@@ -1,3 +1,5 @@
+import { PermissionDto } from "../../domain/models/permission";
+
 export interface LoginRequest {
     usernameEmail: string;
     password: string;
@@ -10,7 +12,11 @@ export interface LoginResponse {
 }
 
 export interface AuthUser {
-    id: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    email: string;
     username: string;
-    roles: string[];
+    roles: [];
+    permissions: PermissionDto[];
 }

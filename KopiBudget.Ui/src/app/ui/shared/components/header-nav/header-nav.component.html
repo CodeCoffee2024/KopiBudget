@@ -1,0 +1,19 @@
+<ul class="nav system-secondary-bg">
+	<li
+		*ngFor="let nav of navs; let i = index"
+		class="nav-item"
+	>
+		<a
+			[href]="goTo(nav.link)"
+			class="nav-link d-flex pe-0 ps-0 align-items-center text-dark"
+			[class.ps-0]="i > 0"
+			[class.fw-bold]="i < navs.length - 1"
+		>
+			{{ nav.label }}
+			<i
+				*ngIf="i < navs.length - 1"
+				class="bi bi-chevron-right ms-1"
+			></i>
+		</a>
+	</li>
+</ul>

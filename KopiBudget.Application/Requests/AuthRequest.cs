@@ -1,5 +1,5 @@
 ﻿using KopiBudget.Application.Commands.Auth.AuthRefreshToken;
-using KopiBudget.Application.Queries.Auth.Login;
+using KopiBudget.Application.Commands.Auth.Login;
 
 namespace KopiBudget.Application.Requests
 {
@@ -19,7 +19,7 @@ namespace KopiBudget.Application.Requests
 
         #region Public Methods
 
-        public LoginQuery LoginQuery() => new(UsernameEmail!, Password!);
+        public AuthLoginCommand LoginQuery() => new(UsernameEmail!, Password!);
 
         public AuthRefreshTokenCommand SetRefreshToken() => new(RefreshToken!);
 

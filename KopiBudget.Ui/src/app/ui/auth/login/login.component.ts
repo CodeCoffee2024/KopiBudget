@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { LoginRequest } from '../../../core/auth/auth.model';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -26,7 +27,8 @@ export class LoginComponent {
 		private formErrorService: FormErrorService,
 		private titleService: TitleService,
 		private loadingservice: LoadingService,
-		private toastService: ToastService
+		private toastService: ToastService,
+		private router: Router,
 	){
 			this.formErrorService.injectServerErrorControl(
 				this.form
@@ -38,8 +40,8 @@ export class LoginComponent {
 	}
 
 	form = this.fb.group({
-		usernameEmail: ['', [Validators.required, Validators.email]],
-		password: ['', [Validators.required, Validators.minLength(6)]],
+		usernameEmail: ['', [Validators.required]],
+		password: ['', [Validators.required]],
 	});
 
 	loading = false;
@@ -53,7 +55,6 @@ export class LoginComponent {
 			password: this.form.value.password!,
 		};
 		this.loadingservice.show();
-		this.form.markAsDirty();
 		this.authService
 			.login(credentials)
 			.pipe(
@@ -62,13 +63,10 @@ export class LoginComponent {
 				})
 			)
 			.subscribe({
-				next: (nex) => {
-					this.authService.setSession(nex.data);
+				next: () => {
+					this.router.navigate(['admin'])
 				},
 				error: (error) => {
-					const message =
-						error?.error?.error?.description ??
-						'Login failed';
 					this.toastService.error(
 						'Error',
 						'Something went wrong.'
@@ -76,6 +74,7 @@ export class LoginComponent {
 					this.formErrorService.setServerErrors(this.form, [
 						error?.error?.error,
 					]);
+					console.log(this.form)
 				},
 			});
 		}

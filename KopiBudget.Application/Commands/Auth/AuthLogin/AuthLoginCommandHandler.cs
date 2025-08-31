@@ -1,24 +1,24 @@
-﻿using KopiBudget.Application.Dtos;
+﻿using KopiBudget.Application.Abstractions.Messaging;
+using KopiBudget.Application.Dtos;
 using KopiBudget.Application.Interfaces.Common;
 using KopiBudget.Domain.Abstractions;
 using KopiBudget.Domain.Interfaces;
-using MediatR;
 
-namespace KopiBudget.Application.Queries.Auth.Login
+namespace KopiBudget.Application.Commands.Auth.Login
 {
-    public class LoginQueryHandler(
+    public class AuthLoginCommandHandler(
         IUserRepository _repository,
         IJwtTokenGenerator _jwtTokenGenerator,
         IPasswordHasherService _passwordHasherService
-    ) : IRequestHandler<LoginQuery, Result<AuthDto>>
+    ) : ICommandHandler<AuthLoginCommand, AuthDto>
     {
         #region Public Methods
 
-        public async Task<Result<AuthDto>> Handle(LoginQuery request, CancellationToken cancellationToken)
+        public async Task<Result<AuthDto>> Handle(AuthLoginCommand request, CancellationToken cancellationToken)
         {
-            var user = await _repository.EmailUsernameExists(request.UsernameEmail!);
+            var user = await _repository.EmailUsernameExists(request.usernameEmail!);
 
-            if (request.UsernameEmail == null)
+            if (request.usernameEmail == null)
             {
                 return Result.Failure<AuthDto>(Error.FormControl("usernameEmail", "This field is required"));
             }
@@ -26,7 +26,7 @@ namespace KopiBudget.Application.Queries.Auth.Login
             {
                 return Result.Failure<AuthDto>(Error.FormControl("usernameEmail", "User not found"));
             }
-            if (!_passwordHasherService.VerifyPassword(user!.Password, request.Password!))
+            if (!_passwordHasherService.VerifyPassword(user!.Password, request.password!))
             {
                 return Result.Failure<AuthDto>(Error.FormControl("password", "Invalid password"));
             }

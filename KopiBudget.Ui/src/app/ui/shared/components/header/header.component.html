@@ -1,0 +1,51 @@
+<nav
+	class="sb-topnav navbar navbar-expand ps-3 pe-3"
+	[class]="isDesktop && isSidebarOpen ? 'open-sidebar' : ''"
+>
+	<div class="d-flex w-100 justify-content-between">
+		<button
+			class="btn btn-default ps-0 pe-0"
+			(click)="onToggle()"
+		>
+			<i class="bi bi-list fs-3"></i>
+		</button>
+		<div class="dropdown d-flex">
+			<button
+				class="btn p-0 border-0 bg-transparent"
+				type="button"
+				id="profileDropdown"
+				data-bs-toggle="dropdown"
+				aria-expanded="false"
+			>
+				<img
+					src="https://via.placeholder.com/40"
+					alt="Profile"
+					class="rounded-circle"
+					style="
+						width: 40px;
+						height: 40px;
+						object-fit: cover;
+					"
+				/>
+			</button>
+
+			<ul
+				class="dropdown-menu"
+				aria-labelledby="profileDropdown"
+			>
+				<li>
+					<a class="dropdown-item" href="#">Profile</a>
+				</li>
+				<li>
+					<a class="dropdown-item" href="#">Settings</a>
+				</li>
+				<li><hr class="dropdown-divider" /></li>
+				<li>
+					<a class="dropdown-item text-danger" href="#"
+						>Logout</a
+					>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

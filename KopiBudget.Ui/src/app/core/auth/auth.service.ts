@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap, throwError } from 'rxjs';
 import { ApiResult } from '../../domain/models/api-result';
 import { GenericService } from '../services/generic.service';
 import { AuthUser, LoginResponse } from './auth.model';
@@ -20,16 +20,37 @@ export class AuthService extends GenericService {
 	constructor(private httpClient: HttpClient) {
 		super(httpClient);
 	}
+  login(payload): Observable<AuthUser> {
+    return this.post<ApiResult<LoginResponse>>(
+      `/${this.controller}login`,
+      payload,
+      null
+    ).pipe(
+      switchMap(response => {
+        const loginResponse = response.data;
 
-	login(payload): Observable<ApiResult<LoginResponse>> {
-		return this.post(
-			`/${this.controller}login`,payload,
-			null
-		);
-	}
+        if (loginResponse) {
+          this.setSession(loginResponse);
+
+          return this.get<ApiResult<AuthUser>>(
+            `/${this.controller}user-detail`,null, true
+          ).pipe(
+            map(userResponse => {
+              this.setUserData(userResponse.data);
+              return userResponse.data;
+            })
+          );
+        }
+
+        return throwError(() => new Error('Login failed'));
+      })
+    );
+  }
+
   getRefreshToken(): string | null {
     return localStorage.getItem(this.refreshTokenKey);
   }
+
   refreshToken(): Observable<LoginResponse> {
     const refreshToken = this.getRefreshToken();
 
@@ -39,7 +60,6 @@ export class AuthService extends GenericService {
       ).pipe(
         map(response => {
           const loginResponse = response.data;
-          console.log(loginResponse)
           if (loginResponse) {
             this.setSession(loginResponse);
           }
@@ -48,6 +68,7 @@ export class AuthService extends GenericService {
         })
       );
   }
+
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     // localStorage.removeItem(this.userKey);
@@ -65,7 +86,11 @@ export class AuthService extends GenericService {
   setSession(response: LoginResponse) {
     localStorage.setItem(this.tokenKey, response.token);
     localStorage.setItem(this.refreshTokenKey, response.refreshToken);
-    // this.currentUserSubject.next(user);
+  }
+
+  setUserData(response: AuthUser) {
+    localStorage.setItem(this.userKey, JSON.stringify(response));
+    this.currentUserSubject.next(response);
   }
 
   private getStoredUser(): AuthUser | null {
