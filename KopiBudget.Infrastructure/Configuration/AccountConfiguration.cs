@@ -18,6 +18,9 @@ namespace KopiBudget.Infrastructure.Configuration
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(c => c.IsExpense)
+                .IsRequired();
+
             builder.Property(a => a.Balance)
                 .HasColumnType("decimal(18,2)");
 

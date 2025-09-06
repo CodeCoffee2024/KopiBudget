@@ -12,6 +12,7 @@ namespace KopiBudget.Application.Commands.User.UserRegister
 {
     internal sealed class UserRegisterCommandHandler(
         IUserRepository _repository,
+        IRoleRepository _roleRepository,
         IPasswordHasherService _passwordHasherService,
         IMapper _mappper,
         IValidator<UserRegisterCommand> _validator,
@@ -45,6 +46,8 @@ namespace KopiBudget.Application.Commands.User.UserRegister
                 request.LastName,
                 request.MiddleName
             );
+            var userRole = await _roleRepository.GetByNameAsync("User");
+            entity.AssignRole(userRole!);
             await _repository.AddAsync(entity);
             await _unitOfWork.SaveChangesAsync();
             return Result.Success(_mappper.Map<UserRegisterDto>(entity));

@@ -1,0 +1,91 @@
+<div class="screen">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-12 ">
+                <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 100vh;">
+                    <div class="container">
+                        <div class="row login">
+                            <div class="p-5 bg-white col-lg-6">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h1 class="text-center"><img src="assets/logo-2.svg" width="200"></h1>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-3 ps-1">
+                                        <h2 class="text-start">Register</h2>
+                                    </div>
+                                    <div class="col-9 text-end p-0">
+                                        <small>or <span class="hover-text" [routerLink]="'../login'">Login</span></small>
+                                    </div>
+                                </div>
+                                <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="form">
+                                    <app-input
+                                        [inputType]="InputTypes.Text"
+                                        inputId="lastName"
+                                        [formGroup]="form"
+                                        [controlName]="'lastName'"
+                                        [label]="'Last Name'"
+                                    ></app-input>
+                                    <app-input
+                                        [inputType]="InputTypes.Text"
+                                        inputId="firstName"
+                                        [formGroup]="form"
+                                        [controlName]="'firstName'"
+                                        [label]="'First Name'"
+                                    ></app-input>
+                                    <app-input
+                                        [inputType]="InputTypes.Text"
+                                        inputId="middleName"
+                                        [formGroup]="form"
+                                        [controlName]="'middleName'"
+                                        [label]="'Middle Name'"
+                                    ></app-input>
+                                    <app-input
+                                        [inputType]="InputTypes.Text"
+                                        inputId="userName"
+                                        [formGroup]="form"
+                                        [controlName]="'userName'"
+                                        [label]="'Username'"
+                                    ></app-input>
+                                    <app-input
+                                        [inputType]="InputTypes.Email"
+                                        inputId="email"
+                                        [formGroup]="form"
+                                        [controlName]="'email'"
+                                        [label]="'Email'"
+                                    ></app-input>
+                                    <app-input
+                                        [inputType]="InputTypes.Password"
+                                        inputId="password"
+                                        [formGroup]="form"
+                                        [controlName]="'password'"
+                                        [label]="'Password'"
+                                    ></app-input>
+                                    <app-input
+                                        [inputType]="InputTypes.Password"
+                                        inputId="retypePassword"
+                                        [formGroup]="form"
+                                        [controlName]="'retypePassword'"
+                                        [label]="'Retype Password'"
+                                    ></app-input>
+                                    <div *ngIf="form.errors" class="text-danger mt-2">
+                                        {{ form.errors['serverError']['description'] }}
+                                    </div>
+									<input
+										type="submit"
+										class="btn btn-sm w-100 mt-2 btn-dark fw-bold"
+										value="Register"
+									/>
+                                </form>
+                            </div>
+                            <div class="col-6 screen-lg d-none d-lg-block">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

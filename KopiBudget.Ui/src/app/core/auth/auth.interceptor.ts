@@ -6,6 +6,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { LoginResponse } from './auth.model';
@@ -16,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.auth.getToken();
@@ -53,6 +54,8 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError(err => {
           this.isRefreshing = false;
           this.auth.logout();
+          this.router.navigate(['login']);
+          // this.activeModal.close();
           return throwError(() => err);
         })
       );

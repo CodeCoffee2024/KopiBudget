@@ -1,6 +1,6 @@
 ﻿namespace KopiBudget.Application.Dtos
 {
-    public class AuthDto
+    public record AuthDto
     {
         #region Properties
 

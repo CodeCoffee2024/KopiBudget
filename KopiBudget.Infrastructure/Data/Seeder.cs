@@ -44,9 +44,9 @@ namespace KopiBudget.Infrastructure.Data
                 {
                     Module.Create("Modules", "/modules", admin.Id!.Value),
                     Module.Create("Categories", "/categories", admin.Id!.Value),
-                    Module.Create("Account", "/accounts", admin.Id!.Value),
-                    Module.Create("Transaction", "/transactions", admin.Id!.Value),
-                    Module.Create("Budget", "/budgets", admin.Id!.Value),
+                    Module.Create("Accounts", "/accounts", admin.Id!.Value),
+                    Module.Create("Transactions", "/transactions", admin.Id!.Value),
+                    Module.Create("Budgets", "/budgets", admin.Id!.Value),
                     Module.Create("Users", "/users", admin.Id!.Value),
                     Module.Create("Dashboard", "/admin/dashboard", admin.Id!.Value)
                 };
@@ -59,17 +59,18 @@ namespace KopiBudget.Infrastructure.Data
 
                 logger.LogInformation("Seeded modules.");
 
-                var modulesModule = modules.First(m => m.Name == "Modules");
-
-                if (!modulesModule.Permissions.Any())
+                foreach (var module in modules)
                 {
-                    var viewPermission = modulesModule.AddPermission("View", modulesModule.Id);
-                    var editPermission = modulesModule.AddPermission("Modify", modulesModule.Id);
+                    if (!module.Permissions.Any())
+                    {
+                        var viewPermission = module.AddPermission("View", module.Id);
+                        var editPermission = module.AddPermission("Modify", module.Id);
 
-                    context.Permissions.AddRange(viewPermission, editPermission);
-                    await context.SaveChangesAsync();
+                        context.Permissions.AddRange(viewPermission, editPermission);
+                        await context.SaveChangesAsync();
 
-                    logger.LogInformation("Seeded permissions for Modules.");
+                        logger.LogInformation("Seeded permissions for all modules.");
+                    }
                 }
             }
             if (!context.Roles.Any())
@@ -90,6 +91,18 @@ namespace KopiBudget.Infrastructure.Data
                 foreach (var permission in allPermissions)
                 {
                     adminRole.AddPermission(permission!);
+                    await context.SaveChangesAsync();
+                }
+
+                var userPermissions = await context.Permissions.Where(it =>
+                it.Module!.Name == "Dashboard" ||
+                it.Module!.Name == "Budgets" ||
+                it.Module!.Name == "Categories" ||
+                it.Module!.Name == "Transactions" ||
+                it.Module!.Name == "Accounts").ToListAsync();
+                foreach (var permission in userPermissions)
+                {
+                    userRole.AddPermission(permission!);
                     await context.SaveChangesAsync();
                 }
 

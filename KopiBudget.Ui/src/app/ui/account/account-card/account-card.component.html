@@ -1,0 +1,25 @@
+<div class="account-card shadow-lg rounded-2xl p-4">
+    <!-- Chip -->
+    <div class="card-chip">
+        <img src="assets/chip.png" alt="chip">
+    </div>
+
+    <!-- Fake card number -->
+    <div class="card-number">
+        <span>####</span>
+        <span>####</span>
+        <span>####</span>
+        <span>####</span>
+    </div>
+
+    <!-- Balance -->
+    <div class="mt-3">
+        <h6 class="mb-1">Balance</h6>
+        <h2 class="fw-bold">₱{{ balance | number:'1.2-2' }}</h2>
+    </div>
+
+    <!-- Account holder -->
+    <div class="card-footer">
+        <h5 class="mb-0">{{ name }}</h5>
+    </div>
+</div>

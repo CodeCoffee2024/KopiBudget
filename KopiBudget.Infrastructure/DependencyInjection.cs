@@ -27,10 +27,14 @@ namespace KopiBudget.Infrastructure
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             services.AddScoped<IModuleGroupService, ModuleGroupService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IPermissionService, PermissionService>();
 
             // --- Repositories ---
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IModuleRepository, ModuleRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
             return services;
         }

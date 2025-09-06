@@ -38,10 +38,6 @@ namespace KopiBudget.Infrastructure.Configuration
                 .WithOne(a => a.User)
                 .HasForeignKey(a => a.UserId);
 
-            builder.HasMany(u => u.Categories)
-                .WithOne(c => c.User)
-                .HasForeignKey(c => c.UserId);
-
             builder.HasMany(u => u.Budgets)
                 .WithOne(b => b.User)
                 .HasForeignKey(b => b.UserId);

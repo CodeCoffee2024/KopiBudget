@@ -4,6 +4,14 @@ export interface LoginRequest {
     usernameEmail: string;
     password: string;
 }
+export interface RegisterRequest {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    password: string;
+}
 
 export interface LoginResponse {
     token: string;

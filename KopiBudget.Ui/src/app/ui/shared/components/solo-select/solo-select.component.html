@@ -1,0 +1,140 @@
+<ng-container (blur)="isFocused(false)">
+	<div class="position-relative mt-2">
+		<!-- Label -->
+		<label
+			class="font-weight-bold"
+			for="search"
+			*ngIf="!hideLabel"
+		>
+			{{ label }}
+			<span *ngIf="isRequired" class="text-danger">*</span>
+		</label>
+
+		<!-- Selected Item -->
+		<div
+			*ngIf="selectedItem"
+			class="form-control form-control-sm d-flex justify-content-between align-items-center"
+		>
+			{{ selectedItem[field] }}
+			<span
+				class="color-higlight cursor-pointer ml-2"
+				(click)="clearSelection()"
+				(keyup)="clearSelection()"
+				role="button"
+				tabindex="0"
+			>
+				✖
+			</span>
+		</div>
+
+		<!-- Search Input + Dropdown Wrapper -->
+		<div *ngIf="!selectedItem" class="position-relative">
+			<div class="input-group mb-0">
+				<div
+					*ngIf="hasSearchIcon"
+					class="input-group-prepend"
+				>
+					<span class="input-group-text">
+						<i class="bi fs-sm bi-search"></i>
+					</span>
+				</div>
+				<input
+					type="text"
+					class="form-control form-control-sm"
+					[(ngModel)]="searchQuery"
+					(input)="onSearch()"
+					(focus)="isFocused(true)"
+					[placeholder]="placeholder"
+					[ngClass]="{
+						'border-danger':
+							formControl.invalid && formGroup.touched && formControl.dirty
+					}"
+					#searchInput
+				/>
+			</div>
+			<div
+				*ngIf="searchQuery && focused"
+				class="dropdown-menu show w-100"
+				style="z-index: 10"
+				(scroll)="onScroll()"
+			>
+				<div
+					*ngIf="isLoading && !hasMore"
+					class="dropdown-item text-center"
+				>
+					<span
+						class="spinner-border spinner-border-sm"
+					></span>
+					Loading...
+				</div>
+
+				<ng-container
+					*ngIf="
+						hasMore || (!isLoading && searchOptions.length);
+						else noResults
+					"
+				>
+					<div
+						class="dropdown-item bg-color-highlight"
+						*ngFor="let item of searchOptions"
+						(click)="selectItem(item)"
+						(keydown.enter)="selectItem(item)"
+						tabindex="0"
+						role="button"
+					>
+						{{ item[field] }}
+					</div>
+
+					<div
+						*ngIf="hasMore"
+						class="dropdown-item text-center text-muted"
+						(click)="loadMore()"
+						(keydown.enter)="loadMore()"
+						tabindex="1"
+						role="button"
+					>
+						Scroll to load more...
+					</div>
+
+					<div
+						*ngIf="isLoading"
+						class="dropdown-item text-center"
+					>
+						<span
+							class="spinner-border spinner-border-sm"
+						></span>
+						Loading...
+					</div>
+				</ng-container>
+
+				<ng-template #noResults>
+					<div
+						*ngIf="!isLoading"
+						class="dropdown-item text-center text-muted"
+					>
+						No results found.
+					</div>
+					<div
+						*ngIf="!isLoading"
+						class="dropdown-item text-center text-muted"
+					>
+					<button class="btn btn-warning btn-sm" (click)="addSearch()">Add {{ searchQuery }}?</button>
+					</div>
+				</ng-template>
+			</div>
+		</div>
+
+		<div
+			*ngIf="
+				errors && formControl.invalid && formGroup.touched && formControl.dirty
+			"
+		>
+			<div
+				class="text-danger mt-1"
+				*ngFor="let error of errors"
+			>
+				{{ error }}
+			</div>
+		</div>
+	</div>
+</ng-container>

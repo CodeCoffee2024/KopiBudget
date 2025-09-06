@@ -30,13 +30,13 @@
         [id]="inputId"
         [formControl]="formControl"
         [type]="inputType"
-        [ngClass]="{'border-danger': formControl.invalid && formControl.touched}"
+        [ngClass]="{'border-danger': formControl.invalid && formControl.touched && formControl.dirty}"
         (input)="onInput($event)"
         (blur)="onBlur()"
         [attr.pattern]="inputType === 'number' ? '^\\d*(\\.\\d{0,2})?$' : null"
         />
     </ng-template>
-    <div *ngIf="errors && (formControl.invalid && formControl.dirty)">
+    <div *ngIf="errors && (formControl.invalid && formControl.dirty && formControl.touched)">
         <div *ngFor="let error of errors" class="text-danger">
         {{ error }}
         </div>

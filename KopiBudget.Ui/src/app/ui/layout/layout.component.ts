@@ -1,15 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HeaderComponent } from '../shared/components/header/header.component';
 import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 
 @Component({
-  selector: 'app-layout',
-  standalone: true,
-  imports: [CommonModule, HeaderComponent, SidebarComponent, RouterOutlet],
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+	selector: 'app-layout',
+	standalone: true,
+	imports: [CommonModule, HeaderComponent, SidebarComponent, RouterOutlet, NgbModule],
+	templateUrl: './layout.component.html',
+	styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit {
 	isSidebarOpen = false;

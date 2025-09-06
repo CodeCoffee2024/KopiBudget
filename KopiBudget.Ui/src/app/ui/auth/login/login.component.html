@@ -10,14 +10,17 @@
 						<div class="row login">
 							<div class="p-5 bg-white col-lg-6">
 								<div class="row">
-									<div class="col-12">
-										<h1 class="text-center">Logo</h1>
-									</div>
+                                    <div class="col-12">
+                                        <h1 class="text-center"><img src="assets/logo-2.svg" width="200"></h1>
+                                    </div>
 								</div>
 								<div class="row mb-4">
 									<div class="col-3 ps-1">
 										<h2 class="text-start">Login</h2>
 									</div>
+									<div class="col-9 text-end p-0">
+                                        <small>or <span class="hover-text" [routerLink]="'../register'">Register</span></small>
+                                    </div>
 								</div>
 								<form
 									[formGroup]="form"

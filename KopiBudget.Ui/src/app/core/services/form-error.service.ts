@@ -25,8 +25,7 @@ export class FormErrorService {
     errors: ServerError | ServerError[] | null | undefined
   ): void {
     if (!errors) return;
-
-    const normalizedErrors = Array.isArray(errors) ? errors : [errors];
+    const normalizedErrors = Array.isArray(errors) ? Array.isArray(errors[0]) ? errors[0] : errors : [errors];
 
     this.markFormGroupDirty(formGroup);
     this.clearServerErrorOnChange(formGroup);
@@ -35,7 +34,6 @@ export class FormErrorService {
 
     normalizedErrors.forEach(({ name, description }) => {
       const controlKey = toCamelCase(name);
-
       if (formGroup.controls[controlKey]) {
         const control = formGroup.controls[controlKey];
         const currentErrors = control.errors || {};
@@ -56,7 +54,6 @@ export class FormErrorService {
     if (Object.keys(globalErrors).length > 0) {
       formGroup.setErrors({ serverError: globalErrors });
     }
-      console.log(formGroup);
   }
 
   private markFormGroupDirty(formGroup: FormGroup): void {

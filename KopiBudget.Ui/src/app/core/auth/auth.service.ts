@@ -20,6 +20,7 @@ export class AuthService extends GenericService {
 	constructor(private httpClient: HttpClient) {
 		super(httpClient);
 	}
+
   login(payload): Observable<AuthUser> {
     return this.post<ApiResult<LoginResponse>>(
       `/${this.controller}login`,

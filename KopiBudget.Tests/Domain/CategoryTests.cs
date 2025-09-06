@@ -10,7 +10,7 @@ namespace KopiBudget.Tests.Domain
         public void Create_ShouldSucceed_UponCreation()
         {
             var name = "Name";
-            var entity = Category.Create(name, false, null, null);
+            var entity = Category.Create(name, null, null);
 
             Assert.Equal(name, entity.Name);
         }

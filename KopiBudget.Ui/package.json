@@ -24,6 +24,7 @@
     "bootstrap-icons": "^1.13.1",
     "echarts": "^6.0.0",
     "jquery": "^3.7.1",
+    "ng-bootstrap": "^1.6.3",
     "ngx-echarts": "^15.0.2",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.6.13",

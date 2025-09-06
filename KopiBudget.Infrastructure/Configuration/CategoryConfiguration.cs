@@ -18,9 +18,6 @@ namespace KopiBudget.Infrastructure.Configuration
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.Property(c => c.IsExpense)
-                .IsRequired();
-
             builder.HasMany(c => c.Transactions)
                 .WithOne(t => t.Category)
                 .HasForeignKey(t => t.CategoryId);
@@ -36,6 +33,11 @@ namespace KopiBudget.Infrastructure.Configuration
             builder.HasOne(u => u.UpdatedBy)
                 .WithMany()
                 .HasForeignKey(u => u.UpdatedById)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(u => u.Accounts)
+                .WithOne(c => c.Category)
+                .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
 

@@ -35,11 +35,17 @@ namespace KopiBudget.Infrastructure.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("CreatedById")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsExpense")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -56,6 +62,8 @@ namespace KopiBudget.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("CreatedById");
 
@@ -128,9 +136,6 @@ namespace KopiBudget.Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsExpense")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -142,7 +147,7 @@ namespace KopiBudget.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -404,6 +409,12 @@ namespace KopiBudget.Infrastructure.Migrations
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Account", b =>
                 {
+                    b.HasOne("KopiBudget.Domain.Entities.Category", "Category")
+                        .WithMany("Accounts")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("KopiBudget.Domain.Entities.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
@@ -419,6 +430,8 @@ namespace KopiBudget.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("CreatedBy");
 
@@ -472,17 +485,13 @@ namespace KopiBudget.Infrastructure.Migrations
                         .HasForeignKey("UpdatedById")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("KopiBudget.Domain.Entities.User", "User")
+                    b.HasOne("KopiBudget.Domain.Entities.User", null)
                         .WithMany("Categories")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("CreatedBy");
 
                     b.Navigation("UpdatedBy");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Module", b =>
@@ -623,6 +632,8 @@ namespace KopiBudget.Infrastructure.Migrations
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Category", b =>
                 {
+                    b.Navigation("Accounts");
+
                     b.Navigation("Budgets");
 
                     b.Navigation("Transactions");

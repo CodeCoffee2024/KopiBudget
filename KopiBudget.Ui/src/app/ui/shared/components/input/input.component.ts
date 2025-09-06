@@ -32,31 +32,42 @@ export class InputComponent implements ControlValueAccessor {
 	get errors(): string[] {
 		if (!this.formControl || !this.formControl.errors) return [];
 
-		const errors = this.formControl.errors;
-		const errorMessages: string[] = [];
+		const errors = this.formControl.errors;const errorMessages: string[] = [];
+		const seen = new Set<string>();
 
 		for (const errorKey of Object.keys(errors)) {
-			const value = errors[errorKey];
-			if (errorKey === 'required') {
-				errorMessages.push(`${this.label} is required`);
-			} else if (errorKey === 'email') {
-				errorMessages.push(`${this.label} must be a valid email`);
-			} else if (errorKey === 'mustMatch') {
-				errorMessages.push(`${this.label} must match ${value}`);
-			} else if (errorKey === 'minlength') {
-				const min = value?.requiredLength;
-				errorMessages.push(`${this.label} must be at least ${min} characters`);
-			} else if (errorKey === 'serverError') {
-				if (Array.isArray(value)) {
-					value.forEach((msg: string) => errorMessages.push(msg));
-				} else {
-					errorMessages.push(value);
+		const value = errors[errorKey];
+
+		let message: string | null = null;
+
+		if (errorKey === 'required') {
+			message = `${this.label} is required`;
+		} else if (errorKey === 'email') {
+			message = `${this.label} must be a valid email`;
+		} else if (errorKey === 'mustMatch') {
+			message = `${this.label} must match ${value}`;
+		} else if (errorKey === 'minlength') {
+			const min = value?.requiredLength;
+			message = `${this.label} must be at least ${min} characters`;
+		} else if (errorKey === 'serverError') {
+			if (Array.isArray(value)) {
+			value.forEach((msg: string) => {
+				if (!seen.has(msg)) {
+				errorMessages.push(msg);
+				seen.add(msg);
 				}
+			});
 			} else {
-				errorMessages.push(
-					`${this.label} ${errorKey.replace(/([A-Z])/g, ' $1').toLowerCase()}`
-				);
+			message = value;
 			}
+		} else {
+			message = `${this.label} ${errorKey.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
+		}
+
+		if (message && !seen.has(message)) {
+			errorMessages.push(message);
+			seen.add(message);
+		}
 		}
 
 		return errorMessages;

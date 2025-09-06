@@ -6,36 +6,32 @@ namespace KopiBudget.Domain.Entities
     {
         #region Properties
 
-        private Category(string name, bool isExpense)
+        public Category()
+        { }
+
+        private Category(string name)
         {
             Name = name;
-            IsExpense = isExpense;
         }
 
         public string Name { get; set; } = string.Empty;
-        public bool IsExpense { get; set; }
-
-        // FK
-        public Guid UserId { get; set; }
-
-        public virtual User User { get; set; } = null!;
 
         // Navigation
         public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
         public virtual ICollection<Budget> Budgets { get; set; } = new List<Budget>();
+        public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 
-        public static Category Create(string name, bool isExpense, Guid? createdBy, DateTime? createdOn)
+        public static Category Create(string name, Guid? createdBy, DateTime? createdOn)
         {
-            var entity = new Category(name, isExpense);
+            var entity = new Category(name);
             entity.SetCreated(createdBy!.Value, createdOn!.Value);
-            return new Category(name, isExpense);
+            return entity;
         }
 
-        public void Update(string name, bool isExpense, Guid? updatedBy, DateTime? updatedOn)
+        public void Update(string name, Guid? updatedBy, DateTime? updatedOn)
         {
             Name = name;
-            IsExpense = isExpense;
             SetUpdated(updatedBy!.Value, updatedOn!.Value);
         }
 

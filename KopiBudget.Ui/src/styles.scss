@@ -14,6 +14,10 @@
 *:not(.text-danger) {
 	color: var(--default-text-color);
 }
+body {
+	background-color: var(--default-secondary-text-color) !important;
+	min-height: 100vh;
+}
 .theme-light {
 	div.theme {
 		background-color: var(--default-background);

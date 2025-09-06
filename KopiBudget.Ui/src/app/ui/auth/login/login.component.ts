@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { LoginRequest } from '../../../core/auth/auth.model';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -15,7 +15,7 @@ import { InputComponent } from '../../shared/components/input/input.component';
 @Component({
 	selector: 'app-login',
 	standalone: true,
-	imports: [CommonModule, InputComponent, ReactiveFormsModule],
+	imports: [CommonModule, InputComponent, ReactiveFormsModule, RouterModule],
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss']
 })
@@ -30,13 +30,13 @@ export class LoginComponent {
 		private toastService: ToastService,
 		private router: Router,
 	){
-			this.formErrorService.injectServerErrorControl(
-				this.form
-			);
-			this.formErrorService.clearServerErrorOnChange(
-				this.form
-			);
-			this.titleService.setTitle('Login');
+		this.formErrorService.injectServerErrorControl(
+			this.form
+		);
+		this.formErrorService.clearServerErrorOnChange(
+			this.form
+		);
+		this.titleService.setTitle('Login');
 	}
 
 	form = this.fb.group({
@@ -71,10 +71,11 @@ export class LoginComponent {
 						'Error',
 						'Something went wrong.'
 					);
+					this.form.markAllAsTouched();
+					this.form.markAsDirty();
 					this.formErrorService.setServerErrors(this.form, [
 						error?.error?.error,
 					]);
-					console.log(this.form)
 				},
 			});
 		}

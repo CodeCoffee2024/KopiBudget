@@ -11,6 +11,11 @@ export const routes: Routes = [
       import('./ui/auth/login/login.component').then(m => m.LoginComponent),
   },
   {
+    path: 'register',
+    loadComponent: () =>
+      import('./ui/user/register/register.component').then(m => m.RegisterComponent),
+  },
+  {
     path: 'admin',
     canActivate: [AuthGuard],
     data: {

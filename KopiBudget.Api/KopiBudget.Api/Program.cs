@@ -123,7 +123,10 @@ async Task ApplyMigrationsAsync(IServiceProvider serviceProvider)
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         logger.LogInformation("Checking for pending migrations...");
-
+        if (builder.Configuration["ResetDatabase"] == "true")
+        {
+            context.Database.EnsureDeleted();
+        }
         var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
         if (pendingMigrations.Any())
         {
