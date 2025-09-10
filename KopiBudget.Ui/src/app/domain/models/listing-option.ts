@@ -11,6 +11,7 @@ export class GenericDropdownListingOption {
 	search: string = '';
 	pageNumber = 1;
 	sortBy: string;
+	exclude: string;
 	status: string = '';
 	sortDirection: string;
 }

@@ -1,0 +1,81 @@
+<ng-container (blur)="isFocused(false)">
+    <div class="position-relative" >
+        <!-- Search Input -->
+        <label class="font-weight-bold form-label" for="search">{{ label }}</label>
+        <div class="input-group">
+            <div *ngIf="hasSearchIcon" class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="bi fs-sm bi-search"></i>
+                </span>
+            </div>
+            <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="searchQuery"
+                (input)="onSearch()"
+                (focus)="isFocused(true)"
+                [placeholder]="placeholder"
+                #searchInput
+            />
+        </div>
+
+        <!-- Dropdown Search Results -->
+        <div *ngIf="searchQuery && focused" #dropdownMenu class="dropdown-menu show w-100" (scroll)="onScroll()">
+            <!-- Loading Indicator -->
+            <div *ngIf="isLoading && !hasMore" class="dropdown-item text-center">
+                <span class="spinner-border spinner-border-sm"></span> Loading...
+            </div>
+
+            <!-- Search Results -->
+            <ng-container *ngIf="hasMore || (!isLoading && searchOptions.length); else noResults">
+                <div
+                    class="dropdown-item bg-color-highlight"
+                    *ngFor="let item of searchOptions"
+                    (click)="selectItem(item)"
+                    (keydown.enter)="selectItem(item)"
+                    tabindex="0"
+                    role="button"
+                >
+                    {{ item[field] }}
+                </div>
+
+                <!-- Infinite Scroll Trigger -->
+                <div
+                    *ngIf="hasMore"
+                    class="dropdown-item text-center text-muted"
+                    (click)="loadMore()"
+                    (keydown.enter)="loadMore()"
+                    tabindex="1"
+                    role="button"
+                >
+                    Scroll to load more...
+                </div>
+
+                <div *ngIf="isLoading" class="dropdown-item text-center">
+                    <span class="spinner-border spinner-border-sm"></span> Loading...
+                </div>
+            </ng-container>
+
+            <!-- No Results Found -->
+            <ng-template #noResults>
+                <div *ngIf="!isLoading" class="dropdown-item text-center text-muted">
+                    No results found
+                </div>
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- Selected Items -->
+    <div class="mt-2">
+        <span *ngFor="let item of selectedItems" class="badge m-1 bg-secondary text-white p-2">
+            {{ item[field] }}
+            <span
+                class="text-white cursor-pointer ml-2"
+                (click)="removeItem(item)"
+                (keydown.enter)="removeItem(item)"
+                tabindex="1"
+                role="button"
+            >✖</span>
+        </span>
+    </div>
+</ng-container>

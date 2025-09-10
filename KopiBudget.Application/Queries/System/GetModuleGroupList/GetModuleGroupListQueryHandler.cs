@@ -6,7 +6,7 @@ using MediatR;
 namespace KopiBudget.Application.Queries.System.GetModuleGroupList
 {
     public class GetModuleGroupListQueryHandler(
-        IModuleGroupService _moduleGroupService
+        ISystemSettingsService _moduleGroupService
     ) : IRequestHandler<GetModuleGroupListQuery, Result<IEnumerable<ModuleGroupDto>>>
     {
         #region Public Methods

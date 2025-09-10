@@ -18,7 +18,7 @@ namespace KopiBudget.Infrastructure.Configuration
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(c => c.IsExpense)
+            builder.Property(c => c.IsDebt)
                 .IsRequired();
 
             builder.Property(a => a.Balance)

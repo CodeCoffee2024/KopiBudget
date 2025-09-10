@@ -56,4 +56,10 @@ export class AccountComponent implements OnInit {
         },
       });
     }
+    get assets() {
+      return this.accounts.filter(it => !it.isDebt);
+    }
+    get debts() {
+      return this.accounts.filter(it => it.isDebt);
+    }
   }

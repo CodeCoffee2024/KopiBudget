@@ -5,7 +5,7 @@ using KopiBudget.Domain.Interfaces;
 
 namespace KopiBudget.Infrastructure.Services
 {
-    public class ModuleGroupService(IModuleRepository moduleRepository) : IModuleGroupService
+    public class SystemSettingsService(IModuleRepository moduleRepository) : ISystemSettingsService
     {
         #region Public Methods
 
@@ -21,6 +21,15 @@ namespace KopiBudget.Infrastructure.Services
                     Name = m.Name,
                     Link = m.Link
                 }).ToList()
+            });
+        }
+
+        public IEnumerable<CurrencyDto> GetAllCurrencies()
+        {
+            return Currencies.LIST.Select(c => new CurrencyDto
+            {
+                Code = c.Key,
+                Description = c.Value
             });
         }
 

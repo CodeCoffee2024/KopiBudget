@@ -24,7 +24,7 @@
 
     <!-- Normal Text Input -->
     <ng-template #normalInput>
-        <input
+        <input *ngIf="inputType !== 'textarea'"
         pInputText
         class="form-control form-control-sm"
         [id]="inputId"
@@ -35,6 +35,15 @@
         (blur)="onBlur()"
         [attr.pattern]="inputType === 'number' ? '^\\d*(\\.\\d{0,2})?$' : null"
         />
+        <textarea
+            *ngIf="inputType === 'textarea'"
+            [id]="inputId"
+            class="form-control"
+            [formControl]="formControl"
+            rows="3"
+            (input)="onInput($event)"
+            (blur)="onBlur()"
+        ></textarea>
     </ng-template>
     <div *ngIf="errors && (formControl.invalid && formControl.dirty && formControl.touched)">
         <div *ngFor="let error of errors" class="text-danger">

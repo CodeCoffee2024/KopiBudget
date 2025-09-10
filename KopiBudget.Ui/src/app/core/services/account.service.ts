@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AccountDto } from '../../domain/models/account';
-import { ApiResult } from '../../domain/models/api-result';
+import { map, Observable } from 'rxjs';
+import { AccountDto, AccountFragment } from '../../domain/models/account';
+import { ApiResult, GenericListingResult } from '../../domain/models/api-result';
+import { mapItemsToGenericListing } from '../generics/listing-result.mapper.ts';
 import { GenericService } from './generic.service';
 
 @Injectable({
@@ -25,6 +26,24 @@ export class AccountService extends GenericService {
       `${this.controller}UserAccounts`,
       null,
       true
+    );
+  }
+  dropdown(
+    dropdownListingOption
+  ): Observable<GenericListingResult<AccountFragment[]>> {
+    const queryParams = this.setQueryParameters(
+      dropdownListingOption
+    );
+    return this.get<any>(
+      `${this.controller}Dropdown?${queryParams}`,
+      null,
+      true
+    ).pipe(
+      map((res) =>
+        mapItemsToGenericListing<AccountFragment[]>(
+          res.data
+        )
+      )
     );
   }
 }

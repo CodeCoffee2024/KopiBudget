@@ -11,6 +11,7 @@ namespace KopiBudget.Application.Automappers
         public AccountProfile()
         {
             CreateMap<Account, AccountDto>().ReverseMap();
+            CreateMap<Account, AccountDropdownDto>().ReverseMap();
         }
 
         #endregion Public Constructors

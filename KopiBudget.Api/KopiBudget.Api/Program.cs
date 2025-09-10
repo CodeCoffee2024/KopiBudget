@@ -38,6 +38,7 @@ var jwtSettingsSection = builder.Configuration.GetSection("Jwt");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);
 var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
 builder.Services.AddSingleton(jwtSettings);
+builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -141,7 +142,7 @@ async Task ApplyMigrationsAsync(IServiceProvider serviceProvider)
         var services = scope.ServiceProvider;
         var passwordHasher = services.GetRequiredService<IPasswordHasherService>();
         var userRepository = services.GetRequiredService<IUserRepository>();
-        await Seeder.SeedAsync(context, logger, passwordHasher, userRepository);
+        await Seeder.SeedAsync(context, logger, builder.Configuration, passwordHasher, userRepository);
     }
     catch (Exception ex)
     {

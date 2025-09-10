@@ -8,5 +8,5 @@ namespace KopiBudget.Application.Commands.Account.AccountCreate
         Guid CategoryId,
         string Name,
         decimal Balance,
-        bool IsExpense) : ICommand<AccountDto>;
+        bool IsDebt) : ICommand<AccountDto>;
 }

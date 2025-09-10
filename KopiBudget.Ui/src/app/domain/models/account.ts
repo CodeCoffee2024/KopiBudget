@@ -6,8 +6,13 @@ import { CategoryFragment } from "./category";
 export class AccountDto extends AuditDto {
     name: string;
     balance: number;
-    isExpense: boolean;
+    isDebt: boolean;
     category: CategoryFragment;
+}
+export class AccountFragment {
+    name: string;
+    balance: number;
+    isDebt: boolean;
 }
 
 export class Account {
@@ -17,13 +22,13 @@ export class Account {
         category: ['', [Validators.required]],
         balance: ['', [Validators.required]],
         categoryId: ['', [Validators.required]],
-        isExpense: [false],
+        IsDebt: [false],
     });
     get toSubmit() {
         return {
             name: this.form.get('name').value,
-            categoryId: this.form.get('categoryId').value?.id,
-            isExpense: this.form.get('isExpense').value,
+            categoryId: this.form.get('categoryId').value,
+            IsDebt: this.form.get('IsDebt').value,
             balance: this.form.get('balance').value,
         }
     }

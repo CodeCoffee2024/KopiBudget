@@ -2,6 +2,7 @@
 using KopiBudget.Domain.Entities;
 using KopiBudget.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace KopiBudget.Infrastructure.Data
@@ -13,6 +14,7 @@ namespace KopiBudget.Infrastructure.Data
         public static async Task SeedAsync(
             AppDbContext context,
             ILogger logger,
+            IConfiguration configuration,
             IPasswordHasherService passwordHasherService,
             IUserRepository userRepository)
         {
@@ -113,6 +115,12 @@ namespace KopiBudget.Infrastructure.Data
                 await context.SaveChangesAsync();
 
                 logger.LogInformation("Assigned admin user to Admin role.");
+            }
+            if (!context.SystemSettings.Any())
+            {
+                var entity = SystemSettings.Create(configuration["ExchangeRateApi:DefaultCurrency"]!, admin!.Id!.Value);
+                context.SystemSettings.Add(entity);
+                await context.SaveChangesAsync();
             }
         }
 

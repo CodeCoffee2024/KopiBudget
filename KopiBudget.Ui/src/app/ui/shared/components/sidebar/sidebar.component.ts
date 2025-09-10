@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { LoadingService } from '../../../../core/services/loading.service';
 import { SystemService } from '../../../../core/services/system.service';
 import { ModuleGroupResponse } from '../../../../domain/models/module';
@@ -26,21 +26,28 @@ export class SidebarComponent {
 	) {}
 
 	ngOnInit(): void {
-		this.systemService
-			.getModuleGroups()
-			.pipe(
-				finalize(() => {
-					this.loadingService.hide();
-					this.isLoading = false;
-				})
-			)
-			.subscribe({
-				next: (res) => {
-					this.modules = res.data;
-					console.log(res);
-				},
-				error: () => {},
-			});
+		this.loadingService.show();
+		this.isLoading = true;
+
+		forkJoin({
+			modules: this.systemService.getModuleGroups(),
+			currencies: this.systemService.getCurrencies()
+		})
+		.pipe(
+			finalize(() => {
+				this.loadingService.hide();
+				this.isLoading = false;
+			})
+		)
+		.subscribe({
+			next: (res) => {
+				this.modules = res.modules.data;
+				localStorage.setItem("currencies", JSON.stringify(res.currencies.data));
+			},
+			error: () => {
+				// TODO: handle error globally
+			}
+		});
 	}
 	onClose(): void {
 		if (!this.isDesktop) {

@@ -25,9 +25,11 @@ namespace KopiBudget.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
-            services.AddScoped<IModuleGroupService, ModuleGroupService>();
+            services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IPermissionService, PermissionService>();
+            services.AddSingleton<IExchangeRateProviderService, ExchangeRateService>();
+            services.AddHostedService(sp => (ExchangeRateService)sp.GetRequiredService<IExchangeRateProviderService>());
 
             // --- Repositories ---
             services.AddScoped<IUserRepository, UserRepository>();
@@ -35,6 +37,8 @@ namespace KopiBudget.Infrastructure
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ISystemSettingsRepository, SystemSettingsRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             return services;
         }

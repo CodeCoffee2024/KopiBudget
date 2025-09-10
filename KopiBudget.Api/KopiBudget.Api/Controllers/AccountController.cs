@@ -50,13 +50,13 @@ namespace KopiBudget.Api.Controllers
         //    return HandleResponse(result);
         //}
 
-        //[HttpGet("Dropdown")]
-        //public async Task<IActionResult> Dropdown([FromQuery] CategoryRequest request)
-        //{
-        //    var query = request.ToDropdownQuery();
-        //    var result = await _sender.Send(query);
-        //    return HandleResponse(result);
-        //}
+        [HttpGet("Dropdown")]
+        public async Task<IActionResult> Dropdown([FromQuery] AccountRequest request)
+        {
+            var query = request.ToDropdownQuery();
+            var result = await _sender.Send(query);
+            return HandleResponse(result);
+        }
 
         [HttpPost]
         [PermissionAuthorize(Modules.ACCOUNT, Permissions.MODIFY)]

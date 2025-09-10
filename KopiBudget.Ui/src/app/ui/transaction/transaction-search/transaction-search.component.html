@@ -1,0 +1,59 @@
+<div class="container">
+    <form [formGroup]="Transaction.searchForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <app-multi-select
+                    [label]="'Accounts'"
+                    [placeholder]="'Search accounts...'"
+                    [searchOptions]="accounts"
+                    [hasMore]="hasMoreAccount"
+                    [field]="'name'"
+                    [isLoading]="isDropdownLoading"
+                    (searchChanged)="onSearchChangedAccount($event)"
+                    (selectedItemsChange)="onSelectionChangeAccount($event)">
+                </app-multi-select>
+            </div>
+            <div class="col-12 col-md-6">
+                <app-multi-select
+                    [label]="'Categories'"
+                    [placeholder]="'Search categories...'"
+                    [searchOptions]="categories"
+                    [hasMore]="hasMoreCategory"
+                    [field]="'name'"
+                    [isLoading]="isDropdownLoading"
+                    (searchChanged)="onSearchChangedCategory($event)"
+                    (selectedItemsChange)="onSelectionChangeCategory($event)">
+                </app-multi-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <app-input
+                    [inputType]="InputTypes.Date"
+                    inputId="date"
+                    [formGroup]="Transaction.searchForm"
+                    [controlName]="'dateFrom'"
+                    [label]="'Date From'"
+                ></app-input>
+            </div>
+            <div class="col-12 col-md-6">
+                <app-input
+                    [inputType]="InputTypes.Date"
+                    inputId="date"
+                    [formGroup]="Transaction.searchForm"
+                    [controlName]="'dateTo'"
+                    [label]="'Date To'"
+                ></app-input>
+            </div>
+        </div>
+        <div class="row mt-3 mb-3">
+            <div class="col-12 d-flex justify-content-end" >
+
+                <button type="submit" class="btn btn-sm mt-2 btn-dark fw-bold">
+                    Search
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>

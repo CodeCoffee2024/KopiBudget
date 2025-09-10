@@ -17,6 +17,8 @@ export class SoloSelectComponent
 	@Input() placeholder = 'Type to search...';
 	@Input() isLoading = false;
 	@Input() field: string;
+	@Input() subFields: string[] = [];
+	@Input() subFieldLabels: string[] = [];
 	@Input() hideLabel = false;
 	@Input() hasSearchIcon = false;
 	@Input() errorName = '';
@@ -39,6 +41,7 @@ export class SoloSelectComponent
 	@Input() selectedItem;
 	@Input() formGroup;
 	@Input() hasMore = false;
+	@Input() addNoResult = true;
 	clear = false;
 	page = 1;
 	focused = false;

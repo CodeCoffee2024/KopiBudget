@@ -96,7 +96,7 @@ export class AccountCreateComponent {
 	onSelectionChange(selected): void {
 		this.Account.form
 			.get('categoryId')
-			.setValue(selected.item);
+			.setValue(selected.item?.id);
 		// this.refresh();
 	}
 	onAddSearchResult(categoryName) {
@@ -111,6 +111,7 @@ export class AccountCreateComponent {
 			.subscribe({
 				next: (result) => {
 					this.Account.form.get("category").setValue(result.data);
+					console.log(result);
 					this.Account.form.get("categoryId").setValue(result.data.id);
 
 					this.categoryService

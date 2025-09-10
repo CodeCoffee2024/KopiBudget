@@ -8,10 +8,11 @@ namespace KopiBudget.Application.Queries.Category.CategoryDropdown
     {
         #region Public Constructors
 
-        public GetCategoryDropdownQuery(string search, int pageNumber = 1)
+        public GetCategoryDropdownQuery(string search, int pageNumber = 1, string? exclude = "")
         {
             Search = search;
             PageNumber = pageNumber;
+            Exclude = exclude!;
         }
 
         #endregion Public Constructors
@@ -19,6 +20,7 @@ namespace KopiBudget.Application.Queries.Category.CategoryDropdown
         #region Properties
 
         public string Search { get; set; }
+        public string Exclude { get; set; }
         public int PageNumber { get; set; }
 
         #endregion Properties

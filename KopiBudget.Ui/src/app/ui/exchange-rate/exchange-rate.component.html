@@ -1,0 +1,46 @@
+
+
+<div class="container">
+<h6 class="d-flex align-items-center justify-content-between">
+    <div class="mt-2">Exchange Rate ({{ baseCurrency }})</div>
+    <button class="btn btn-sm mt-2 btn-dark fw-bold" (click)="changeCurrency()">
+    <i class="bi bi-arrow-clockwise me-2 text-white"></i>
+    <span class="text-white">Change</span>
+    </button>
+</h6>
+
+<div class="list-group mt-3">
+    <div
+    class="list-group-item d-flex justify-content-between align-items-center"
+    *ngFor="let r of rates | slice:0:visibleCount"
+    >
+        <div>
+            <strong>{{ r.currency }}</strong>
+        </div>
+        <div class="text-end">
+            <div>{{ r.rate | number: '1.4-4' }}</div>
+            <small class="text-muted" *ngIf="r.previousRate">
+            Prev: {{ r.previousRate | number: '1.4-4' }}
+            </small>
+        </div>
+        <div [ngClass]="getChangeClass(r.change)">
+            <ng-container *ngIf="r.change !== null && r.change !== undefined">
+            {{ r.change * 100 | number: '1.2-2' }} %
+            </ng-container>
+            <ng-container *ngIf="r.change === null || r.change === undefined">
+            -
+            </ng-container>
+        </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button
+        *ngIf="visibleCount < rates.length"
+        class="btn w-100 btn-sm mb-2 btn-dark fw-bold"
+        (click)="showMore()"
+        >
+        Show More
+        </button>
+    </div>
+</div>

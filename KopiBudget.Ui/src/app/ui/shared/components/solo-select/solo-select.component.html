@@ -83,6 +83,9 @@
 						role="button"
 					>
 						{{ item[field] }}
+						<div *ngFor="let subField of subFields; let i = index;">
+							<small><span class="fw-bold me-2">{{ subFieldLabels[i] }}:</span>{{ item[subField] }}</small>
+						</div>
 					</div>
 
 					<div
@@ -115,10 +118,10 @@
 						No results found.
 					</div>
 					<div
-						*ngIf="!isLoading"
+						*ngIf="!isLoading && addNoResult"
 						class="dropdown-item text-center text-muted"
 					>
-					<button class="btn btn-warning btn-sm" (click)="addSearch()">Add {{ searchQuery }}?</button>
+					<button class="btn btn-warning btn-sm" type="button" (click)="addSearch()">Add {{ searchQuery }}?</button>
 					</div>
 				</ng-template>
 			</div>

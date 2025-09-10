@@ -22,6 +22,7 @@ namespace KopiBudget.Infrastructure.Data
         public DbSet<KopiBudget.Domain.Entities.Transaction> Transactions => Set<KopiBudget.Domain.Entities.Transaction>();
         public DbSet<Budget> Budgets => Set<Budget>();
         public DbSet<Role> Roles => Set<Role>();
+        public DbSet<SystemSettings> SystemSettings => Set<SystemSettings>();
         public DbSet<KopiBudget.Domain.Entities.Module> Modules => Set<KopiBudget.Domain.Entities.Module>();
         public DbSet<Permission> Permissions => Set<Permission>();
         public DbSet<UserRole> UserRoles => Set<UserRole>();

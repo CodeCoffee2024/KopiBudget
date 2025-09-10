@@ -1,0 +1,138 @@
+<div class="row" *ngIf="!isLoading">
+    <div class="col-md-7 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
+        <div class="bg-white p-2">
+
+            <div class="row ">
+                <div *ngIf="accounts.length > 0" class="container mt-3">
+                    <div *ngIf="!isLoading && accounts?.length" class="container mt-3">
+                        <div #accountCarousel id="accountCarousel" class="carousel slide" data-bs-interval="false">
+                            <div class="carousel-inner">
+                            <div
+                                class="carousel-item"
+                                *ngFor="let account of accounts; let i = index"
+                                [class.active]="i === 0"
+                            >
+                                <div class="d-flex justify-content-center">
+                                <app-account-card
+                                    [name]="account.name"
+                                    [balance]="account.balance">
+                                </app-account-card>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center align-items-center mt-3 gap-3">
+                            <button class="btn btn-sm btn-outline-dark" (click)="prev()">
+                            <i class="bi bi-caret-left-fill"></i>
+                            </button>
+
+                            <small>{{ currentIndex + 1 }} of {{ accounts.length }}</small>
+
+                            <button class="btn btn-sm btn-outline-dark" (click)="next()">
+                            <i class="bi bi-caret-right-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-12 p-3">
+                    Add all your transactions to keep track of them, so you can easily review and manage your finances in the future.
+                </div>
+            </div>
+            <div class="row mt-2 pb-2">
+                <div class="col-12">
+                    <button class="btn btn-sm w-100 mt-2 btn-dark fw-bold" (click)="addTransaction()">
+                        <i class="bi bi-plus me-2 text-white"></i>
+                        <span class="text-white">Add new transaction</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
+        <div class="bg-white p-1">
+            <app-exchange-rate *ngIf="exchangeRates" (reload)="reload($event)" [exchangeRates]="exchangeRates"></app-exchange-rate>
+        </div>
+    </div>
+</div>
+<div class="row mt-2" *ngIf="!isLoading">
+    <div class="col-12  pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
+        <div class="bg-white p-2">
+            <div class="row">
+                <div class="col-12">
+                    <span class="fs-5 fw-bold d-block">Transaction History</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <app-transaction-search></app-transaction-search>
+                </div>
+            </div>
+            <div class="row" *ngIf="!isLoading">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    <app-th-header
+                                        [name]="'Account'"
+                                        [description]="'Account'"
+                                        [isSortable]="true"
+                                        [sortBy]="listingOption.sortBy"
+                                        [sortDirection]="listingOption.sortDirection"
+                                        (sortResult)="sortEvent($event)"
+                                    ></app-th-header>
+                                </th>
+                                <th>
+                                    <app-th-header
+                                        [name]="'Amount'"
+                                        [description]="'Amount'"
+                                        [isSortable]="true"
+                                        [sortBy]="listingOption.sortBy"
+                                        [sortDirection]="listingOption.sortDirection"
+                                        (sortResult)="sortEvent($event)"
+                                    ></app-th-header>
+                                </th>
+                                <th>
+                                    <app-th-header
+                                        [name]="'Category'"
+                                        [description]="'Category'"
+                                        [isSortable]="true"
+                                        [sortBy]="listingOption.sortBy"
+                                        [sortDirection]="listingOption.sortDirection"
+                                        (sortResult)="sortEvent($event)"
+                                    ></app-th-header>
+                                </th>
+                                <th>
+                                    <app-th-header
+                                        [name]="'CreatedDate'"
+                                        [description]="'Date Created'"
+                                        [isSortable]="true"
+                                        [sortBy]="listingOption.sortBy"
+                                        [sortDirection]="listingOption.sortDirection"
+                                        (sortResult)="sortEvent($event)"
+                                    ></app-th-header>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tr *ngFor="let result of results; let i = index;" class="table-item cursor-pointer">
+                            <td>{{ 1 + i }}</td>
+                            <td>
+                                {{ result.account.name }}
+                            </td>
+                            <td>
+                                {{ result.category.name }}
+                            </td>
+                            <td>{{ result.createdDate | date:'Y-MM-dd'}}</td>
+                        </tr>
+                    </table>
+                    <!-- <app-listing-summary [listingData]="listingData" (changePage)="goTo($event)"></app-listing-summary> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,11 +2,13 @@
 
 namespace KopiBudget.Application.Interfaces.Services
 {
-    public interface IModuleGroupService
+    public interface ISystemSettingsService
     {
         #region Public Methods
 
         IEnumerable<ModuleGroupDto> GetAllModuleGroups();
+
+        IEnumerable<CurrencyDto> GetAllCurrencies();
 
         #endregion Public Methods
     }
