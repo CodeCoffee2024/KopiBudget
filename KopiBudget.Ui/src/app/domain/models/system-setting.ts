@@ -13,7 +13,7 @@ export class SystemSetting {
     });
     get toSubmitFormCurrency() {
         return {
-            currency: this.formCurrency.get('currency').value,
+            currency: this.formCurrency.get('currency').value?.code,
         }
     }
 }
