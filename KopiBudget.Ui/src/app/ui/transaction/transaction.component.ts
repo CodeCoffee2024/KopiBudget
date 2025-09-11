@@ -166,7 +166,7 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
   async addTransaction(){
     const result = await this.modalService.open(TransactionCreateComponent);
     if (result) {
-      this.loadRates();
+      this.loadTransactions();
     }
   }
   sortEvent(result) {
