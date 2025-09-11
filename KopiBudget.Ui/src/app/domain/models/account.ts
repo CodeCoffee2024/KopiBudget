@@ -10,6 +10,7 @@ export class AccountDto extends AuditDto {
     category: CategoryFragment;
 }
 export class AccountFragment {
+    id: string;
     name: string;
     balance: number;
     isDebt: boolean;

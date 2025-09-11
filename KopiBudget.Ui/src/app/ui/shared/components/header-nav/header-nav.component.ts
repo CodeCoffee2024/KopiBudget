@@ -20,9 +20,6 @@ export class HeaderNavComponent {
 		);
 		return navigation ?? null;
 	}
-	ngOnInit(): void {
-		console.log(this.navs);
-	}
 	goTo(link) {
 		return 'admin' + link;
 	}

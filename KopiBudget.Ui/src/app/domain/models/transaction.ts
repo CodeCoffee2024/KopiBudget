@@ -8,10 +8,15 @@ import { GenericListingOption } from "./listing-option";
 export class TransactionDto extends AuditDto {
     account: AccountFragment;
     amount: number;
-    date: boolean;
+    date: Date;
     category: CategoryFragment;
 }
-export class TransactionListingOption extends GenericListingOption {}
+export class TransactionListingOption extends GenericListingOption {
+    accountIds: [];
+    categoryIds: [];
+    dateFrom: string;
+    dateTo: string;
+}
 
 export class Transaction {
     private fb = inject(FormBuilder);

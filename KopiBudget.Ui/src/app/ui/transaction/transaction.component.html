@@ -60,7 +60,7 @@
 </div>
 <div class="row mt-2" *ngIf="!isLoading">
     <div class="col-12  pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
-        <div class="bg-white p-2">
+        <div class="bg-white p-3">
             <div class="row">
                 <div class="col-12">
                     <span class="fs-5 fw-bold d-block">Transaction History</span>
@@ -68,12 +68,12 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <app-transaction-search></app-transaction-search>
+                    <app-transaction-search (refresh)="refreshList($event)"></app-transaction-search>
                 </div>
             </div>
             <div class="row" *ngIf="!isLoading">
-                <div class="col-12">
-                    <table class="table">
+                <div class="col-12 table-responsive">
+                    <table class="table table-bordered table-hover align-middle ">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -82,7 +82,7 @@
                                         [name]="'Account'"
                                         [description]="'Account'"
                                         [isSortable]="true"
-                                        [sortBy]="listingOption.sortBy"
+                                        [orderBy]="listingOption.orderBy"
                                         [sortDirection]="listingOption.sortDirection"
                                         (sortResult)="sortEvent($event)"
                                     ></app-th-header>
@@ -92,7 +92,8 @@
                                         [name]="'Amount'"
                                         [description]="'Amount'"
                                         [isSortable]="true"
-                                        [sortBy]="listingOption.sortBy"
+                                        [class]="'justify-content-end'"
+                                        [orderBy]="listingOption.orderBy"
                                         [sortDirection]="listingOption.sortDirection"
                                         (sortResult)="sortEvent($event)"
                                     ></app-th-header>
@@ -102,36 +103,61 @@
                                         [name]="'Category'"
                                         [description]="'Category'"
                                         [isSortable]="true"
-                                        [sortBy]="listingOption.sortBy"
+                                        [orderBy]="listingOption.orderBy"
                                         [sortDirection]="listingOption.sortDirection"
                                         (sortResult)="sortEvent($event)"
                                     ></app-th-header>
                                 </th>
                                 <th>
                                     <app-th-header
-                                        [name]="'CreatedDate'"
+                                        [name]="'Date'"
+                                        [description]="'Date'"
+                                        [isSortable]="true"
+                                        [orderBy]="listingOption.orderBy"
+                                        [sortDirection]="listingOption.sortDirection"
+                                        (sortResult)="sortEvent($event)"
+                                    ></app-th-header>
+                                </th>
+                                <th>
+                                    <app-th-header
+                                        [name]="'CreatedOn'"
                                         [description]="'Date Created'"
                                         [isSortable]="true"
-                                        [sortBy]="listingOption.sortBy"
+                                        [orderBy]="listingOption.orderBy"
                                         [sortDirection]="listingOption.sortDirection"
                                         (sortResult)="sortEvent($event)"
                                     ></app-th-header>
                                 </th>
                             </tr>
                         </thead>
-                        <tr *ngFor="let result of results; let i = index;" class="table-item cursor-pointer">
-                            <td>{{ 1 + i }}</td>
-                            <td>
+                        <tr *ngFor="let result of results; let i = index;" class="cursor-pointer">
+                            <td class="text-center">{{ 1 + i }}</td>
+                            <td class="ps-2">
                                 {{ result.account.name }}
                             </td>
-                            <td>
-                                {{ result.category.name }}
+                            <td class="text-end ps-2">
+                                {{ result.amount | number: '1.2-2' }}
                             </td>
-                            <td>{{ result.createdDate | date:'Y-MM-dd'}}</td>
+                            <td class="ps-2">
+                                <span class="badge bg-secondary text-white">
+                                    {{ result.category.name }}
+                                </span>
+                            </td >
+                            <td class="ps-2">
+                                {{ result.date | date:'Y-MM-dd mm:hh a' }}
+                            </td >
+                            <td class="ps-2">{{ result.createdOn | date:'Y-MM-dd'}}</td>
+                        </tr>
+                        <tr *ngIf="results.length === 0">
+                            <td colspan="5" class="text-center">No results found.</td>
                         </tr>
                     </table>
-                    <!-- <app-listing-summary [listingData]="listingData" (changePage)="goTo($event)"></app-listing-summary> -->
                 </div>
+                <app-listing-pagination
+                    *ngIf="!isLoading"
+                    [listingData]="listingData"
+                    (changePage)="onPageChange($event)"
+                ></app-listing-pagination>
             </div>
         </div>
     </div>

@@ -16,7 +16,7 @@ namespace KopiBudget.Infrastructure.Repositories
 
         public async Task<PageResult<Transaction>> GetPaginatedCategoriesAsync(int page, int pageSize, string? search, string orderBy, Expression<Func<Transaction, bool>>? statusFilter = null)
         {
-            return await GetPaginatedAsync(page, pageSize, search, new[] { "Date" }, orderBy, statusFilter);
+            return await GetPaginatedAsync(page, pageSize, search, new[] { "Account.Name" }, orderBy, statusFilter);
         }
 
         #endregion Public Constructors

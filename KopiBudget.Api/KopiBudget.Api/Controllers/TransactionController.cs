@@ -35,6 +35,15 @@ namespace KopiBudget.Api.Controllers
             return HandleResponse(result);
         }
 
+        [HttpGet("transactions")]
+        [PermissionAuthorize(Modules.ACCOUNT, Permissions.MODIFY)]
+        public async Task<IActionResult> GetTransactions([FromQuery] TransactionRequest request, CancellationToken cancellationToken)
+        {
+            var req = request.ToQuery();
+            var result = await _sender.Send(req, cancellationToken);
+            return HandleResponse(result);
+        }
+
         #endregion Public Methods
     }
 }

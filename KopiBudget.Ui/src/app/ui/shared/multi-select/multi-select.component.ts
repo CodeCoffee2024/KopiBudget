@@ -78,8 +78,6 @@ export class MultiSelectComponent {
 
   selectItem(item): void {
     if (!this.selectedItems.includes(item)) {
-      console.log(this.selectedItems);
-      console.log(item)
       this.selectedItems.push(item);
       this.selectedItemsChange.emit(this.selectedItems);
     }

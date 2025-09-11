@@ -132,3 +132,6 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+table, tr, td {
+	border: 1px solid #dee2e6 !important;
+}

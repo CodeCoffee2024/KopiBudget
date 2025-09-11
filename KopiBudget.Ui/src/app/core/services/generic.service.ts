@@ -23,17 +23,19 @@ export class GenericService {
 			headers,
 		});
 	}
-	setQueryParameters(
-		queryParams: Record<string, string | number>
-	): string {
+	setQueryParameters(queryParams: Record<string, any>): string {
 		return Object.keys(queryParams)
-			.map(
-				(param) =>
-					`${param}=${encodeURIComponent(
-						queryParams[param]
-					)}`
-			)
-			.join('&');
+			.filter(param => queryParams[param] !== null && queryParams[param] !== undefined && queryParams[param] !== "")
+			.map(param => {
+			const value = queryParams[param];
+
+			if (Array.isArray(value)) {
+				return value.map(v => `${param}=${encodeURIComponent(v)}`).join("&");
+			}
+
+			return `${param}=${encodeURIComponent(value)}`;
+			})
+			.join("&");
 	}
 	getFile(
 		endpoint: string,

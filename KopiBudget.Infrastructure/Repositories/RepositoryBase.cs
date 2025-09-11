@@ -156,9 +156,16 @@ namespace KopiBudget.Infrastructure.Repositories
 
             if (string.IsNullOrWhiteSpace(orderBy))
                 orderBy = "Id";
+            string descend = "ascending";
+
+            if (!string.IsNullOrEmpty(orderBy) && orderBy.EndsWith("-"))
+            {
+                descend = "descending";
+                orderBy = orderBy.Substring(0, orderBy.Length - 1); // trim last char
+            }
 
             var items = await query
-                .OrderBy(orderBy)
+                .OrderBy($"{orderBy} {descend}") // correct interpolation
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

@@ -6,11 +6,14 @@ import { AccountService } from '../../core/services/account.service';
 import { ExchangeRateService } from '../../core/services/exchange-rate.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { ModalService } from '../../core/services/modal.service';
+import { ToastService } from '../../core/services/toast.service';
+import { TransactionService } from '../../core/services/transaction.service';
 import { AccountDto } from '../../domain/models/account';
 import { ExchangeRateDto } from '../../domain/models/exchange-rate';
 import { TransactionDto, TransactionListingOption } from '../../domain/models/transaction';
 import { AccountCardComponent } from '../account/account-card/account-card.component';
 import { ExchangeRateComponent } from '../exchange-rate/exchange-rate.component';
+import { ListingPaginationComponent } from '../shared/listing-pagination/listing-pagination.component';
 import { ThHeaderComponent } from '../shared/th-header/th-header.component';
 import { TransactionCreateComponent } from './transaction-create/transaction-create.component';
 import { TransactionSearchComponent } from './transaction-search/transaction-search.component';
@@ -18,7 +21,7 @@ import { TransactionSearchComponent } from './transaction-search/transaction-sea
 @Component({
   selector: 'app-transaction',
   standalone: true,
-  imports: [CommonModule, ExchangeRateComponent, AccountCardComponent, TransactionCreateComponent, TransactionSearchComponent, ThHeaderComponent],
+  imports: [CommonModule, ExchangeRateComponent, AccountCardComponent, TransactionCreateComponent, TransactionSearchComponent, ThHeaderComponent, ListingPaginationComponent],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.scss']
 })
@@ -33,13 +36,16 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
   isLoading = false;
   accounts: AccountDto[] = [];
   private sub?: Subscription;
+	listingData;
   listingOption: TransactionListingOption = new TransactionListingOption();
 
   constructor(
     private exchangeRateService: ExchangeRateService,
     private accountService: AccountService,
     private loadingService: LoadingService,
+    private transactionService: TransactionService,
     private modalService: ModalService,
+    private toastService: ToastService,
     private ngZone: NgZone
 
   ) {}
@@ -48,11 +54,33 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
     this.isLoading = true;
     this.loadRates();
     this.sub = interval(12000).subscribe(() => this.loadRates());
+    this.loadTransactions();
   }
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
     this.disposeCarousel();
+  }
+  loadTransactions() {
+    this.loadingService.show();
+    this.transactionService.getTransactions(this.listingOption)
+    .pipe(
+      finalize(() => {
+        this.loadingService.hide();
+      })
+    )
+    .subscribe({
+      next: (result) => {
+        this.results = result.data;
+				this.listingData = result;
+      },
+      error: (error) => {
+        this.toastService.error(
+          'Error',
+          'Something went wrong.'
+        );
+      },
+    });
   }
   loadRates(): void {
 
@@ -142,6 +170,18 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
     }
   }
   sortEvent(result) {
-    console.log(result);
+    this.listingOption.orderBy = result.sortDirection=="desc" ? result.name+"-" : result.name;
+    this.loadTransactions();
+  }
+
+  refreshList(listingOption) {
+    this.listingOption = listingOption;
+    this.listingOption.categoryIds = listingOption.categoryIds?.split(',');
+    this.listingOption.accountIds = listingOption.accountIds?.split(',');
+    this.loadTransactions();
+  }
+  onPageChange(page) {
+    this.listingOption.pageNumber = page;
+    this.loadTransactions();
   }
 }

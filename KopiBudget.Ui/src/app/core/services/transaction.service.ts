@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ApiResult } from '../../domain/models/api-result';
+import { map, Observable } from 'rxjs';
+import { ApiResult, GenericListingResult } from '../../domain/models/api-result';
 import { TransactionDto } from '../../domain/models/transaction';
+import { mapItemsToGenericListing } from '../generics/listing-result.mapper.ts';
 import { GenericService } from './generic.service';
 
 @Injectable({
@@ -20,12 +21,21 @@ export class TransactionService extends GenericService {
       this.getAuthorizationHeader()
     );
   }
-  getTransactions(): Observable<ApiResult<TransactionDto[]>> {
-    return this.get<ApiResult<TransactionDto[]>>(
-      `${this.controller}Transactions`,
-      null,
-      true
-    );
-  }
+
+	getTransactions(
+		listingOption
+	): Observable<GenericListingResult<TransactionDto[]>> {
+		const queryParams = this.setQueryParameters(listingOption);
+
+		return this.get<any>(
+			`${this.controller}Transactions?${queryParams}`,
+			null,
+			true
+		).pipe(
+			map((res) =>
+				mapItemsToGenericListing<TransactionDto[]>(res.data)
+			)
+		);
+	}
 }
 

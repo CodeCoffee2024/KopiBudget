@@ -3,14 +3,14 @@ export abstract class GenericListingOption {
 	// createdBy: UserFragment;
 	// modifiedBy: UserFragment;
 	pageNumber = 1;
-	sortBy: string;
+	orderBy: string;
 	status: string = '';
 	sortDirection: string;
 }
 export class GenericDropdownListingOption {
 	search: string = '';
 	pageNumber = 1;
-	sortBy: string;
+	orderBy: string;
 	exclude: string;
 	status: string = '';
 	sortDirection: string;

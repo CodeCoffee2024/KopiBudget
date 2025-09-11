@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AccountService } from '../../../core/services/account.service';
 import { CategoryService } from '../../../core/services/category.service';
@@ -34,7 +34,7 @@ export class TransactionSearchComponent {
     new GenericDropdownListingOption();
   listingOptionCategory: GenericDropdownListingOption =
     new GenericDropdownListingOption();
-  refreshEvent: EventEmitter<object> = new EventEmitter<object>();
+  @Output() refresh: EventEmitter<object> = new EventEmitter<object>();
   constructor(
     private categoryService: CategoryService,
     private loadingService: LoadingService,
@@ -45,27 +45,7 @@ export class TransactionSearchComponent {
 
   }
   onSubmit() {
-    // this.transactionService.create(this.Transaction.toSubmitSearchForm).pipe(
-    //     finalize(() => {
-    //       this.loadingService.hide();
-    //     })
-    //   )
-    //   .subscribe({
-    //     next: (result) => {
-    //       this.activeModal.close(result);
-    //     },
-    //     error: (error) => {
-    //       this.Transaction.searchForm.markAllAsTouched();
-    //       this.Transaction.searchForm.markAsDirty();
-    //       this.toastService.error(
-    //         'Error',
-    //         'Something went wrong.'
-    //       );
-    //       this.formErrorService.setServerErrors(this.Transaction.searchForm, [
-    //         error?.error?.error,
-    //       ]);
-    //     },
-    //   });
+    this.refresh.emit(this.Transaction.toSubmitSearchForm);
   }
   async onSearchChangedAccount({ search, page, clear = false }: { search: string; page: number, clear: boolean }) {
     this.isDropdownLoading = true;
@@ -99,12 +79,14 @@ export class TransactionSearchComponent {
   }
 
   onSelectionChangeAccount(selected:AccountFragment[]): void {
-    this.listingOptionAccount.exclude = selected.map(it => it.name).join(",");
+    this.listingOptionAccount.exclude = selected.map(it => it.id).join(",");
+    this.Transaction.searchForm.get('accountIds').setValue(this.listingOptionAccount.exclude);
     //  = selected.map(it => it.name).join(",");
     // this.refresh();
   }
   onSelectionChangeCategory(selected:CategoryFragment[]): void {
-    this.listingOptionCategory.exclude = selected.map(it => it.name).join(",");
+    this.listingOptionCategory.exclude = selected.map(it => it.id).join(",");
+    this.Transaction.searchForm.get('categoryIds').setValue(this.listingOptionCategory.exclude);
     //  = selected.map(it => it.name).join(",");
     // this.refresh();
   }

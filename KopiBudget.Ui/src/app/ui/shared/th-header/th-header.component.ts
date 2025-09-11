@@ -11,7 +11,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class ThHeaderComponent {
   @Input() name: string;
   @Input() description: string;
-  @Input() sortBy: string;
+  @Input() orderBy: string;
+  @Input() class: string;
   @Input() sortDirection: string;
   @Input() alignment: string;
   @Input() isSortable = false;
@@ -20,6 +21,7 @@ export class ThHeaderComponent {
     if (!this.isSortable) return;
     this.sortDirection = this.sortDirection == 'asc' ? 'desc' : 'asc';
     this.sortResult.emit({name: this.name, sortDirection: this.sortDirection});
+
   }
   get isAsc(): boolean {
     return this.sortDirection == 'asc';

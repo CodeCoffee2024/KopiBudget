@@ -1,4 +1,4 @@
-<div (click)="sort()" (keydown.enter)="sort()" tabindex="0" [class]="isSortable ? 'cursor-pointer color-highlight' + alignmentClass : alignmentClass">
-    <span class="mr-2" [class]="isSortable ? 'color-main' : ''">{{ description }}</span>
-    <i *ngIf="isSortable && name === sortBy" [class]="isAsc ? 'bi bi-chevron-compact-up' : 'bi bi-chevron-compact-down'"></i>
+<div (click)="sort()" (keydown.enter)="sort()" tabindex="0" [class]="(isSortable ? 'cursor-pointer color-highlight' + alignmentClass : alignmentClass) + ' ' + class">
+    <span class="me-2" [class]="isSortable ? 'color-main' : ''">{{ description }}</span>
+    <i *ngIf="isSortable && (name+'-' === orderBy || name === orderBy)" [class]="isAsc ? 'bi bi-chevron-compact-up' : 'bi bi-chevron-compact-down'"></i>
 </div>
