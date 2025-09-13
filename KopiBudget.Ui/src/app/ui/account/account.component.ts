@@ -5,9 +5,11 @@ import { AccountService } from '../../core/services/account.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { ModalService } from '../../core/services/modal.service';
 import { ToastService } from '../../core/services/toast.service';
-import { AccountDto } from '../../domain/models/account';
+import { AccountConstants, AccountDto } from '../../domain/models/account';
+import { ToastType } from '../../domain/models/toast';
 import { AccountCardComponent } from './account-card/account-card.component';
 import { AccountCreateComponent } from './account-create/account-create.component';
+import { AccountUpdateComponent } from './account-update/account-update.component';
 
 @Component({
   selector: 'app-account',
@@ -61,5 +63,28 @@ export class AccountComponent implements OnInit {
     }
     get debts() {
       return this.accounts.filter(it => it.isDebt);
+    }
+    async onEdit(account) {
+      const result = await this.modalService.open(AccountUpdateComponent, {account : account});
+      if (result) {
+        this.loadAccounts();
+      }
+    }
+    async onDelete(account) {
+      this.toastService
+        .confirm(
+          ToastType.CONFIRMATION,
+          AccountConstants.DELETECONFIRMATION
+        )
+        .then((it) => {
+          if (it) {
+            this.accountService
+              .remove(account.id)
+              .subscribe(() => {
+                this.toastService.success("Success", AccountConstants.DELETESUCCESS)
+                this.loadAccounts();
+              });
+          }
+        });
     }
   }

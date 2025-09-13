@@ -1,5 +1,6 @@
 ﻿using KopiBudget.Application.Abstractions.Request;
 using KopiBudget.Application.Commands.Account.AccountCreate;
+using KopiBudget.Application.Commands.Account.AccountUpdate;
 using KopiBudget.Application.Queries.Account.AccountDropdown;
 
 namespace KopiBudget.Application.Requests
@@ -12,7 +13,7 @@ namespace KopiBudget.Application.Requests
         public string? Name { get; set; } = string.Empty;
         public decimal? Balance { get; set; } = decimal.Zero;
         public bool IsDebt { get; set; }
-        public Guid CategoryId { get; set; }
+        public string? CategoryId { get; set; } = string.Empty;
 
         #endregion Properties
 
@@ -21,7 +22,8 @@ namespace KopiBudget.Application.Requests
         public AccountCreateCommand SetAddCommand(Guid UserId) =>
             new(UserId, CategoryId, Name!, Balance!.Value, IsDebt);
 
-        //public GetCategoryListQuery ToQuery() => new(Search, OrderBy, PageNumber, PageSize, Status);
+        public AccountUpdateCommand SetUpdateCommand(Guid UserId, string Id) =>
+            new(UserId, Id, CategoryId, Name!, Balance!.Value, IsDebt);
 
         public AccountDropdownQuery ToDropdownQuery() => new(Search!, PageNumber, Exclude);
 

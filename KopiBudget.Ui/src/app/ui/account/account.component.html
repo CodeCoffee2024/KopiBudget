@@ -23,7 +23,10 @@
                 *ngFor="let account of assets">
                 <app-account-card
                     [name]="account.name"
-                    [balance]="account.balance">
+                    [balance]="account.balance"
+                    (editEvent)="onEdit(account)"
+                    (deleteEvent)="onDelete(account)"
+                    >
                 </app-account-card>
                 </div>
             </div>
@@ -42,10 +45,13 @@
             <div
             class="col-12 d-flex justify-content-center mb-3"
             *ngFor="let account of debts">
-            <app-account-card
-                [name]="account.name"
-                [balance]="account.balance">
-            </app-account-card>
+                <app-account-card
+                    [name]="account.name"
+                    [balance]="account.balance"
+                    (editEvent)="onEdit(account)"
+                    (deleteEvent)="onDelete(account)"
+                    >
+                </app-account-card>
             </div>
         </div>
         <ng-template #noDebts>

@@ -27,7 +27,7 @@ namespace KopiBudget.Application.Commands.Account.AccountCreate
                 return Result.Failure<AccountDto>(Error.Validation, validationResult.ToErrorList());
             }
 
-            var entity = KopiBudget.Domain.Entities.Account.Create(request.Name, request.Balance, request.IsDebt, request.UserId, request.CategoryId, request.UserId, DateTime.UtcNow);
+            var entity = KopiBudget.Domain.Entities.Account.Create(request.Name, request.Balance, request.IsDebt, request.UserId, Guid.Parse(request.CategoryId!), request.UserId, DateTime.UtcNow);
             await _repository.AddAsync(entity);
             await _unitOfWork.SaveChangesAsync();
             return Result.Success(_mapper.Map<AccountDto>(entity));

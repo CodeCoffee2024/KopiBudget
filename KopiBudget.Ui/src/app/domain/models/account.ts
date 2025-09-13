@@ -9,6 +9,13 @@ export class AccountDto extends AuditDto {
     isDebt: boolean;
     category: CategoryFragment;
 }
+export const AccountConstants = {
+	DELETECONFIRMATION:
+		'Are you sure you want to delete this account?',
+	DELETESUCCESS: 'Account deleted successfully',
+	UPDATESUCCESS: 'Account updated successfully',
+	CREATESUCCESS: 'Account created successfully',
+};
 export class AccountFragment {
     id: string;
     name: string;
@@ -32,5 +39,14 @@ export class Account {
             IsDebt: this.form.get('IsDebt').value,
             balance: this.form.get('balance').value,
         }
+    }
+    fill(account: AccountDto) {
+        this.form.patchValue({
+            name: account.name,
+            categoryId: account.category.id,
+            IsDebt: account.isDebt,
+            balance: account.balance,
+            category: account.category,
+        });
     }
 }

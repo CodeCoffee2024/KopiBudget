@@ -42,10 +42,11 @@ namespace KopiBudget.Domain.Entities
             return entity;
         }
 
-        public void Update(string name, decimal balance, Guid? updatedById, DateTime? updatedOn)
+        public void Update(string name, decimal balance, bool isDebt, Guid categoryId, Guid? updatedById, DateTime? updatedOn)
         {
             Name = name;
             Balance = balance;
+            IsDebt = isDebt;
             SetUpdated(updatedById!.Value, updatedOn!.Value);
         }
 

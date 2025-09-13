@@ -1,5 +1,6 @@
 ﻿using KopiBudget.Api.Middleware.Authorization;
 using KopiBudget.Api.Shared;
+using KopiBudget.Application.Commands.Account.AccountDelete;
 using KopiBudget.Application.Queries.Account.GetAccounts;
 using KopiBudget.Application.Requests;
 using KopiBudget.Common.Constants;
@@ -72,6 +73,24 @@ namespace KopiBudget.Api.Controllers
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             var result = await _sender.Send(new GetUserAccountQuery(UserId), cancellationToken);
+            return HandleResponse(result);
+        }
+
+        [HttpPut("{id}")]
+        [PermissionAuthorize(Modules.ACCOUNT, Permissions.MODIFY)]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] AccountRequest request, CancellationToken cancellationToken)
+        {
+            var command = request.SetUpdateCommand(UserId, id);
+            var result = await _sender.Send(command, cancellationToken);
+            return HandleResponse(result);
+        }
+
+        [HttpDelete("{id}")]
+        [PermissionAuthorize(Modules.ACCOUNT, Permissions.MODIFY)]
+        public async Task<IActionResult> Delete([FromRoute] string id, CancellationToken cancellationToken)
+        {
+            var command = new AccountDeleteCommand(id);
+            var result = await _sender.Send(command, cancellationToken);
             return HandleResponse(result);
         }
 
