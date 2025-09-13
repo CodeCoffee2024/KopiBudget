@@ -34,6 +34,7 @@ export class AccountComponent implements OnInit {
   async addAccount() {
     const result = await this.modalService.open(AccountCreateComponent);
     if (result) {
+      this.toastService.success("Success", AccountConstants.CREATESUCCESS)
       this.loadAccounts();
     }
   }
