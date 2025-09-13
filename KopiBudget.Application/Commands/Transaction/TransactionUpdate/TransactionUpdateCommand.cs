@@ -1,10 +1,11 @@
 ﻿using KopiBudget.Application.Abstractions.Messaging;
 using KopiBudget.Application.Dtos;
 
-namespace KopiBudget.Application.Commands.Transaction.TransactionCreate
+namespace KopiBudget.Application.Commands.Transaction.TransactionUpdate
 {
-    public sealed record TransactionCreateCommand(
+    public sealed record TransactionUpdateCommand(
         Guid UserId,
+        string? Id,
         string? CategoryId,
         string? AccountId,
         string? Date,

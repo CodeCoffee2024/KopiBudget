@@ -1,14 +1,17 @@
 ﻿using FluentValidation;
-using KopiBudget.Application.Commands.Transaction.TransactionCreate;
+using KopiBudget.Application.Commands.Transaction.TransactionUpdate;
 
 namespace KopiBudget.Application.Validators.Transaction
 {
-    public class TransactionCreateCommandValidator : AbstractValidator<TransactionCreateCommand>
+    public class TransactionUpdateCommandValidator : AbstractValidator<TransactionUpdateCommand>
     {
         #region Public Constructors
 
-        public TransactionCreateCommandValidator()
+        public TransactionUpdateCommandValidator()
         {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Id is required");
+
             RuleFor(x => x.AccountId)
                 .NotEmpty().WithMessage("Account is required");
 

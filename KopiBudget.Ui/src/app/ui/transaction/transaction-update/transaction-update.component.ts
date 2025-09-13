@@ -13,18 +13,19 @@ import { AccountFragment } from '../../../domain/models/account';
 import { CategoryFragment } from '../../../domain/models/category';
 import { InputTypes } from '../../../domain/models/input-type';
 import { GenericDropdownListingOption } from '../../../domain/models/listing-option';
-import { Transaction } from '../../../domain/models/transaction';
+import { Transaction, TransactionDto } from '../../../domain/models/transaction';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { SoloSelectComponent } from '../../shared/components/solo-select/solo-select.component';
 
 @Component({
-  selector: 'app-transaction-create',
+  selector: 'app-transaction-update',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, InputComponent, SoloSelectComponent],
-  templateUrl: './transaction-create.component.html',
-  styleUrls: ['./transaction-create.component.scss']
+  templateUrl: './transaction-update.component.html',
+  styleUrls: ['./transaction-update.component.scss']
 })
-export class TransactionCreateComponent implements OnInit {
+export class TransactionUpdateComponent implements OnInit {
+  transaction: TransactionDto = new TransactionDto();
   Transaction: Transaction = new Transaction();
   InputTypes = InputTypes;
   isDropdownLoading = false;
@@ -48,17 +49,18 @@ export class TransactionCreateComponent implements OnInit {
   ngOnInit(): void {
     this.Transaction.form.get('inputTime')?.valueChanges.subscribe((inputTime) => {
 
-    const timeControl = this.Transaction.form.get('time');
-    if (inputTime) {
-      timeControl?.setValidators([Validators.required]);
-    } else {
-      timeControl?.clearValidators();
-    }
-    timeControl?.updateValueAndValidity();
-  });
-}
+      const timeControl = this.Transaction.form.get('time');
+      if (inputTime) {
+        timeControl?.setValidators([Validators.required]);
+      } else {
+        timeControl?.clearValidators();
+      }
+      timeControl?.updateValueAndValidity();
+    });
+    this.Transaction.fill(this.transaction);
+  }
   onSubmit() {
-    this.transactionService.create(this.Transaction.toSubmit).pipe(
+    this.transactionService.update(this.transaction.id, this.Transaction.toSubmit).pipe(
         finalize(() => {
           this.loadingService.hide();
         })
@@ -189,3 +191,4 @@ export class TransactionCreateComponent implements OnInit {
       });
   }
 }
+

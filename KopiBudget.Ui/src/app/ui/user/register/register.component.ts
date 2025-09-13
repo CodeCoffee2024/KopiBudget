@@ -95,7 +95,6 @@ export class RegisterComponent {
           this.formErrorService.setServerErrors(this.form, [
             error?.error?.errors,
           ]);
-          console.log(this.form)
         },
       });
     }

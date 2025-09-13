@@ -119,16 +119,18 @@ export class SoloSelectComponent
 
 		const errorMessages: string[] = [];
 		Object.keys(controlErrors).forEach((errorKey) => {
+			let message = '';
 			if (errorKey === 'required') {
-				errorMessages.push(`${this.label} is required`);
+				message = `${this.label} is required`;
 			} else if (errorKey === 'serverError') {
-				errorMessages.push(controlErrors['serverError']);
+				message = controlErrors['serverError'][0];
 			} else {
-				errorMessages.push(
-					`${this.label} ${errorKey
+				message = `${this.label} ${errorKey
 						.replace(/([A-Z])/g, ' $1')
-						.toLowerCase()}`
-				);
+						.toLowerCase()}`;
+			}
+			if (!errorMessages.includes(message)) {
+				errorMessages.push(message);
 			}
 		});
 

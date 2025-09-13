@@ -8,27 +8,32 @@ using KopiBudget.Application.Interfaces.Common;
 using KopiBudget.Domain.Abstractions;
 using KopiBudget.Domain.Interfaces;
 
-namespace KopiBudget.Application.Commands.Transaction.TransactionCreate
+namespace KopiBudget.Application.Commands.Transaction.TransactionUpdate
 {
-    internal sealed class TransactionCreateCommandHandler(
+    internal sealed class TransactionUpdateCommandHandler(
         ITransactionRepository _repository,
         IAccountRepository _accountRepository,
         ICategoryRepository _categoryRepository,
-        IValidator<TransactionCreateCommand> _validator,
+        IValidator<TransactionUpdateCommand> _validator,
         IMapper _mapper,
         IUnitOfWork _unitOfWork
-    ) : ICommandHandler<TransactionCreateCommand, TransactionDto>
+    ) : ICommandHandler<TransactionUpdateCommand, TransactionDto>
     {
         #region Public Methods
 
-        public async Task<Result<TransactionDto>> Handle(TransactionCreateCommand request, CancellationToken cancellationToken)
+        public async Task<Result<TransactionDto>> Handle(TransactionUpdateCommand request, CancellationToken cancellationToken)
         {
             var validation = _validator.Validate(request);
             if (!validation.IsValid)
                 return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
 
+            var transaction = await _repository.GetByIdAsync(Guid.Parse(request.Id!));
             var account = await _accountRepository.GetByIdAsync(Guid.Parse(request.AccountId!));
             var category = await _categoryRepository.GetByIdAsync(Guid.Parse(request.CategoryId!));
+            if (transaction == null)
+            {
+                validation.Errors.Add(new ValidationFailure("Id", "Transaction not found"));
+            }
             if (account == null)
             {
                 validation.Errors.Add(new ValidationFailure("AccountId", "Account not found"));
@@ -37,26 +42,22 @@ namespace KopiBudget.Application.Commands.Transaction.TransactionCreate
             {
                 validation.Errors.Add(new ValidationFailure("CategoryId", "Category not found"));
             }
-            if ((account!.Balance -= decimal.Parse(request.Amount!)) < 0)
-            {
-                validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
-            }
             if (decimal.Parse(request.Amount!) <= 0)
             {
                 validation.Errors.Add(new ValidationFailure("Amount", "Amount must be greater than 0"));
             }
-            if ((account!.Balance -= decimal.Parse(request.Amount!)) < 0)
+
+            account!.AddToBalance(transaction!.Amount); // reverts previous amount
+            if ((account!.Balance - decimal.Parse(request.Amount!)) < 0)
             {
                 validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
             }
             if (!validation.IsValid)
                 return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
-
             account!.UpdateBalance(decimal.Parse(request.Amount!));
-            var entity = KopiBudget.Domain.Entities.Transaction.Create(decimal.Parse(request.Amount!), this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.Time), Guid.Parse(request.CategoryId!), Guid.Parse(request.AccountId!), request.Note, request.UserId, DateTime.UtcNow);
-            await _repository.AddAsync(entity);
+            transaction.Update(decimal.Parse(request.Amount!), this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.InputTime!.Value ? request.Time : string.Empty), Guid.Parse(request.CategoryId!), Guid.Parse(request.AccountId!), request.Note, request.UserId, DateTime.UtcNow);
             await _unitOfWork.SaveChangesAsync();
-            return Result.Success(_mapper.Map<TransactionDto>(entity));
+            return Result.Success(_mapper.Map<TransactionDto>(transaction));
         }
 
         public DateTime CombineDateAndTimeUtc(DateTime? date, string? time)

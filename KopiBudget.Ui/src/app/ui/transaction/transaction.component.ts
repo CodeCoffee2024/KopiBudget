@@ -10,13 +10,15 @@ import { ToastService } from '../../core/services/toast.service';
 import { TransactionService } from '../../core/services/transaction.service';
 import { AccountDto } from '../../domain/models/account';
 import { ExchangeRateDto } from '../../domain/models/exchange-rate';
-import { TransactionDto, TransactionListingOption } from '../../domain/models/transaction';
+import { ToastType } from '../../domain/models/toast';
+import { TransactionConstants, TransactionDto, TransactionListingOption } from '../../domain/models/transaction';
 import { AccountCardComponent } from '../account/account-card/account-card.component';
 import { ExchangeRateComponent } from '../exchange-rate/exchange-rate.component';
 import { ListingPaginationComponent } from '../shared/listing-pagination/listing-pagination.component';
 import { ThHeaderComponent } from '../shared/th-header/th-header.component';
 import { TransactionCreateComponent } from './transaction-create/transaction-create.component';
 import { TransactionSearchComponent } from './transaction-search/transaction-search.component';
+import { TransactionUpdateComponent } from './transaction-update/transaction-update.component';
 
 @Component({
   selector: 'app-transaction',
@@ -53,7 +55,7 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.isLoading = true;
     this.loadRates();
-    this.sub = interval(12000).subscribe(() => this.loadRates());
+    this.sub = interval(1000000).subscribe(() => this.loadRates());
     this.loadTransactions();
   }
 
@@ -166,6 +168,8 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
   async addTransaction(){
     const result = await this.modalService.open(TransactionCreateComponent);
     if (result) {
+      this.toastService.success("Success", TransactionConstants.CREATESUCCESS)
+      this.loadRates();
       this.loadTransactions();
     }
   }
@@ -183,5 +187,47 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
   onPageChange(page) {
     this.listingOption.pageNumber = page;
     this.loadTransactions();
+  }
+  async onEdit(item) {
+    this.transactionService.getTransaction(item.id)
+    .pipe(
+      finalize(() => {
+        this.loadingService.hide();
+      })
+    )
+    .subscribe({
+      next: async (res) => {
+        const result = await this.modalService.open(TransactionUpdateComponent, {transaction: res.data});
+        if (result) {
+          this.toastService.success("Success", TransactionConstants.UPDATESUCCESS)
+          this.loadRates();
+          this.loadTransactions();
+        }
+      },
+      error: (error) => {
+        this.toastService.error(
+          'Error',
+          'Something went wrong.'
+        );
+      },
+    });
+  }
+  onDelete(item) {
+		this.toastService
+			.confirm(
+				ToastType.CONFIRMATION,
+				TransactionConstants.DELETECONFIRMATION
+			)
+			.then((it) => {
+				if (it) {
+					this.transactionService
+						.remove(item.id)
+						.subscribe(() => {
+              this.toastService.success("Success", TransactionConstants.DELETESUCCESS)
+            this.loadRates();
+            this.loadTransactions();
+						});
+				}
+			});
   }
 }

@@ -40,12 +40,13 @@ namespace KopiBudget.Domain.Entities
             return entity;
         }
 
-        public void Update(decimal amount, DateTime date, Guid categoryId, Guid accountId, Guid? updatedBy, DateTime? updatedOn)
+        public void Update(decimal amount, DateTime date, Guid categoryId, Guid accountId, string note, Guid? updatedBy, DateTime? updatedOn)
         {
-            Amount = amount;
             Date = date;
+            Amount = amount;
             CategoryId = categoryId;
             AccountId = accountId;
+            Note = note;
             SetUpdated(updatedBy!.Value, updatedOn!.Value);
         }
 

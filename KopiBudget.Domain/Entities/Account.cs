@@ -49,6 +49,20 @@ namespace KopiBudget.Domain.Entities
             SetUpdated(updatedById!.Value, updatedOn!.Value);
         }
 
+        public void AddToBalance(decimal amount)
+        {
+            Balance += amount;
+        }
+
+        public void UpdateBalance(decimal balance)
+        {
+            if (Balance - balance < 0)
+            {
+                throw new NegativeAmountException(Balance - balance);
+            }
+            Balance -= balance;
+        }
+
         #endregion Properties
     }
 }
