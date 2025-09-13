@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   Output,
   ViewChild
@@ -27,6 +28,7 @@ export class MultiSelectComponent {
   @Input() searchOptions= []; // Options must be passed from parent
   @Output() searchChanged = new EventEmitter<{ search: string; page: number, clear: boolean }>(); // Emits search event
   @Output() selectedItemsChange = new EventEmitter<[]>(); // Emits selected items
+	isDropdownOpen = false;
 
   @ViewChild('dropdownMenu', { static: false }) dropdownMenu!: ElementRef;
   @ViewChild('searchInput', { static: false }) searchInput!: ElementRef;
@@ -39,7 +41,7 @@ export class MultiSelectComponent {
   focused = false;
   searchSubject = new Subject<string>();
 
-  constructor() {
+  constructor(private elementRef: ElementRef) {
     this.selectedItems = this.selectedItems ?? [];
     this.searchSubject.pipe(debounceTime(300)).subscribe(query => {
       this.page = 1;
@@ -47,8 +49,16 @@ export class MultiSelectComponent {
       this.emitSearch();
     });
   }
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isDropdownOpen = false;
+      this.searchQuery = "";
+    }
+  }
   isFocused(focus) {
     this.focused = focus;
+		this.isDropdownOpen = true;
   }
 
   onScroll(): void {
@@ -62,6 +72,7 @@ export class MultiSelectComponent {
 
   onSearch(): void {
     this.isLoading = true;
+    this.isDropdownOpen = true;
     this.searchSubject.next(this.searchQuery);
   }
 

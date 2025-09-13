@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 import { debounceTime, Subject } from 'rxjs';
 
@@ -42,10 +42,12 @@ export class SoloSelectComponent
 	@Input() formGroup;
 	@Input() hasMore = false;
 	@Input() addNoResult = true;
+	isDropdownOpen = true;
 	clear = false;
 	page = 1;
 	focused = false;
 	searchSubject = new Subject<string>();
+	constructor(private elementRef: ElementRef) {this.isDropdownOpen = true}
 	ngOnInit(): void {
 		this.selectedItem = this.selectedItem ?? null;
 		this.searchSubject
@@ -56,6 +58,14 @@ export class SoloSelectComponent
 				this.emitSearch();
 			});
 	}
+	@HostListener('document:click', ['$event'])
+	onClickOutside(event: MouseEvent) {
+		console.log(this.isDropdownOpen)
+		if (!this.elementRef.nativeElement.contains(event.target)) {
+			this.isDropdownOpen = false;
+			this.searchQuery = "";
+		}
+	}
 	get formControl(): FormControl {
 		return this.formGroup?.get(
 			this.controlName
@@ -63,6 +73,7 @@ export class SoloSelectComponent
 	}
 	isFocused(focus) {
 		this.focused = focus;
+		this.isDropdownOpen = true;
 	}
 
 	onScroll(): void {
@@ -77,6 +88,7 @@ export class SoloSelectComponent
 
 	onSearch(): void {
 		this.isLoading = true;
+		this.isDropdownOpen = true;
 		this.searchSubject.next(this.searchQuery);
 	}
 

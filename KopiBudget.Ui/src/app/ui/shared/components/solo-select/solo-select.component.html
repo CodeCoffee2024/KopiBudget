@@ -53,7 +53,7 @@
 				/>
 			</div>
 			<div
-				*ngIf="searchQuery && focused"
+				*ngIf="searchQuery && focused && isDropdownOpen"
 				class="dropdown-menu show w-100"
 				style="z-index: 10"
 				(scroll)="onScroll()"
@@ -69,8 +69,7 @@
 				</div>
 
 				<ng-container
-					*ngIf="
-						hasMore || (!isLoading && searchOptions.length);
+					*ngIf="hasMore || (!isLoading && searchOptions.length);
 						else noResults
 					"
 				>
@@ -112,7 +111,7 @@
 
 				<ng-template #noResults>
 					<div
-						*ngIf="!isLoading"
+						*ngIf="!isLoading && isDropdownOpen"
 						class="dropdown-item text-center text-muted"
 					>
 						No results found.

@@ -20,7 +20,7 @@
         </div>
 
         <!-- Dropdown Search Results -->
-        <div *ngIf="searchQuery && focused" #dropdownMenu class="dropdown-menu show w-100" (scroll)="onScroll()">
+        <div *ngIf="searchQuery && focused && isDropdownOpen" #dropdownMenu class="dropdown-menu show w-100" (scroll)="onScroll()">
             <!-- Loading Indicator -->
             <div *ngIf="isLoading && !hasMore" class="dropdown-item text-center">
                 <span class="spinner-border spinner-border-sm"></span> Loading...

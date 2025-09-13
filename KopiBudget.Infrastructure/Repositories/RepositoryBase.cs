@@ -117,7 +117,7 @@ namespace KopiBudget.Infrastructure.Repositories
                     string filter;
 
                     // Handle navigation (Tags.Name or Category.Name)
-                    if (prop.Contains("."))
+                    if (prop.ToLower().Contains("."))
                     {
                         var parts = prop.Split('.');
                         var first = parts[0];
@@ -135,7 +135,7 @@ namespace KopiBudget.Infrastructure.Repositories
                     }
                     else
                     {
-                        filter = $"{prop}.Contains(@0)";
+                        filter = $"{prop}.ToLower().Contains(@0)";
                     }
 
                     var expr = DynamicExpressionParser.ParseLambda<TEntity, bool>(

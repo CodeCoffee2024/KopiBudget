@@ -26,7 +26,7 @@ namespace KopiBudget.Application.Queries.Account.AccountDropdown
             var pagedResult = await _repository.GetPaginatedCategoriesAsync(
                 request.PageNumber,
                 10,
-                request.Search,
+                request.Search.ToLower(),
                 "name",
                 filter
             );
