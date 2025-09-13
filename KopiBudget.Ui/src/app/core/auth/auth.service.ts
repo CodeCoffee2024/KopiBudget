@@ -72,7 +72,8 @@ export class AuthService extends GenericService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
-    // localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.refreshTokenKey);
     this.currentUserSubject.next(null);
   }
 
