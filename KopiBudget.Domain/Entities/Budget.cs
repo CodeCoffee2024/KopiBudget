@@ -7,10 +7,10 @@ namespace KopiBudget.Domain.Entities
     {
         #region Properties
 
-        private Budget()
+        public Budget()
         { }
 
-        private Budget(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? userId, Guid? categoryId)
+        private Budget(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? userId)
         {
             if (amount < 0)
             {
@@ -24,7 +24,6 @@ namespace KopiBudget.Domain.Entities
             Name = name;
             StartDate = startDate;
             EndDate = endDate;
-            CategoryId = categoryId!.Value;
             UserId = userId!.Value;
         }
 
@@ -37,31 +36,40 @@ namespace KopiBudget.Domain.Entities
         public Guid UserId { get; set; }
 
         public virtual User User { get; set; } = null!;
-
-        public Guid CategoryId { get; set; }
-        public virtual Category Category { get; set; } = null!;
+        public virtual ICollection<BudgetPersonalCategory> BudgetPersonalCategories { get; set; } = new List<BudgetPersonalCategory>();
+        public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
         #endregion Properties
 
         #region Public Methods
 
-        public static Budget Create(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? userId, Guid? categoryId, Guid? createdBy, DateTime? createdOn)
+        public static Budget Create(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? userId, Guid? createdBy, DateTime? createdOn)
         {
-            var entity = new Budget(amount, name, startDate, endDate, userId, categoryId);
+            var entity = new Budget(amount, name, startDate, endDate, userId);
             entity.SetCreated(createdBy!.Value, createdOn!.Value);
             return entity;
         }
 
-        public void Update(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? userId, Guid? categoryId, Guid? updatedBy, DateTime? updatedOn)
+        public void Update(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? userId, Guid? updatedBy, DateTime? updatedOn)
         {
             Amount = amount;
             Name = name;
             StartDate = startDate;
             EndDate = endDate;
-            CategoryId = categoryId!.Value;
             UserId = userId!.Value;
             SetUpdated(updatedBy!.Value, updatedOn!.Value);
         }
+
+        public void AddPersonalCategory(BudgetPersonalCategory category)
+        {
+            BudgetPersonalCategories.Add(category);
+        }
+
+        public decimal SpentBudget() => Transactions.Sum(it => it.Amount);
+
+        public decimal RemainingBudget() => Amount - Transactions.Sum(it => it.Amount);
+        public string SpentBudgetPercentage() => ((SpentBudget() / Amount) * 100) + "%";
+        public string RemainingBudgetPercentage() => (100 - ((SpentBudget() / Amount) * 100)) + "%";
 
         #endregion Public Methods
     }

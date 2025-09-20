@@ -7,5 +7,7 @@
         public DateTime Date { get; set; }
         public CategoryDto Category { get; set; } = new CategoryDto();
         public AccountDto Account { get; set; } = new AccountDto();
+        public BudgetDto Budget { get; set; } = new BudgetDto();
+        public PersonalCategoryDto PersonalCategory { get; set; } = new PersonalCategoryDto();
     }
 }

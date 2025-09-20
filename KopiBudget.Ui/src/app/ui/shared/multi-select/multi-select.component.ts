@@ -24,6 +24,7 @@ export class MultiSelectComponent {
   @Input() placeholder = 'Type to search...';
   @Input() isLoading = false;
   @Input() field: string;
+  @Input() disabledIf = false;
   @Input() hasSearchIcon = false;
   @Input() searchOptions= []; // Options must be passed from parent
   @Output() searchChanged = new EventEmitter<{ search: string; page: number, clear: boolean }>(); // Emits search event

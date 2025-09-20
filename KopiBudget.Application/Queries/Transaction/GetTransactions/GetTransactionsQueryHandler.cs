@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using KopiBudget.Application.Dtos;
+using KopiBudget.Common.Utils;
 using KopiBudget.Domain.Abstractions;
+using KopiBudget.Domain.Entities;
 using KopiBudget.Domain.Interfaces;
 using MediatR;
 using System.Linq.Expressions;
@@ -13,61 +15,52 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
     ) : IRequestHandler<GetTransactionsQuery, Result<PageResult<TransactionDto>>>
     {
         #region Public Methods
+
         public async Task<Result<PageResult<TransactionDto>>> Handle(GetTransactionsQuery request, CancellationToken cancellationToken)
         {
-            DateTime? dateFrom = null;
-            DateTime? dateTo = null;
+            // Normalize dates
+            var dateFrom = !string.IsNullOrWhiteSpace(request.DateFrom) && DateTime.TryParse(request.DateFrom, out var df)
+                ? DateTime.SpecifyKind(df, DateTimeKind.Utc)
+                : DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
 
-            if (!string.IsNullOrWhiteSpace(request.DateFrom) && DateTime.TryParse(request.DateFrom, out var df))
-                dateFrom = DateTime.SpecifyKind(df, DateTimeKind.Utc);
+            var dateTo = !string.IsNullOrWhiteSpace(request.DateTo) && DateTime.TryParse(request.DateTo, out var dt)
+                ? DateTime.SpecifyKind(dt, DateTimeKind.Utc)
+                : DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc);
 
-            if (!string.IsNullOrWhiteSpace(request.DateTo) && DateTime.TryParse(request.DateTo, out var dt))
-                dateTo = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+            Expression<Func<Domain.Entities.Transaction, bool>> filter = c => true; // default
 
-            if (string.IsNullOrWhiteSpace(request.DateFrom))
-                dateFrom = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
-
-            if (string.IsNullOrWhiteSpace(request.DateTo))
-                dateTo = DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc);
-
-            var categoryGuids = new List<Guid>();
-            if (request.CategoryIds != null && request.CategoryIds.Count() > 0)
+            if (request.Type == TransactionTypes.Account)
             {
-                foreach (string categoryId in request.CategoryIds)
-                {
-                    if (!String.IsNullOrEmpty(categoryId))
-                    {
-                        if (!Guid.TryParse(categoryId, out var guid))
-                        {
-                            return Result.Failure<PageResult<TransactionDto>>(Error.InvalidRequest);
-                        }
-                        categoryGuids.Add(guid);
-                    }
-                }
-            }
+                var categoryGuids = GuidParser.ParseGuids(request.CategoryIds);
+                if (categoryGuids == null) return Result.Failure<PageResult<TransactionDto>>(Error.InvalidRequest);
 
-            var accountGuids = new List<Guid>();
-            if (request.AccountIds != null && request.AccountIds.Count() > 0)
+                var accountGuids = GuidParser.ParseGuids(request.AccountIds);
+                if (accountGuids == null) return Result.Failure<PageResult<TransactionDto>>(Error.InvalidRequest);
+
+                filter = c =>
+                    c.BudgetId == null &&
+                    c.Date >= dateFrom &&
+                    c.Date <= dateTo &&
+                    (string.IsNullOrEmpty(request.Search) || c.Account.Name.Contains(request.Search)) &&
+                    (categoryGuids.Count == 0 || categoryGuids.Contains(c.CategoryId!.Value)) &&
+                    (accountGuids.Count == 0 || accountGuids.Contains(c.AccountId!.Value));
+            }
+            else if (request.Type == TransactionTypes.Budget)
             {
-                foreach (string accountId in request.AccountIds)
-                {
-                    if (!String.IsNullOrEmpty(accountId))
-                    {
-                        if (!Guid.TryParse(accountId, out var guid))
-                        {
-                            return Result.Failure<PageResult<TransactionDto>>(Error.InvalidRequest);
-                        }
-                        accountGuids.Add(guid);
-                    }
-                }
-            }
+                var budgetGuids = GuidParser.ParseGuids(request.BudgetIds);
+                if (budgetGuids == null) return Result.Failure<PageResult<TransactionDto>>(Error.InvalidRequest);
 
-            Expression<Func<Domain.Entities.Transaction, bool>> filter = c =>
-                (dateFrom == null || c.Date >= dateFrom) &&
-                (dateTo == null || c.Date <= dateTo) &&
-                (c.Account.Name.Contains(request.Search!)) &&
-                (categoryGuids.Count == 0 || categoryGuids.Contains(c.CategoryId)) &&
-                (accountGuids.Count == 0 || accountGuids.Contains(c.AccountId));
+                var personalCategoryGuids = GuidParser.ParseGuids(request.PersonalCategoryIds);
+                if (personalCategoryGuids == null) return Result.Failure<PageResult<TransactionDto>>(Error.InvalidRequest);
+
+                filter = c =>
+                    c.BudgetId != null &&
+                    c.Date >= dateFrom &&
+                    c.Date <= dateTo &&
+                    (string.IsNullOrEmpty(request.Search) || c.Budget.Name.Contains(request.Search)) &&
+                    (budgetGuids.Count == 0 || budgetGuids.Contains(c.BudgetId!.Value)) &&
+                    (personalCategoryGuids.Count == 0 || personalCategoryGuids.Contains(c.PersonalCategoryId!.Value));
+            }
 
             var pagedResult = await _repository.GetPaginatedCategoriesAsync(
                 request.PageNumber,

@@ -122,6 +122,16 @@ namespace KopiBudget.Infrastructure.Data
                 context.SystemSettings.Add(entity);
                 await context.SaveChangesAsync();
             }
+            if (!context.PersonalCategories.Any())
+            {
+                var personalCategories = new[]
+                {
+                    PersonalCategory.Create("Builders", "hammer", "color-1", admin!.Id!.Value, DateTime.UtcNow),
+                    PersonalCategory.Create("Lighting", "lightbulb", "color-2", admin!.Id!.Value, DateTime.UtcNow)
+                };
+                context.PersonalCategories.AddRange(personalCategories);
+                await context.SaveChangesAsync();
+            }
         }
 
         #endregion Public Methods

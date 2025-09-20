@@ -5,7 +5,27 @@
 	--default-background: #ffffff;
 	--default-text-color: #171717;
 	--default-secondary-text-color: #eeeeee;
+	--color-1: #332701;
+	--color-2: #fec007;
+	--color-3: #0dcaf0;
+	--color-4: #012a2e;
+	--color-5: #de4233;
+	--color-6: #9d1032;
+	--color-7: #05519c;
+	--color-8: #74503a;
+	--color-9: #353246;
+	--color-10: #635451;
 }
+.color-1 {color: var(--color-1) !important}
+.color-2 {color: var(--color-2) !important}
+.color-3 {color: var(--color-3) !important}
+.color-4 {color: var(--color-4) !important}
+.color-5 {color: var(--color-5) !important}
+.color-6 {color: var(--color-6) !important}
+.color-7 {color: var(--color-7) !important}
+.color-8 {color: var(--color-8) !important}
+.color-9 {color: var(--color-9) !important}
+.color-10 {color: var(--color-10) !important}
 * {
 	font-family: 'Roboto' !important;
 	font-optical-sizing: auto;
@@ -124,8 +144,8 @@ a {
 }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Hide arrows in Firefox */

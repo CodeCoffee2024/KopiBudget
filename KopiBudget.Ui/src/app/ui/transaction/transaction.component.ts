@@ -11,7 +11,7 @@ import { TransactionService } from '../../core/services/transaction.service';
 import { AccountDto } from '../../domain/models/account';
 import { ExchangeRateDto } from '../../domain/models/exchange-rate';
 import { ToastType } from '../../domain/models/toast';
-import { TransactionConstants, TransactionDto, TransactionListingOption } from '../../domain/models/transaction';
+import { TransactionConstants, TransactionDto, TransactionListingOption, TransactionTypes } from '../../domain/models/transaction';
 import { AccountCardComponent } from '../account/account-card/account-card.component';
 import { ExchangeRateComponent } from '../exchange-rate/exchange-rate.component';
 import { ListingPaginationComponent } from '../shared/listing-pagination/listing-pagination.component';
@@ -28,6 +28,8 @@ import { TransactionUpdateComponent } from './transaction-update/transaction-upd
   styleUrls: ['./transaction.component.scss']
 })
 export class TransactionComponent implements OnInit, AfterViewChecked {
+  activeTab = TransactionTypes.ACCOUNT;
+  TransactionTypes = TransactionTypes;
   exchangeRates?: ExchangeRateDto;
   @ViewChild('accountCarousel', { static: false }) accountCarousel?: ElementRef<HTMLDivElement>;
   private carouselInstance?: Carousel;
@@ -64,11 +66,14 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
     this.disposeCarousel();
   }
   loadTransactions() {
+    this.isLoading = true;
     this.loadingService.show();
     this.transactionService.getTransactions(this.listingOption)
     .pipe(
       finalize(() => {
         this.loadingService.hide();
+        this.isLoading = false;
+        console.log(this.isLoading);
       })
     )
     .subscribe({
@@ -180,6 +185,7 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
 
   refreshList(listingOption) {
     this.listingOption = listingOption;
+    this.listingOption.type = this.activeTab;
     this.listingOption.categoryIds = listingOption.categoryIds?.split(',');
     this.listingOption.accountIds = listingOption.accountIds?.split(',');
     this.loadTransactions();
@@ -230,4 +236,10 @@ export class TransactionComponent implements OnInit, AfterViewChecked {
 				}
 			});
   }
+  setTab(tab) {
+    this.activeTab = tab;
+    this.listingOption.type = tab;
+    this.loadTransactions();
+  }
+
 }

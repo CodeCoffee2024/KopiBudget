@@ -14,13 +14,14 @@ import { CategoryFragment } from '../../../domain/models/category';
 import { InputTypes } from '../../../domain/models/input-type';
 import { GenericDropdownListingOption } from '../../../domain/models/listing-option';
 import { Transaction, TransactionDto } from '../../../domain/models/transaction';
+import { FieldDisplayComponent } from '../../shared/components/field-display/field-display.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { SoloSelectComponent } from '../../shared/components/solo-select/solo-select.component';
 
 @Component({
   selector: 'app-transaction-update',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputComponent, SoloSelectComponent],
+  imports: [CommonModule, ReactiveFormsModule, InputComponent, SoloSelectComponent, FieldDisplayComponent],
   templateUrl: './transaction-update.component.html',
   styleUrls: ['./transaction-update.component.scss']
 })
@@ -60,7 +61,8 @@ export class TransactionUpdateComponent implements OnInit {
     this.Transaction.fill(this.transaction);
   }
   onSubmit() {
-    this.transactionService.update(this.transaction.id, this.Transaction.toSubmit).pipe(
+    console.log(this.Transaction.form)
+    this.transactionService.update(this.transaction.id, this.isAccount ? this.Transaction.toSubmitTransactionForm : this.Transaction.toSubmitBudgetForm).pipe(
         finalize(() => {
           this.loadingService.hide();
         })
@@ -83,112 +85,10 @@ export class TransactionUpdateComponent implements OnInit {
       });
   }
   close() {
-    this.activeModal.dismiss();
+		this.activeModal.close(null);
   }
-  async onSearchChangedAccount({
-    search,
-    page,
-    clear = false,
-  }: {
-    search: string;
-    page: number;
-    clear: boolean;
-  }) {
-    this.isDropdownLoading = true;
-    this.dropdownListingOption.search = search;
-    this.dropdownListingOption.pageNumber = page;
-
-    if (clear) {
-      this.accounts = [];
-    }
-    this.accountService
-      .dropdown(this.dropdownListingOption)
-      .subscribe((it) => {
-        this.hasMoreAccount =
-          page * it.totalCount <
-          it.totalPages * it.totalCount;
-        const list = clear
-          ? it.data
-          : [...this.accounts, ...it.data];
-        this.accounts = list;
-        this.isDropdownLoading = false;
-      });
-  }
-
-  onSelectionChangeAccount(selected): void {
-    this.Transaction.form
-      .get('accountId')
-      .setValue(selected.item?.id);
-    // this.refresh();
-  }
-
-  async onSearchChangedCategory({
-    search,
-    page,
-    clear = false,
-  }: {
-    search: string;
-    page: number;
-    clear: boolean;
-  }) {
-    this.isDropdownLoading = true;
-    this.dropdownListingOption.search = search;
-    this.dropdownListingOption.pageNumber = page;
-
-    if (clear) {
-      this.categories = [];
-    }
-    this.categoryService
-      .dropdown(this.dropdownListingOption)
-      .subscribe((it) => {
-        this.hasMoreAccount =
-          page * it.totalCount <
-          it.totalPages * it.totalCount;
-        const list = clear
-          ? it.data
-          : [...this.categories, ...it.data];
-        this.categories = list;
-        this.isDropdownLoading = false;
-      });
-  }
-
-  onSelectionChangeCategory(selected): void {
-    this.Transaction.form
-      .get('categoryId')
-      .setValue(selected.item?.id);
-    // this.refresh();
-  }
-  onAddSearchResultCategory(categoryName) {
-    this.loadingService.show();
-    this.categoryService
-      .create({name: categoryName})
-      .pipe(
-        finalize(() => {
-          this.loadingService.hide();
-        })
-      )
-      .subscribe({
-        next: (result) => {
-          this.Transaction.form.get("category").setValue(result.data);
-          this.Transaction.form.get("categoryId").setValue(result.data.id);
-
-          this.categoryService
-            .dropdown(this.dropdownListingOption)
-            .subscribe((it) => {
-              this.categories = [...this.categories, ...it.data];
-              this.isDropdownLoading = false;
-            });
-        },
-        error: (error) => {
-          this.toastService.error(
-            'Error',
-            'Something went wrong.'
-          );
-          this.formErrorService.setServerErrors(this.Transaction.form, [
-            error?.error?.error,
-          ]);
-        },
-      });
+  get isAccount() {
+    return this.Transaction.form.get("accountId").value;
   }
 }
 

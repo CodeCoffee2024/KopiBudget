@@ -22,7 +22,7 @@ namespace KopiBudget.Application.Commands.Transaction.TransactionDelete
             var result = await _repository.GetByIdAsync(Guid.Parse(request.Id));
             if (result is not null)
             {
-                var account = await _accountRepository.GetByIdAsync(result!.AccountId!);
+                var account = await _accountRepository.GetByIdAsync(result!.AccountId!.Value);
                 account!.AddToBalance(result.Amount);
                 _repository.Remove(result);
                 await _unitOfWork.SaveChangesAsync();

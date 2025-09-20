@@ -55,6 +55,7 @@ export class SidebarComponent {
 		}
 	}
 	navigate(link) {
+		console.log(link);
 		this.route.navigate(['admin' + link]);
 	}
 }

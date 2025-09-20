@@ -83,7 +83,7 @@ namespace KopiBudget.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("CreatedById")
@@ -122,6 +122,27 @@ namespace KopiBudget.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Budgets", "public");
+                });
+
+            modelBuilder.Entity("KopiBudget.Domain.Entities.BudgetPersonalCategory", b =>
+                {
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PersonalCategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("Limit")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("TransactionAmount")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("BudgetId", "PersonalCategoryId");
+
+                    b.HasIndex("PersonalCategoryId");
+
+                    b.ToTable("BudgetPersonalCategories", "public");
                 });
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Category", b =>
@@ -225,6 +246,48 @@ namespace KopiBudget.Infrastructure.Migrations
                     b.ToTable("Permissions", "public");
                 });
 
+            modelBuilder.Entity("KopiBudget.Domain.Entities.PersonalCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("PersonalCategories", "public");
+                });
+
             modelBuilder.Entity("KopiBudget.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -313,13 +376,16 @@ namespace KopiBudget.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AccountId")
+                    b.Property<Guid?>("AccountId")
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("BudgetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("CreatedById")
@@ -336,6 +402,9 @@ namespace KopiBudget.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<Guid?>("PersonalCategoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uuid");
 
@@ -346,9 +415,13 @@ namespace KopiBudget.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
+                    b.HasIndex("BudgetId");
+
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("PersonalCategoryId");
 
                     b.HasIndex("UpdatedById");
 
@@ -474,11 +547,9 @@ namespace KopiBudget.Infrastructure.Migrations
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Budget", b =>
                 {
-                    b.HasOne("KopiBudget.Domain.Entities.Category", "Category")
+                    b.HasOne("KopiBudget.Domain.Entities.Category", null)
                         .WithMany("Budgets")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("KopiBudget.Domain.Entities.User", "CreatedBy")
                         .WithMany()
@@ -496,13 +567,30 @@ namespace KopiBudget.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
                     b.Navigation("CreatedBy");
 
                     b.Navigation("UpdatedBy");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("KopiBudget.Domain.Entities.BudgetPersonalCategory", b =>
+                {
+                    b.HasOne("KopiBudget.Domain.Entities.Budget", "Budget")
+                        .WithMany("BudgetPersonalCategories")
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KopiBudget.Domain.Entities.PersonalCategory", "PersonalCategory")
+                        .WithMany("BudgetPersonalCategories")
+                        .HasForeignKey("PersonalCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Budget");
+
+                    b.Navigation("PersonalCategory");
                 });
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Category", b =>
@@ -550,6 +638,21 @@ namespace KopiBudget.Infrastructure.Migrations
                         .HasForeignKey("ModuleId");
 
                     b.Navigation("Module");
+                });
+
+            modelBuilder.Entity("KopiBudget.Domain.Entities.PersonalCategory", b =>
+                {
+                    b.HasOne("KopiBudget.Domain.Entities.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("KopiBudget.Domain.Entities.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Role", b =>
@@ -609,20 +712,24 @@ namespace KopiBudget.Infrastructure.Migrations
                 {
                     b.HasOne("KopiBudget.Domain.Entities.Account", "Account")
                         .WithMany("Transactions")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("KopiBudget.Domain.Entities.Budget", "Budget")
+                        .WithMany("Transactions")
+                        .HasForeignKey("BudgetId");
 
                     b.HasOne("KopiBudget.Domain.Entities.Category", "Category")
                         .WithMany("Transactions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("KopiBudget.Domain.Entities.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("KopiBudget.Domain.Entities.PersonalCategory", "PersonalCategory")
+                        .WithMany()
+                        .HasForeignKey("PersonalCategoryId");
 
                     b.HasOne("KopiBudget.Domain.Entities.User", "UpdatedBy")
                         .WithMany()
@@ -631,9 +738,13 @@ namespace KopiBudget.Infrastructure.Migrations
 
                     b.Navigation("Account");
 
+                    b.Navigation("Budget");
+
                     b.Navigation("Category");
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("PersonalCategory");
 
                     b.Navigation("UpdatedBy");
                 });
@@ -679,6 +790,13 @@ namespace KopiBudget.Infrastructure.Migrations
                     b.Navigation("Transactions");
                 });
 
+            modelBuilder.Entity("KopiBudget.Domain.Entities.Budget", b =>
+                {
+                    b.Navigation("BudgetPersonalCategories");
+
+                    b.Navigation("Transactions");
+                });
+
             modelBuilder.Entity("KopiBudget.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Accounts");
@@ -696,6 +814,11 @@ namespace KopiBudget.Infrastructure.Migrations
             modelBuilder.Entity("KopiBudget.Domain.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("KopiBudget.Domain.Entities.PersonalCategory", b =>
+                {
+                    b.Navigation("BudgetPersonalCategories");
                 });
 
             modelBuilder.Entity("KopiBudget.Domain.Entities.Role", b =>

@@ -39,6 +39,9 @@ namespace KopiBudget.Infrastructure
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ISystemSettingsRepository, SystemSettingsRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IPersonalCategoryRepository, PersonalCategoryRepository>();
+            services.AddScoped<IBudgetRepository, BudgetRepository>();
+            services.AddScoped<IBudgetPersonalCategoryRepository, BudgetPersonalCategoryRepository>();
 
             return services;
         }

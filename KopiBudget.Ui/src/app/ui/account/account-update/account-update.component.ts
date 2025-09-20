@@ -67,7 +67,7 @@ export class AccountUpdateComponent implements OnInit {
 		});
 	}
 	close() {
-		this.activeModal.dismiss();
+		this.activeModal.close(null);
 	}
 	async onSearchChanged({
 		search,

@@ -10,11 +10,11 @@ namespace KopiBudget.Application.Queries.Category.CategoryDropdown
     public class CategoryDropdownQueryHandler(
         ICategoryRepository _repository,
         IMapper _mapper
-    ) : IRequestHandler<GetCategoryDropdownQuery, Result<PageResult<CategoryDropdownDto>>>
+    ) : IRequestHandler<CategoryDropdownQuery, Result<PageResult<CategoryDropdownDto>>>
     {
         #region Public Methods
 
-        public async Task<Result<PageResult<CategoryDropdownDto>>> Handle(GetCategoryDropdownQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PageResult<CategoryDropdownDto>>> Handle(CategoryDropdownQuery request, CancellationToken cancellationToken)
         {
             var excluded = string.IsNullOrEmpty(request.Exclude)
                 ? new List<string>()

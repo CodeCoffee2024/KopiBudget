@@ -12,13 +12,13 @@
                     <input
                         type="text"
                         class="form-control form-control-sm"
-                        placeholder="Search account"
+                        placeholder="Search"
                         formControlName="search"
                     />
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="type == TransactionTypes.ACCOUNT">
             <div class="col-12 col-md-6">
                 <app-multi-select
                     [label]="'Accounts'"
@@ -41,6 +41,33 @@
                     [isLoading]="isDropdownLoading"
                     (searchChanged)="onSearchChangedCategory($event)"
                     (selectedItemsChange)="onSelectionChangeCategory($event)">
+                </app-multi-select>
+            </div>
+        </div>
+        <div class="row" *ngIf="type == TransactionTypes.BUDGET">
+            <div class="col-12 col-md-6">
+                <app-multi-select
+                    [label]="'Budgets'"
+                    [placeholder]="'Search budgets...'"
+                    [searchOptions]="budgets"
+                    [hasMore]="hasMoreBudget"
+                    [field]="'name'"
+                    [isLoading]="isDropdownLoading"
+                    (searchChanged)="onSearchChangedBudget($event)"
+                    (selectedItemsChange)="onSelectionChangeBudget($event)">
+                </app-multi-select>
+            </div>
+            <div class="col-12 col-md-6">
+                <app-multi-select
+                    [label]="'Personal Categories'"
+                    [placeholder]="'Search personal categories...'"
+                    [searchOptions]="personalCategories"
+                    [hasMore]="hasMorePersonalCategory"
+                    [field]="'name'"
+                    [isLoading]="isDropdownLoading"
+                    [disabledIf]="Transaction.searchForm.get('budgetIds').value == null"
+                    (searchChanged)="onSearchChangedPersonalCategory($event)"
+                    (selectedItemsChange)="onSelectionChangePersonalCategory($event)">
                 </app-multi-select>
             </div>
         </div>

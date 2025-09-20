@@ -29,6 +29,14 @@ namespace KopiBudget.Infrastructure.Configuration
                 .WithMany()
                 .HasForeignKey(u => u.UpdatedById)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(u => u.BudgetPersonalCategories)
+                   .WithOne(ur => ur.Budget)
+                   .HasForeignKey(ur => ur.PersonalCategoryId);
+
+            builder.HasMany(a => a.Transactions)
+                .WithOne(t => t.Budget)
+                .HasForeignKey(t => t.BudgetId);
         }
 
         #endregion Public Methods

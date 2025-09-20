@@ -4,11 +4,11 @@ import { ControlValueAccessor, FormControl, FormGroup, ReactiveFormsModule } fro
 import { InputTypes } from '../../../../domain/models/input-type';
 
 @Component({
-  selector: 'app-input',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './input.component.html',
-  styleUrls: ['./input.component.scss']
+	selector: 'app-input',
+	standalone: true,
+	imports: [CommonModule, ReactiveFormsModule],
+	templateUrl: './input.component.html',
+	styleUrls: ['./input.component.scss']
 })
 export class InputComponent implements ControlValueAccessor {
 	@Input() inputType: InputTypes = InputTypes.Text;
@@ -18,6 +18,7 @@ export class InputComponent implements ControlValueAccessor {
 	@Input() controlName!: string;
 	@Input() erorField: string = '';
 	@Input() formGroup!: FormGroup;
+	@Input() options = [];
 
 	isPasswordVisible = false;
 
@@ -32,42 +33,42 @@ export class InputComponent implements ControlValueAccessor {
 	get errors(): string[] {
 		if (!this.formControl || !this.formControl.errors) return [];
 
-		const errors = this.formControl.errors;const errorMessages: string[] = [];
+		const errors = this.formControl.errors;
+		const errorMessages: string[] = [];
 		const seen = new Set<string>();
-
 		for (const errorKey of Object.keys(errors)) {
-		const value = errors[errorKey];
+			const value = errors[errorKey];
 
-		let message: string | null = null;
+			let message: string | null = null;
 
-		if (errorKey === 'required') {
-			message = `${this.label} is required`;
-		} else if (errorKey === 'email') {
-			message = `${this.label} must be a valid email`;
-		} else if (errorKey === 'mustMatch') {
-			message = `${this.label} must match ${value}`;
-		} else if (errorKey === 'minlength') {
-			const min = value?.requiredLength;
-			message = `${this.label} must be at least ${min} characters`;
-		} else if (errorKey === 'serverError') {
-			if (Array.isArray(value)) {
-			value.forEach((msg: string) => {
-				if (!seen.has(msg)) {
-				errorMessages.push(msg);
-				seen.add(msg);
+			if (errorKey === 'required') {
+				message = `${this.label} is required`;
+			} else if (errorKey === 'email') {
+				message = `${this.label} must be a valid email`;
+			} else if (errorKey === 'mustMatch') {
+				message = `${this.label} must match ${value}`;
+			} else if (errorKey === 'minlength') {
+				const min = value?.requiredLength;
+				message = `${this.label} must be at least ${min} characters`;
+			} else if (errorKey === 'serverError') {
+				if (Array.isArray(value)) {
+				value.forEach((msg: string) => {
+					if (!seen.has(msg)) {
+					errorMessages.push(msg);
+					seen.add(msg);
+					}
+				});
+				} else {
+				message = value;
 				}
-			});
 			} else {
-			message = value;
+				message = `${this.label} ${value}`;
 			}
-		} else {
-			message = `${this.label} ${errorKey.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
-		}
 
-		if (message && !seen.has(message)) {
-			errorMessages.push(message);
-			seen.add(message);
-		}
+			if (message && !seen.has(message)) {
+				errorMessages.push(message);
+				seen.add(message);
+			}
 		}
 
 		return errorMessages;

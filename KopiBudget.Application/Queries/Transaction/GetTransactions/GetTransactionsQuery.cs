@@ -15,6 +15,9 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
             int pageSize = 1,
             IEnumerable<string>? accountIds = null,
             IEnumerable<string>? categoryIds = null,
+            IEnumerable<string>? budgetIds = null,
+            IEnumerable<string>? personalCategoryIds = null,
+            string? type = null,
             string? dateFrom = null,
             string? dateTo = null)
         {
@@ -24,6 +27,9 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
             PageSize = pageSize;
             AccountIds = accountIds ?? Enumerable.Empty<string>();
             CategoryIds = categoryIds ?? Enumerable.Empty<string>();
+            BudgetIds = budgetIds ?? Enumerable.Empty<string>();
+            Type = type;
+            personalCategoryIds = personalCategoryIds ?? Enumerable.Empty<string>();
             DateFrom = string.IsNullOrWhiteSpace(dateFrom) ? null : dateFrom;
             DateTo = string.IsNullOrWhiteSpace(dateTo) ? null : dateTo;
         }
@@ -31,6 +37,10 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
         public IEnumerable<string> CategoryIds { get; set; } = Enumerable.Empty<string>();
 
         public IEnumerable<string> AccountIds { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<string> BudgetIds { get; set; } = Enumerable.Empty<string>();
+
+        public IEnumerable<string> PersonalCategoryIds { get; set; } = Enumerable.Empty<string>();
+        public string? Type { get; set; } = string.Empty;
         public string? DateFrom { get; set; } = string.Empty;
         public string? DateTo { get; set; } = string.Empty;
 

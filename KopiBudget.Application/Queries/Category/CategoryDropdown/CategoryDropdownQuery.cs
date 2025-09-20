@@ -4,11 +4,11 @@ using MediatR;
 
 namespace KopiBudget.Application.Queries.Category.CategoryDropdown
 {
-    public class GetCategoryDropdownQuery : IRequest<Result<PageResult<CategoryDropdownDto>>>
+    public class CategoryDropdownQuery : IRequest<Result<PageResult<CategoryDropdownDto>>>
     {
         #region Public Constructors
 
-        public GetCategoryDropdownQuery(string search, int pageNumber = 1, string? exclude = "")
+        public CategoryDropdownQuery(string search, int pageNumber = 1, string? exclude = "")
         {
             Search = search;
             PageNumber = pageNumber;

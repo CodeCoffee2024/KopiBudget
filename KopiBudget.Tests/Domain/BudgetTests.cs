@@ -17,7 +17,7 @@ namespace KopiBudget.Tests.Domain
             var endDate = DateTime.UtcNow;
 
             // Act
-            var budget = Budget.Create(amount, name, startDate, endDate, null, null, null, null);
+            var budget = Budget.Create(amount, name, startDate, endDate, null, null, null);
 
             // Assert
             Assert.Equal(name, budget.Name);
@@ -36,7 +36,7 @@ namespace KopiBudget.Tests.Domain
             var endDate = DateTime.UtcNow;
 
             // Act & Assert
-            var entity = Budget.Create(amount, name, startDate, endDate, null, null, null, null);
+            var entity = Budget.Create(amount, name, startDate, endDate, null, null, null);
             Assert.Throws<InvalidDateRangeException>(() => entity);
         }
 
@@ -48,10 +48,10 @@ namespace KopiBudget.Tests.Domain
             var startDate = DateTime.UtcNow.AddDays(-1);
             var endDate = DateTime.UtcNow;
             // Arrange
-            var budget = Budget.Create(amount, name, startDate, endDate, null, null, null, null);
+            var budget = Budget.Create(amount, name, startDate, endDate, null, null, null);
 
             // Act
-            budget.Update(750, "Update Name", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1), null, null, null, null);
+            budget.Update(750, "Update Name", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1), null, null, null);
 
             // Assert
             Assert.Equal(750, budget.Amount);
@@ -67,10 +67,10 @@ namespace KopiBudget.Tests.Domain
 
             var amount = -100;
 
-            var entity = Budget.Create(amount, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null, null);
+            var entity = Budget.Create(amount, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null);
             // Act & Assert
             Assert.Throws<InvalidDateRangeException>(() =>
-                entity.Update(-10, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null, null));
+                entity.Update(-10, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null));
         }
 
         #endregion Public Methods

@@ -61,7 +61,7 @@ export class AccountCreateComponent {
 			});
 	}
 	close() {
-		this.activeModal.dismiss();
+		this.activeModal.close(null);
 	}
 	async onSearchChanged({
 		search,

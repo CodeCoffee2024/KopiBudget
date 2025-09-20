@@ -1,0 +1,10 @@
+
+.category-box {
+	transition: all 0.2s ease-in-out;
+}
+
+.category-box.selected {
+    background-color: var(--default-text-color);
+    color: var(--default-background);
+    border-color:  var(--default-text-color);
+}

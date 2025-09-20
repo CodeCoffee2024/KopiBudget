@@ -60,7 +60,6 @@ export class SoloSelectComponent
 	}
 	@HostListener('document:click', ['$event'])
 	onClickOutside(event: MouseEvent) {
-		console.log(this.isDropdownOpen)
 		if (!this.elementRef.nativeElement.contains(event.target)) {
 			this.isDropdownOpen = false;
 			this.searchQuery = "";

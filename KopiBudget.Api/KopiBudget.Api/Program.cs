@@ -128,6 +128,10 @@ async Task ApplyMigrationsAsync(IServiceProvider serviceProvider)
         {
             context.Database.EnsureDeleted();
         }
+        else
+        {
+            context.Database.EnsureCreated();
+        }
         var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
         if (pendingMigrations.Any())
         {

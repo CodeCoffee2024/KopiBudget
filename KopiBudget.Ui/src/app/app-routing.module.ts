@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/auth.guard';
-import { DashboardPermissions } from './core/constants/permissions/dashboard';
+import { DashboardPermissions } from './core/constants/permission';
 import { adminRoutes } from './core/routes/admin.routes';
 
 export const routes: Routes = [

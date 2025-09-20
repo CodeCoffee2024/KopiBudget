@@ -8,4 +8,5 @@ export enum InputTypes {
 	Email = 'email',
 	Date = 'date',
 	Month = 'month',
+	Radio = 'radio',
 }

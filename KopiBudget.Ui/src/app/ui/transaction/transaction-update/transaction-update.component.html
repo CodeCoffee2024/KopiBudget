@@ -5,42 +5,14 @@
         </div>
     </div>
     <form [formGroup]="Transaction.form" (ngSubmit)="onSubmit()">
-        <app-solo-select
-            [label]="'Account'"
-            [placeholder]="'Search accounts...'"
-            [searchOptions]="accounts"
-            [hasSearchIcon]="true"
-            [formGroup]="Transaction.form"
-            [errorName]="'Account'"
-            [controlName]="'accountId'"
-            [hasMore]="hasMoreAccount"
-            [selectedItem]="Transaction.form.get('account')?.value"
-            [field]="'name'"
-            [isLoading]="isDropdownLoading"
-            (searchChanged)="onSearchChangedAccount($event)"
-            (selectedItemChange)="onSelectionChangeAccount($event)"
-            [addNoResult]="false"
-            [subFields]="['balance']"
-            [subFieldLabels]="['Balance']"
-        >
-        </app-solo-select>
-        <app-solo-select
-            [label]="'Category'"
-            [placeholder]="'Search categories...'"
-            [searchOptions]="categories"
-            [hasSearchIcon]="true"
-            [formGroup]="Transaction.form"
-            [errorName]="'Category'"
-            [controlName]="'categoryId'"
-            [hasMore]="hasMoreCategory"
-            [selectedItem]="Transaction.form.get('category')?.value"
-            [field]="'name'"
-            [isLoading]="isDropdownLoading"
-            (searchChanged)="onSearchChangedCategory($event)"
-            (selectedItemChange)="onSelectionChangeCategory($event)"
-            (addSearchResult)="onAddSearchResultCategory($event)"
-        >
-        </app-solo-select>
+        <ng-container *ngIf="isAccount">
+            <app-field-display [label]="'Account'" [value]="transaction.account?.name"></app-field-display>
+            <app-field-display [label]="'Category'" [value]="transaction.category?.name"></app-field-display>
+        </ng-container>
+        <ng-container *ngIf="!isAccount">
+            <app-field-display [label]="'Budget'" [value]="transaction.budget?.name"></app-field-display>
+            <app-field-display [label]="'Personal Category'" [value]="transaction.personalCategory?.name"></app-field-display>
+        </ng-container>
         <app-input
             [inputType]="InputTypes.Number"
             inputId="amount"

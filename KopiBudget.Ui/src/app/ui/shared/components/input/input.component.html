@@ -24,7 +24,7 @@
 
     <!-- Normal Text Input -->
     <ng-template #normalInput>
-        <input *ngIf="inputType !== 'textarea'"
+        <input *ngIf="inputType !== 'textarea' && inputType !== 'radio'"
         pInputText
         class="form-control form-control-sm"
         [id]="inputId"
@@ -45,15 +45,29 @@
             (blur)="onBlur()"
         ></textarea>
     </ng-template>
+    <div *ngIf="inputType === 'radio'" class="form-group">
+        <div class="d-flex gap-3">
+            <div class="form-check" *ngFor="let option of options">
+                <input
+                    class="form-check-input"
+                    type="radio"
+                    [id]="inputId + option.value"
+                    [formControl]="formControl"
+                    [value]="option.value"
+                />
+                <label class="form-check-label" [for]="inputId + option.value">{{option.label}}</label>
+            </div>
+        </div>
+    </div>
     <div *ngIf="errors && (formControl.invalid && formControl.dirty && formControl.touched)">
         <div *ngFor="let error of errors" class="text-danger">
         {{ error }}
         </div>
     </div>
-    </div>
+</div>
 
     <!-- Checkbox Input -->
-    <div *ngIf="inputType === 'checkbox'" class="custom-control custom-checkbox">
+<div *ngIf="inputType === 'checkbox'" class="custom-control custom-checkbox">
     <input
         class="custom-control-input"
         [id]="inputId"

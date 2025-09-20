@@ -6,6 +6,7 @@ using KopiBudget.Application.Dtos;
 using KopiBudget.Application.Extensions;
 using KopiBudget.Application.Interfaces.Common;
 using KopiBudget.Domain.Abstractions;
+using KopiBudget.Domain.Entities;
 using KopiBudget.Domain.Interfaces;
 
 namespace KopiBudget.Application.Commands.Transaction.TransactionCreate
@@ -14,6 +15,8 @@ namespace KopiBudget.Application.Commands.Transaction.TransactionCreate
         ITransactionRepository _repository,
         IAccountRepository _accountRepository,
         ICategoryRepository _categoryRepository,
+        IBudgetRepository _budgetRepository,
+        IBudgetPersonalCategoryRepository _budgetPersonalCategoryRepository,
         IValidator<TransactionCreateCommand> _validator,
         IMapper _mapper,
         IUnitOfWork _unitOfWork
@@ -27,36 +30,89 @@ namespace KopiBudget.Application.Commands.Transaction.TransactionCreate
             if (!validation.IsValid)
                 return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
 
-            var account = await _accountRepository.GetByIdAsync(Guid.Parse(request.AccountId!));
-            var category = await _categoryRepository.GetByIdAsync(Guid.Parse(request.CategoryId!));
-            if (account == null)
-            {
-                validation.Errors.Add(new ValidationFailure("AccountId", "Account not found"));
-            }
-            if (category == null)
-            {
-                validation.Errors.Add(new ValidationFailure("CategoryId", "Category not found"));
-            }
-            if ((account!.Balance -= decimal.Parse(request.Amount!)) < 0)
-            {
-                validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
-            }
             if (decimal.Parse(request.Amount!) <= 0)
             {
                 validation.Errors.Add(new ValidationFailure("Amount", "Amount must be greater than 0"));
             }
-            if ((account!.Balance -= decimal.Parse(request.Amount!)) < 0)
+            if (request.Type == TransactionTypes.Account)
             {
-                validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
+                var account = await _accountRepository.GetByIdAsync(Guid.Parse(request.AccountId!));
+                var category = await _categoryRepository.GetByIdAsync(Guid.Parse(request.CategoryId!));
+                if (account == null)
+                {
+                    validation.Errors.Add(new ValidationFailure("AccountId", "Account not found"));
+                }
+                if (category == null)
+                {
+                    validation.Errors.Add(new ValidationFailure("CategoryId", "Category not found"));
+                }
+                if ((account!.Balance - decimal.Parse(request.Amount!)) < 0)
+                {
+                    validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
+                }
+                if ((account!.Balance - decimal.Parse(request.Amount!)) < 0)
+                {
+                    validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
+                }
+                if (!validation.IsValid)
+                    return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
+                account!.UpdateBalance(decimal.Parse(request.Amount!));
+                var entity = KopiBudget.Domain.Entities.Transaction.Create(
+                    decimal.Parse(request.Amount!),
+                    this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.Time),
+                    Guid.Parse(request.CategoryId!),
+                    Guid.Parse(request.AccountId!),
+                    null,
+                    null,
+                    TransactionTypes.Account,
+                    request.Note,
+                    request.UserId,
+                    DateTime.UtcNow
+                );
+                await _repository.AddAsync(entity);
+                await _unitOfWork.SaveChangesAsync();
+                return Result.Success(_mapper.Map<TransactionDto>(entity));
             }
-            if (!validation.IsValid)
-                return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
+            else
+            {
+                var budget = await _budgetRepository.GetByIdAsync(Guid.Parse(request.BudgetId!));
+                var budgetPersonalCategory = await _budgetPersonalCategoryRepository.GetByBudgetIdAndPersonalCategoryIdAsync(Guid.Parse(request.BudgetId!), Guid.Parse(request.PersonalCategoryId!));
 
-            account!.UpdateBalance(decimal.Parse(request.Amount!));
-            var entity = KopiBudget.Domain.Entities.Transaction.Create(decimal.Parse(request.Amount!), this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.Time), Guid.Parse(request.CategoryId!), Guid.Parse(request.AccountId!), request.Note, request.UserId, DateTime.UtcNow);
-            await _repository.AddAsync(entity);
-            await _unitOfWork.SaveChangesAsync();
-            return Result.Success(_mapper.Map<TransactionDto>(entity));
+                if (budget == null)
+                {
+                    validation.Errors.Add(new ValidationFailure("BudgetId", "Budget not found"));
+                }
+                if (budgetPersonalCategory == null)
+                {
+                    validation.Errors.Add(new ValidationFailure("PersonalCategoryId", "Personal Category not found"));
+                }
+                if (budgetPersonalCategory!.Limit < decimal.Parse(request.Amount!))
+                {
+                    validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than limit"));
+                }
+                if (budget!.StartDate > DateTime.Parse(request.Date!) || budget!.EndDate < DateTime.Parse(request.Date!))
+                {
+                    validation.Errors.Add(new ValidationFailure("Date", "Date does not meet the budget date period"));
+                }
+                if (!validation.IsValid)
+                    return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
+                budgetPersonalCategory!.UpdateTransactionAmount(decimal.Parse(request.Amount!), true);
+                var entity = KopiBudget.Domain.Entities.Transaction.Create(
+                    decimal.Parse(request.Amount!),
+                    this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.Time),
+                    null,
+                    null,
+                    Guid.Parse(request.BudgetId!),
+                    Guid.Parse(request.PersonalCategoryId!),
+                    TransactionTypes.Budget,
+                    request.Note,
+                    request.UserId,
+                    DateTime.UtcNow
+                );
+                await _repository.AddAsync(entity);
+                await _unitOfWork.SaveChangesAsync();
+                return Result.Success(_mapper.Map<TransactionDto>(entity));
+            }
         }
 
         public DateTime CombineDateAndTimeUtc(DateTime? date, string? time)

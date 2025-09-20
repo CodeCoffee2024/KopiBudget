@@ -85,4 +85,52 @@ export class FormErrorService {
       }
     });
   }
+
+  getFormControlErrors(formControl, name) {
+    let errors = [];
+    if (formControl.errors) {
+
+      const errors = formControl.errors;
+      const errorMessages: string[] = [];
+      const seen = new Set<string>();
+
+      for (const errorKey of Object.keys(errors)) {
+        const value = errors[errorKey];
+
+        let message: string | null = null;
+
+        if (errorKey === 'required') {
+          message = `${name} is required`;
+        } else if (errorKey === 'email') {
+          message = `${name} must be a valid email`;
+        } else if (errorKey === 'mustMatch') {
+          message = `${name} must match ${value}`;
+        } else if (errorKey === 'minlength') {
+          const min = value?.requiredLength;
+          message = `${name} must be at least ${min} characters`;
+        } else if (errorKey === 'serverError') {
+          if (Array.isArray(value)) {
+          value.forEach((msg: string) => {
+            if (!seen.has(msg)) {
+            errorMessages.push(msg);
+            seen.add(msg);
+            }
+          });
+          } else {
+          message = value;
+          }
+        } else {
+          message = `${name} ${value}`;
+        }
+
+        if (message && !seen.has(message)) {
+          errorMessages.push(message);
+          seen.add(message);
+        }
+      }
+
+      return errorMessages;
+    }
+    return errors;
+  }
 }

@@ -22,9 +22,6 @@ namespace KopiBudget.Infrastructure.Configuration
                 .WithOne(t => t.Category)
                 .HasForeignKey(t => t.CategoryId);
 
-            builder.HasMany(c => c.Budgets)
-                .WithOne(b => b.Category)
-                .HasForeignKey(b => b.CategoryId);
             builder.HasOne(u => u.CreatedBy)
                 .WithMany()
                 .HasForeignKey(u => u.CreatedById)

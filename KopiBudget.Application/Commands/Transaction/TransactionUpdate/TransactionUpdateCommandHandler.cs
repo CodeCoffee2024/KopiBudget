@@ -6,6 +6,7 @@ using KopiBudget.Application.Dtos;
 using KopiBudget.Application.Extensions;
 using KopiBudget.Application.Interfaces.Common;
 using KopiBudget.Domain.Abstractions;
+using KopiBudget.Domain.Entities;
 using KopiBudget.Domain.Interfaces;
 
 namespace KopiBudget.Application.Commands.Transaction.TransactionUpdate
@@ -13,7 +14,8 @@ namespace KopiBudget.Application.Commands.Transaction.TransactionUpdate
     internal sealed class TransactionUpdateCommandHandler(
         ITransactionRepository _repository,
         IAccountRepository _accountRepository,
-        ICategoryRepository _categoryRepository,
+        IBudgetRepository _budgetRepository,
+        IBudgetPersonalCategoryRepository _budgetPersonalCategoryRepository,
         IValidator<TransactionUpdateCommand> _validator,
         IMapper _mapper,
         IUnitOfWork _unitOfWork
@@ -28,34 +30,45 @@ namespace KopiBudget.Application.Commands.Transaction.TransactionUpdate
                 return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
 
             var transaction = await _repository.GetByIdAsync(Guid.Parse(request.Id!));
-            var account = await _accountRepository.GetByIdAsync(Guid.Parse(request.AccountId!));
-            var category = await _categoryRepository.GetByIdAsync(Guid.Parse(request.CategoryId!));
-            if (transaction == null)
+            if (request.Type == TransactionTypes.Account)
             {
-                validation.Errors.Add(new ValidationFailure("Id", "Transaction not found"));
-            }
-            if (account == null)
-            {
-                validation.Errors.Add(new ValidationFailure("AccountId", "Account not found"));
-            }
-            if (category == null)
-            {
-                validation.Errors.Add(new ValidationFailure("CategoryId", "Category not found"));
-            }
-            if (decimal.Parse(request.Amount!) <= 0)
-            {
-                validation.Errors.Add(new ValidationFailure("Amount", "Amount must be greater than 0"));
-            }
+                var account = await _accountRepository.GetByIdAsync(Guid.Parse(request.AccountId!));
 
-            account!.AddToBalance(transaction!.Amount); // reverts previous amount
-            if ((account!.Balance - decimal.Parse(request.Amount!)) < 0)
-            {
-                validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
+                account!.AddToBalance(transaction!.Amount); // reverts previous amount
+                if ((account!.Balance - decimal.Parse(request.Amount!)) < 0)
+                {
+                    validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than balance"));
+                }
+
+                if (!validation.IsValid)
+                    return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
+                account!.UpdateBalance(decimal.Parse(request.Amount!));
+                transaction!.Update(decimal.Parse(request.Amount!), this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.InputTime!.Value ? request.Time : string.Empty), request.Note, request.UserId, DateTime.UtcNow);
             }
-            if (!validation.IsValid)
-                return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
-            account!.UpdateBalance(decimal.Parse(request.Amount!));
-            transaction.Update(decimal.Parse(request.Amount!), this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.InputTime!.Value ? request.Time : string.Empty), Guid.Parse(request.CategoryId!), Guid.Parse(request.AccountId!), request.Note, request.UserId, DateTime.UtcNow);
+            else
+            {
+                var budget = await _budgetRepository.GetByIdAsync(Guid.Parse(request.BudgetId!));
+                var budgetPersonalCategory = await _budgetPersonalCategoryRepository.GetByBudgetIdAndPersonalCategoryIdAsync(Guid.Parse(request.BudgetId!), Guid.Parse(request.PersonalCategoryId!));
+
+                budgetPersonalCategory!.AddToTransactionAmount(transaction!.Amount); // reverts previous amount
+                if (budgetPersonalCategory == null)
+                {
+                    validation.Errors.Add(new ValidationFailure("PersonalCategoryId", "Personal Category not found"));
+                }
+                if (budgetPersonalCategory!.Limit < decimal.Parse(request.Amount!))
+                {
+                    validation.Errors.Add(new ValidationFailure("Amount", "Amount is greater than limit"));
+                }
+                if (budget!.StartDate > DateTime.Parse(request.Date!) || budget!.EndDate < DateTime.Parse(request.Date!))
+                {
+                    validation.Errors.Add(new ValidationFailure("Date", "Date does not meet the budget date period"));
+                }
+                if (!validation.IsValid)
+                    return Result.Failure<TransactionDto>(Error.Validation, validation.ToErrorList());
+
+                budgetPersonalCategory!.UpdateTransactionAmount(decimal.Parse(request.Amount!));
+                transaction!.Update(decimal.Parse(request.Amount!), this.CombineDateAndTimeUtc(DateTime.Parse(request.Date!), request.InputTime!.Value ? request.Time : string.Empty), request.Note, request.UserId, DateTime.UtcNow);
+            }
             await _unitOfWork.SaveChangesAsync();
             return Result.Success(_mapper.Map<TransactionDto>(transaction));
         }
