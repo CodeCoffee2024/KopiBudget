@@ -8,7 +8,7 @@ import { InputTypes } from '../../../../domain/models/input-type';
 	standalone: true,
 	imports: [CommonModule, ReactiveFormsModule],
 	templateUrl: './input.component.html',
-	styleUrls: ['./input.component.scss']
+	styleUrls: ['./input.component.scss'],
 })
 export class InputComponent implements ControlValueAccessor {
 	@Input() inputType: InputTypes = InputTypes.Text;
@@ -52,14 +52,14 @@ export class InputComponent implements ControlValueAccessor {
 				message = `${this.label} must be at least ${min} characters`;
 			} else if (errorKey === 'serverError') {
 				if (Array.isArray(value)) {
-				value.forEach((msg: string) => {
-					if (!seen.has(msg)) {
-					errorMessages.push(msg);
-					seen.add(msg);
-					}
-				});
+					value.forEach((msg: string) => {
+						if (!seen.has(msg)) {
+							errorMessages.push(msg);
+							seen.add(msg);
+						}
+					});
 				} else {
-				message = value;
+					message = value;
 				}
 			} else {
 				message = `${this.label} ${value}`;
@@ -110,7 +110,7 @@ export class InputComponent implements ControlValueAccessor {
 
 	writeValue(value: any): void {
 		if (this.formControl) {
-		this.formControl.setValue(value, { emitEvent: false });
+			this.formControl.setValue(value, { emitEvent: false });
 		}
 	}
 

@@ -37,6 +37,11 @@ namespace KopiBudget.Application.Commands.Budget.BudgetCreate
                     validationResult.Errors.Add(new ValidationFailure("Personal Category", "One or more personal category not found"));
                 }
             }
+            var existsByName = await _repository.ExistsByNameAsync(request.Name!);
+            if (existsByName)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Name", "Budget with same name found"));
+            }
             var amount = Decimal.Parse(request.Amount!);
             var startDate = DateTime.SpecifyKind(DateTime.Parse(request.StartDate!), DateTimeKind.Local).ToUniversalTime();
             var endDate = DateTime.SpecifyKind(DateTime.Parse(request.EndDate!), DateTimeKind.Local).ToUniversalTime();

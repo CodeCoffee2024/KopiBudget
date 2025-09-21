@@ -1,23 +1,23 @@
 <div class="form-group input-container">
-    <label *ngIf="label" [for]="inputId" class="form-label font-weight-bold">
-        {{ label }}
-        <span *ngIf="isRequired" class="text-danger">*</span>
-    </label>
-    <select
-        [id]="inputId"
-        class="form-select w-100"
-        (change)="onChange($event)"
-        [ngClass]="{'border-danger': formControl.invalid && formControl.touched && formControl.dirty}"
-    >
-        <option value="">Select type</option>
-        <option *ngFor="let option of options" [value]="option.value">
-            {{ option[field] }}
-        </option>
-    </select>
+  <label *ngIf="label" [for]="inputId" class="form-label font-weight-bold">
+    {{ label }}
+    <span *ngIf="isRequired" class="text-danger">*</span>
+  </label>
+  <select
+    [id]="inputId"
+    class="form-select w-100"
+    (change)="onChange($event)"
+    [ngClass]="{ 'border-danger': formControl.invalid && formControl.touched && formControl.dirty }"
+  >
+    <option value="">Select type</option>
+    <option *ngFor="let option of options" [value]="option.value">
+      {{ option[field] }}
+    </option>
+  </select>
 
-    <div *ngIf="errors && (formControl.invalid && formControl.dirty && formControl.touched)">
-        <div *ngFor="let error of errors" class="text-danger">
-        {{ error }}
-        </div>
+  <div *ngIf="errors && formControl.invalid && formControl.dirty && formControl.touched">
+    <div *ngFor="let error of errors" class="text-danger">
+      {{ error }}
     </div>
+  </div>
 </div>

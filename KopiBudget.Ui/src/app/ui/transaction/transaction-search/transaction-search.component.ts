@@ -11,7 +11,10 @@ import { BudgetFragment } from '../../../domain/models/budget';
 import { CategoryFragment } from '../../../domain/models/category';
 import { InputTypes } from '../../../domain/models/input-type';
 import { GenericDropdownListingOption } from '../../../domain/models/listing-option';
-import { PersonalCategoryDropdownListingOption, PersonalCategoryFragment } from '../../../domain/models/personal-category';
+import {
+  PersonalCategoryDropdownListingOption,
+  PersonalCategoryFragment,
+} from '../../../domain/models/personal-category';
 import { Transaction, TransactionTypes } from '../../../domain/models/transaction';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { SoloSelectComponent } from '../../shared/components/solo-select/solo-select.component';
@@ -20,9 +23,15 @@ import { MultiSelectComponent } from '../../shared/multi-select/multi-select.com
 @Component({
   selector: 'app-transaction-search',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputComponent, SoloSelectComponent, MultiSelectComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputComponent,
+    SoloSelectComponent,
+    MultiSelectComponent,
+  ],
   templateUrl: './transaction-search.component.html',
-  styleUrls: ['./transaction-search.component.scss']
+  styleUrls: ['./transaction-search.component.scss'],
 })
 export class TransactionSearchComponent {
   Transaction: Transaction = new Transaction();
@@ -63,10 +72,14 @@ export class TransactionSearchComponent {
     this.refresh.emit(this.Transaction.toSubmitSearchForm);
   }
   private loadDropdown<T>(
-    service: { dropdown: (opt: GenericDropdownListingOption | PersonalCategoryDropdownListingOption) => Observable<{ data: T[]; totalCount: number; totalPages: number }> },
+    service: {
+      dropdown: (
+        opt: GenericDropdownListingOption | PersonalCategoryDropdownListingOption,
+      ) => Observable<{ data: T[]; totalCount: number; totalPages: number }>;
+    },
     option: GenericDropdownListingOption | PersonalCategoryDropdownListingOption,
     state: { items: T[]; set: (items: T[]) => void; hasMore: (val: boolean) => void },
-    { search, page, clear }: { search: string; page: number; clear: boolean }
+    { search, page, clear }: { search: string; page: number; clear: boolean },
   ) {
     this.isDropdownLoading = true;
     option.search = search;
@@ -94,7 +107,7 @@ export class TransactionSearchComponent {
         set: (val) => (this.accounts = val),
         hasMore: (val) => (this.hasMoreAccount = val),
       },
-      e
+      e,
     );
   }
 
@@ -108,7 +121,7 @@ export class TransactionSearchComponent {
         set: (val) => (this.categories = val),
         hasMore: (val) => (this.hasMoreCategory = val),
       },
-      e
+      e,
     );
   }
 
@@ -122,7 +135,7 @@ export class TransactionSearchComponent {
         set: (val) => (this.budgets = val),
         hasMore: (val) => (this.hasMoreBudget = val),
       },
-      e
+      e,
     );
   }
 
@@ -137,7 +150,7 @@ export class TransactionSearchComponent {
         set: (val) => (this.personalCategories = val),
         hasMore: (val) => (this.hasMorePersonalCategory = val),
       },
-      e
+      e,
     );
   }
 
@@ -162,7 +175,8 @@ export class TransactionSearchComponent {
   onSelectionChangePersonalCategory(selected: PersonalCategoryFragment[]): void {
     if (this.type !== TransactionTypes.BUDGET) return;
     this.listingOptionPersonalCategory.exclude = selected.map((it) => it.id).join(',');
-    this.Transaction.searchForm.get('personalCategoryIds')?.setValue(this.listingOptionPersonalCategory.exclude);
+    this.Transaction.searchForm
+      .get('personalCategoryIds')
+      ?.setValue(this.listingOptionPersonalCategory.exclude);
   }
 }
-

@@ -4,9 +4,9 @@ import { LoadingService } from './core/services/loading.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'KopiBudget';
-	constructor(public loadingService: LoadingService) {}
+  constructor(public loadingService: LoadingService) {}
 }

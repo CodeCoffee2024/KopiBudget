@@ -19,7 +19,7 @@ import { SoloSelectComponent } from '../../shared/components/solo-select/solo-se
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, InputComponent, SoloSelectComponent],
   templateUrl: './exchange-rate-update.component.html',
-  styleUrls: ['./exchange-rate-update.component.scss']
+  styleUrls: ['./exchange-rate-update.component.scss'],
 })
 export class ExchangeRateUpdateComponent {
   SystemSetting: SystemSetting = new SystemSetting();
@@ -27,31 +27,28 @@ export class ExchangeRateUpdateComponent {
   isDropdownLoading = false;
   currencies: CurrencyDto[];
   hasMore = false;
-  dropdownListingOption: GenericDropdownListingOption =
-    new GenericDropdownListingOption();
+  dropdownListingOption: GenericDropdownListingOption = new GenericDropdownListingOption();
   constructor(
     private loadingService: LoadingService,
     private toastService: ToastService,
     private formErrorService: FormErrorService,
     private systemSettingsService: SystemService,
-    private activeModal: NgbActiveModal
-  ) {
-  }
+    private activeModal: NgbActiveModal,
+  ) {}
   onSubmit() {
-    this.systemSettingsService.updateCurrency(this.SystemSetting.toSubmitFormCurrency).pipe(
+    this.systemSettingsService
+      .updateCurrency(this.SystemSetting.toSubmitFormCurrency)
+      .pipe(
         finalize(() => {
           this.loadingService.hide();
-        })
+        }),
       )
       .subscribe({
         next: (result) => {
           this.activeModal.close(this.SystemSetting.formCurrency.get('currency').value);
         },
         error: (error) => {
-          this.toastService.error(
-            'Error',
-            'Something went wrong.'
-          );
+          this.toastService.error('Error', 'Something went wrong.');
           this.formErrorService.setServerErrors(this.SystemSetting.formCurrency, [
             error?.error?.error,
           ]);
@@ -59,7 +56,7 @@ export class ExchangeRateUpdateComponent {
       });
   }
   close() {
-		this.activeModal.close(null);
+    this.activeModal.close(null);
   }
   async onSearchChanged({
     search,
@@ -77,24 +74,16 @@ export class ExchangeRateUpdateComponent {
     if (clear) {
       this.currencies = [];
     }
-    this.systemSettingsService
-      .dropdownCurrency(this.dropdownListingOption)
-      .subscribe((it) => {
-        this.hasMore =
-          page * it.totalCount <
-          it.totalPages * it.totalCount;
-        const list = clear
-          ? it.data
-          : [...this.currencies, ...it.data];
-        this.currencies = list;
-        this.isDropdownLoading = false;
-      });
+    this.systemSettingsService.dropdownCurrency(this.dropdownListingOption).subscribe((it) => {
+      this.hasMore = page * it.totalCount < it.totalPages * it.totalCount;
+      const list = clear ? it.data : [...this.currencies, ...it.data];
+      this.currencies = list;
+      this.isDropdownLoading = false;
+    });
   }
 
   onSelectionChange(selected): void {
-    this.SystemSetting.formCurrency
-      .get('currency')
-      .setValue(selected.item);
+    this.SystemSetting.formCurrency.get('currency').setValue(selected.item);
     // this.refresh();
   }
 }

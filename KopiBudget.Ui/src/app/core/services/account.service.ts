@@ -7,7 +7,7 @@ import { mapItemsToGenericListing } from '../generics/listing-result.mapper.ts';
 import { GenericService } from './generic.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService extends GenericService {
   private controller = '/account/';
@@ -18,44 +18,26 @@ export class AccountService extends GenericService {
     return this.post<ApiResult<AccountDto>>(
       `${this.controller}`,
       payload,
-      this.getAuthorizationHeader()
+      this.getAuthorizationHeader(),
     );
   }
   getUserAccounts(): Observable<ApiResult<AccountDto[]>> {
-    return this.get<ApiResult<AccountDto[]>>(
-      `${this.controller}UserAccounts`,
-      null,
-      true
-    );
+    return this.get<ApiResult<AccountDto[]>>(`${this.controller}UserAccounts`, null, true);
   }
   update(id, payload): Observable<ApiResult<AccountDto>> {
     return this.put<ApiResult<AccountDto>>(
-    `${this.controller}${id}`,
-    payload,
-    this.getAuthorizationHeader()
+      `${this.controller}${id}`,
+      payload,
+      this.getAuthorizationHeader(),
     );
   }
   remove(id): Observable<NullApiResult> {
-    return this.delete<NullApiResult>(
-    `${this.controller}${id}`
-    );
+    return this.delete<NullApiResult>(`${this.controller}${id}`);
   }
-  dropdown(
-    dropdownListingOption
-  ): Observable<GenericListingResult<AccountFragment[]>> {
-    const queryParams = this.setQueryParameters(
-      dropdownListingOption
-    );
-    return this.get<any>(
-      `${this.controller}Dropdown?${queryParams}`,
-      null,
-      true
-    ).pipe(
-      map((res) =>
-        mapItemsToGenericListing<AccountFragment[]>(
-          res.data
-        )
-      )
+  dropdown(dropdownListingOption): Observable<GenericListingResult<AccountFragment[]>> {
+    const queryParams = this.setQueryParameters(dropdownListingOption);
+    return this.get<any>(`${this.controller}Dropdown?${queryParams}`, null, true).pipe(
+      map((res) => mapItemsToGenericListing<AccountFragment[]>(res.data)),
     );
   }
 }

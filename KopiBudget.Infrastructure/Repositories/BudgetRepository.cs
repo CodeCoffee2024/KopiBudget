@@ -25,6 +25,10 @@ namespace KopiBudget.Infrastructure.Repositories
         {
             return await GetPaginatedAsync(page, pageSize, search, new[] { "Name" }, orderBy, statusFilter);
         }
+        public async Task<bool> ExistsByNameAsync(string name) =>
+            await _context.Set<Budget>().AnyAsync(entity => entity.Name == name);
+        public async Task<Budget?> GetByNameAsync(string name) =>
+            await _context.Set<Budget>().FirstOrDefaultAsync(entity => entity.Name == name);
 
         #endregion Public Constructors
     }

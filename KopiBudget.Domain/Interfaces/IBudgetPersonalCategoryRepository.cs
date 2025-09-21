@@ -8,6 +8,8 @@ namespace KopiBudget.Domain.Interfaces
 
         Task<BudgetPersonalCategory?> GetByBudgetIdAndPersonalCategoryIdAsync(Guid budgetId, Guid personalCategoryId);
 
+        void Remove(BudgetPersonalCategory Role);
+
         #endregion Public Methods
     }
 }

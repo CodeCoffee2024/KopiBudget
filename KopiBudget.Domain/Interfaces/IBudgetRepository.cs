@@ -11,8 +11,10 @@ namespace KopiBudget.Domain.Interfaces
         Task<IEnumerable<Budget>> GetAllAsync();
 
         Task<bool> ExistsAsync(Guid id);
+        Task<bool> ExistsByNameAsync(string name);
 
         Task<Budget?> GetByIdAsync(Guid id);
+        Task<Budget?> GetByNameAsync(string name);
 
         Task<PageResult<Budget>> GetPaginatedBudgetsAsync(int page, int pageSize, string? search, string orderBy, Expression<Func<Budget, bool>>? statusFilter);
 

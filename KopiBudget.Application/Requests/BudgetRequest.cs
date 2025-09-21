@@ -1,5 +1,6 @@
 ﻿using KopiBudget.Application.Abstractions.Request;
 using KopiBudget.Application.Commands.Budget.BudgetCreate;
+using KopiBudget.Application.Commands.Budget.BudgetUpdate;
 using KopiBudget.Application.Dtos;
 using KopiBudget.Application.Queries.Budget.BudgetDropdown;
 
@@ -24,6 +25,9 @@ namespace KopiBudget.Application.Requests
             new(UserId, Name, Amount, StartDate, EndDate, BudgetPersonalCategories);
 
         public BudgetDropdownQuery ToDropdownQuery() => new(Search!, PageNumber, Exclude);
+
+        public BudgetUpdateCommand SetUpdateCommand(Guid UserId, string Id) =>
+             new(UserId, Id, Name, Amount, StartDate, EndDate, BudgetPersonalCategories);
 
         #endregion Public Methods
     }

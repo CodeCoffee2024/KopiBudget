@@ -16,8 +16,15 @@ import { BudgetFragment } from '../../../domain/models/budget';
 import { CategoryFragment } from '../../../domain/models/category';
 import { InputTypes } from '../../../domain/models/input-type';
 import { GenericDropdownListingOption } from '../../../domain/models/listing-option';
-import { PersonalCategoryDropdownListingOption, PersonalCategoryFragment } from '../../../domain/models/personal-category';
-import { Transaction, TransactionDropdowns, TransactionTypes } from '../../../domain/models/transaction';
+import {
+  PersonalCategoryDropdownListingOption,
+  PersonalCategoryFragment,
+} from '../../../domain/models/personal-category';
+import {
+  Transaction,
+  TransactionDropdowns,
+  TransactionTypes,
+} from '../../../domain/models/transaction';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { PlainSelectComponent } from '../../shared/components/plain-select/plain-select.component';
 import { SoloSelectComponent } from '../../shared/components/solo-select/solo-select.component';
@@ -25,20 +32,29 @@ import { SoloSelectComponent } from '../../shared/components/solo-select/solo-se
 @Component({
   selector: 'app-transaction-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputComponent, SoloSelectComponent, PlainSelectComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputComponent,
+    SoloSelectComponent,
+    PlainSelectComponent,
+  ],
   templateUrl: './transaction-create.component.html',
-  styleUrls: ['./transaction-create.component.scss']
+  styleUrls: ['./transaction-create.component.scss'],
 })
 export class TransactionCreateComponent implements OnInit {
   Transaction: Transaction = new Transaction();
   TransactionDropdowns = TransactionDropdowns;
-  typeOptions = [{
-    name: "Account",
-    value: TransactionTypes.ACCOUNT
-  },{
-    name: "Budget",
-    value: TransactionTypes.BUDGET
-  }]
+  typeOptions = [
+    {
+      name: 'Account',
+      value: TransactionTypes.ACCOUNT,
+    },
+    {
+      name: 'Budget',
+      value: TransactionTypes.BUDGET,
+    },
+  ];
   InputTypes = InputTypes;
   isDropdownLoading = false;
   categories: CategoryFragment[];
@@ -49,8 +65,7 @@ export class TransactionCreateComponent implements OnInit {
   hasMoreAccount = false;
   hasMoreBudget = false;
   hasMorePersonalCategory = false;
-  dropdownListingOption: GenericDropdownListingOption =
-    new GenericDropdownListingOption();
+  dropdownListingOption: GenericDropdownListingOption = new GenericDropdownListingOption();
   personalCategoryDropdownListingOption: PersonalCategoryDropdownListingOption =
     new PersonalCategoryDropdownListingOption();
   constructor(
@@ -62,27 +77,30 @@ export class TransactionCreateComponent implements OnInit {
     private budgetService: BudgetService,
     private personalCategoryService: PersonalCategoryService,
     private transactionService: TransactionService,
-    private activeModal: NgbActiveModal
-  ) {
-
-  }
+    private activeModal: NgbActiveModal,
+  ) {}
   ngOnInit(): void {
     this.Transaction.form.get('inputTime')?.valueChanges.subscribe((inputTime) => {
-
-    const timeControl = this.Transaction.form.get('time');
-    if (inputTime) {
-      timeControl?.setValidators([Validators.required]);
-    } else {
-      timeControl?.clearValidators();
-    }
-    timeControl?.updateValueAndValidity();
-  });
-}
+      const timeControl = this.Transaction.form.get('time');
+      if (inputTime) {
+        timeControl?.setValidators([Validators.required]);
+      } else {
+        timeControl?.clearValidators();
+      }
+      timeControl?.updateValueAndValidity();
+    });
+  }
   onSubmit() {
-    this.transactionService.create(this.isAccount ? this.Transaction.toSubmitTransactionForm : this.Transaction.toSubmitBudgetForm).pipe(
+    this.transactionService
+      .create(
+        this.isAccount
+          ? this.Transaction.toSubmitTransactionForm
+          : this.Transaction.toSubmitBudgetForm,
+      )
+      .pipe(
         finalize(() => {
           this.loadingService.hide();
-        })
+        }),
       )
       .subscribe({
         next: (result) => {
@@ -91,13 +109,8 @@ export class TransactionCreateComponent implements OnInit {
         error: (error) => {
           this.Transaction.form.markAllAsTouched();
           this.Transaction.form.markAsDirty();
-          this.toastService.error(
-            'Error',
-            'Something went wrong.'
-          );
-          this.formErrorService.setServerErrors(this.Transaction.form, [
-            error?.error?.errors,
-          ]);
+          this.toastService.error('Error', 'Something went wrong.');
+          this.formErrorService.setServerErrors(this.Transaction.form, [error?.error?.errors]);
         },
       });
   }
@@ -105,21 +118,17 @@ export class TransactionCreateComponent implements OnInit {
     this.activeModal.close(null);
   }
   get isAccount() {
-    return this.Transaction.form.get("type").value == TransactionTypes.ACCOUNT;
+    return this.Transaction.form.get('type').value == TransactionTypes.ACCOUNT;
   }
   get isBudget() {
-    return this.Transaction.form.get("type").value == TransactionTypes.BUDGET;
+    return this.Transaction.form.get('type').value == TransactionTypes.BUDGET;
   }
   onTypeChange(type) {
-    this.Transaction.form.get("type").setValue(type);
+    this.Transaction.form.get('type').setValue(type);
   }
   async onSearchChanged(
-  {
-      search,
-      page,
-      clear = false,
-    }: { search: string; page: number; clear: boolean },
-    dropdownType: TransactionDropdowns
+    { search, page, clear = false }: { search: string; page: number; clear: boolean },
+    dropdownType: TransactionDropdowns,
   ) {
     this.isDropdownLoading = true;
     this.dropdownListingOption.search = search;
@@ -127,11 +136,7 @@ export class TransactionCreateComponent implements OnInit {
     this.loadDropdown(page, clear, dropdownType);
   }
 
-  private loadDropdown(
-    page: number,
-    clear: boolean,
-    dropdownType: TransactionDropdowns
-  ) {
+  private loadDropdown(page: number, clear: boolean, dropdownType: TransactionDropdowns) {
     let service$: Observable<any>;
     let targetList: any[];
 
@@ -149,10 +154,13 @@ export class TransactionCreateComponent implements OnInit {
         targetList = this.budgets;
         break;
       case TransactionDropdowns.PERSONALCATEGORY:
-        this.personalCategoryDropdownListingOption.budgetId = this.Transaction.form.get('budgetId')?.value;
+        this.personalCategoryDropdownListingOption.budgetId =
+          this.Transaction.form.get('budgetId')?.value;
         this.personalCategoryDropdownListingOption.search = this.dropdownListingOption.search;
-        this.personalCategoryDropdownListingOption.exclude
-        service$ = this.personalCategoryService.dropdown(this.personalCategoryDropdownListingOption);
+        this.personalCategoryDropdownListingOption.exclude;
+        service$ = this.personalCategoryService.dropdown(
+          this.personalCategoryDropdownListingOption,
+        );
         targetList = this.personalCategories;
         break;
     }
@@ -208,13 +216,11 @@ export class TransactionCreateComponent implements OnInit {
         },
         error: (error) => {
           this.toastService.error('Error', 'Something went wrong.');
-          this.formErrorService.setServerErrors(this.Transaction.form, [
-            error?.error?.error,
-          ]);
+          this.formErrorService.setServerErrors(this.Transaction.form, [error?.error?.error]);
         },
       });
   }
   get isBudgetNull() {
-    return this.Transaction.form.get("budgetId").value;
+    return this.Transaction.form.get('budgetId').value;
   }
 }

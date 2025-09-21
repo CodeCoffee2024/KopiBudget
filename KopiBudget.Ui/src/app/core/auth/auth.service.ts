@@ -6,45 +6,39 @@ import { GenericService } from '../services/generic.service';
 import { AuthUser, LoginResponse } from './auth.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService extends GenericService {
   private readonly tokenKey = 'token';
   private readonly refreshTokenKey = 'refreshToken';
   private readonly userKey = 'user';
-	private controller = 'auth/';
+  private controller = 'auth/';
 
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getStoredUser());
   currentUser$ = this.currentUserSubject.asObservable();
 
-	constructor(private httpClient: HttpClient) {
-		super(httpClient);
-	}
+  constructor(private httpClient: HttpClient) {
+    super(httpClient);
+  }
 
   login(payload): Observable<AuthUser> {
-    return this.post<ApiResult<LoginResponse>>(
-      `/${this.controller}login`,
-      payload,
-      null
-    ).pipe(
-      switchMap(response => {
+    return this.post<ApiResult<LoginResponse>>(`/${this.controller}login`, payload, null).pipe(
+      switchMap((response) => {
         const loginResponse = response.data;
 
         if (loginResponse) {
           this.setSession(loginResponse);
 
-          return this.get<ApiResult<AuthUser>>(
-            `/${this.controller}user-detail`,null, true
-          ).pipe(
-            map(userResponse => {
+          return this.get<ApiResult<AuthUser>>(`/${this.controller}user-detail`, null, true).pipe(
+            map((userResponse) => {
               this.setUserData(userResponse.data);
               return userResponse.data;
-            })
+            }),
           );
         }
 
         return throwError(() => new Error('Login failed'));
-      })
+      }),
     );
   }
 
@@ -55,19 +49,18 @@ export class AuthService extends GenericService {
   refreshToken(): Observable<LoginResponse> {
     const refreshToken = this.getRefreshToken();
 
-    return this.post<ApiResult<LoginResponse>>(
-        `/${this.controller}refresh`,
-        { "refreshToken": refreshToken }
-      ).pipe(
-        map(response => {
-          const loginResponse = response.data;
-          if (loginResponse) {
-            this.setSession(loginResponse);
-          }
+    return this.post<ApiResult<LoginResponse>>(`/${this.controller}refresh`, {
+      refreshToken: refreshToken,
+    }).pipe(
+      map((response) => {
+        const loginResponse = response.data;
+        if (loginResponse) {
+          this.setSession(loginResponse);
+        }
 
-          return loginResponse;
-        })
-      );
+        return loginResponse;
+      }),
+    );
   }
 
   logout(): void {

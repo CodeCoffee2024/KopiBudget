@@ -15,9 +15,14 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(
+    null,
+  );
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.auth.getToken();
@@ -35,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
           return this.handle401Error(authReq, next);
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -48,24 +53,24 @@ export class AuthInterceptor implements HttpInterceptor {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(newToken.token);
           return next.handle(
-            req.clone({ setHeaders: { Authorization: `Bearer ${newToken.token}` } })
+            req.clone({ setHeaders: { Authorization: `Bearer ${newToken.token}` } }),
           );
         }),
-        catchError(err => {
+        catchError((err) => {
           this.isRefreshing = false;
           this.auth.logout();
           this.router.navigate(['login']);
           // this.activeModal.close();
           return throwError(() => err);
-        })
+        }),
       );
     } else {
       return this.refreshTokenSubject.pipe(
-        filter(token => token != null),
+        filter((token) => token != null),
         take(1),
         switchMap((token) =>
-          next.handle(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }))
-        )
+          next.handle(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })),
+        ),
       );
     }
   }

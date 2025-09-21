@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
-
 @Component({
   selector: 'app-plain-select',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './plain-select.component.html',
-  styleUrls: ['./plain-select.component.scss']
+  styleUrls: ['./plain-select.component.scss'],
 })
 export class PlainSelectComponent {
   @Input() label: string = '';
@@ -38,14 +37,14 @@ export class PlainSelectComponent {
         message = `${this.label} is required`;
       } else if (errorKey === 'serverError') {
         if (Array.isArray(value)) {
-        value.forEach((msg: string) => {
-          if (!seen.has(msg)) {
-          errorMessages.push(msg);
-          seen.add(msg);
-          }
-        });
+          value.forEach((msg: string) => {
+            if (!seen.has(msg)) {
+              errorMessages.push(msg);
+              seen.add(msg);
+            }
+          });
         } else {
-        message = value;
+          message = value;
         }
       } else {
         message = `${this.label} ${value}`;
@@ -64,7 +63,6 @@ export class PlainSelectComponent {
     return !!this.formControl?.errors?.['required'];
   }
   onChange(value) {
-    this.onChangeEvent.emit(value.target.value)
+    this.onChangeEvent.emit(value.target.value);
   }
 }
-

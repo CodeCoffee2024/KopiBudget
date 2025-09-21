@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './account-card.component.html',
-  styleUrls: ['./account-card.component.scss']
+  styleUrls: ['./account-card.component.scss'],
 })
 export class AccountCardComponent implements OnInit {
   @Input() name: string = 'John Doe';

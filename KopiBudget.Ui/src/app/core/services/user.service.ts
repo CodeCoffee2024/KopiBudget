@@ -6,7 +6,7 @@ import { UserDto } from '../../domain/models/user';
 import { GenericService } from './generic.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService extends GenericService {
   private controller = '/user/';
@@ -17,7 +17,7 @@ export class UserService extends GenericService {
     return this.post<ApiResult<UserDto>>(
       `${this.controller}register`,
       payload,
-      this.getAuthorizationHeader()
+      this.getAuthorizationHeader(),
     );
   }
 }

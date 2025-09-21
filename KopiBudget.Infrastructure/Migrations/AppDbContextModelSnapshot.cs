@@ -716,7 +716,8 @@ namespace KopiBudget.Infrastructure.Migrations
 
                     b.HasOne("KopiBudget.Domain.Entities.Budget", "Budget")
                         .WithMany("Transactions")
-                        .HasForeignKey("BudgetId");
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("KopiBudget.Domain.Entities.Category", "Category")
                         .WithMany("Transactions")

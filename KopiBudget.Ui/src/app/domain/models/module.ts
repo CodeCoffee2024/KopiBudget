@@ -1,12 +1,12 @@
 export class ModuleResponse {
-	name: string;
-	link: string;
+  name: string;
+  link: string;
 }
 export class ModuleFragment {
-	name: string;
+  name: string;
 }
 
 export class ModuleGroupResponse {
-	key: string;
-	modules: ModuleResponse[];
+  key: string;
+  modules: ModuleResponse[];
 }

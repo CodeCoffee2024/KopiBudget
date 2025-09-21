@@ -7,28 +7,25 @@ import { adminRoutes } from './core/routes/admin.routes';
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () =>
-      import('./ui/auth/login/login.component').then(m => m.LoginComponent),
+    loadComponent: () => import('./ui/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
     loadComponent: () =>
-      import('./ui/user/register/register.component').then(m => m.RegisterComponent),
+      import('./ui/user/register/register.component').then((m) => m.RegisterComponent),
   },
   {
     path: 'admin',
     canActivate: [AuthGuard],
     data: {
-      permission:
-        DashboardPermissions.View + ","
+      permission: DashboardPermissions.View + ',',
     },
-    children: adminRoutes
+    children: adminRoutes,
   },
 ];
 
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

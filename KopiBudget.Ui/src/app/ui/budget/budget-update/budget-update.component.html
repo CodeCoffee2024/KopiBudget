@@ -1,0 +1,195 @@
+<div class="container">
+	<div [hidden]="formNav != 1">
+		<div class="row mt-2 mb-2">
+			<div class="col-12 d-flex align-items-center">
+				<span class="fs-5">Update budget</span>
+			</div>
+		</div>
+		<form [formGroup]="Budget.summaryForm" (ngSubmit)="onSubmitSummary()">
+			<app-input
+				[inputType]="InputTypes.Text"
+				inputId="name"
+				[formGroup]="Budget.summaryForm"
+				[controlName]="'name'"
+				[label]="'Name'"
+			></app-input>
+			<app-input
+				[inputType]="InputTypes.Number"
+				inputId="amount"
+				[formGroup]="Budget.summaryForm"
+				[controlName]="'amount'"
+				[label]="'Amount'"
+			></app-input>
+			<app-input
+				[inputType]="InputTypes.Date"
+				inputId="startDate"
+				[formGroup]="Budget.summaryForm"
+				[controlName]="'startDate'"
+				[label]="'Start Date'"
+			></app-input>
+			<app-input
+				[inputType]="InputTypes.Date"
+				inputId="endDate"
+				[formGroup]="Budget.summaryForm"
+				[controlName]="'endDate'"
+				[label]="'End Date'"
+			></app-input>
+			<div class="row mt-3 mb-3">
+				<div class="col-12 d-flex justify-content-end">
+					<button
+						type="button"
+						(click)="close()"
+						class="btn btn-sm mt-2 btn-secondary me-2"
+					>
+						Close
+					</button>
+
+					<button type="submit" class="btn btn-sm mt-2 btn-dark fw-bold">Next</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div [hidden]="formNav != 2">
+		<form
+			[formGroup]="Budget.budgetPersonalCategoryForm"
+			(ngSubmit)="onSubmitPersonalCategories()"
+		>
+			<div class="row mt-2">
+				<div class="col-12 mb-2">
+					<div>
+						<span class="fs-5">Add categories for the budget</span>
+					</div>
+					<div>
+						<small>Select the categories you plan to use in this budget</small>
+					</div>
+				</div>
+				<label class="form-label">Available categories</label>
+				<div class="d-flex flex-wrap gap-2">
+					<div
+						*ngFor="let cat of personalCategories"
+						(click)="Budget.toggleCategory(cat)"
+						class="p-2 rounded border text-center category-box"
+						[class.selected]="Budget.isSelected(cat)"
+						[class.disabled]="Budget.isDisabled(cat)"
+						style="cursor: pointer; min-width: 100px"
+					>
+						<div class="d-flex align-items-center gap-2">
+							<span
+								class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center"
+								[style.background-color]="cat.color"
+								style="width: 32px; height: 32px"
+							>
+								<i class="bi" [class]="cat.color + ' bi-' + cat.icon"></i>
+							</span>
+							<span [style.color]="Budget.isSelected(cat) ? 'white' : ''">{{
+								cat.name
+							}}</span>
+						</div>
+					</div>
+				</div>
+				<div *ngFor="let error of Budget.globalErrors" class="col-12 text-danger">
+					{{ error }}
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-12 d-flex justify-content-end">
+					<button
+						type="button"
+						(click)="back()"
+						class="btn btn-sm mt-2 btn-secondary me-2"
+					>
+						Back
+					</button>
+
+					<button type="submit" class="btn btn-sm mt-2 btn-dark fw-bold">Next</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div *ngIf="formNav == 3">
+		<form [formGroup]="Budget.budgetPersonalCategoryForm" (ngSubmit)="onSubmit()">
+			<div class="row mt-2">
+				<div class="col-12 mb-2">
+					<div>
+						<span class="fs-5">Add limits for each categories</span>
+					</div>
+					<div>
+						<small>Set the limits for each categories selected earlier</small>
+					</div>
+					<div>
+						<small class="fw-bold">Budget amount:</small>
+						<small>{{
+							Budget.summaryForm.get('amount').value | number: '1.2-2'
+						}}</small>
+					</div>
+					<div>
+						<small class="fw-bold">Remaining allocation:</small>
+						<small>{{ Budget.remainingAllocation | number: '1.2-2' }}</small>
+					</div>
+					<div *ngIf="Budget.remainingAllocation < 0" class="text-danger">
+						Allocation exceeds the budget
+					</div>
+				</div>
+				<div class="row g-3" formArrayName="budgetPersonalCategories">
+					<div
+						class="col-12 mt-1"
+						*ngFor="let cat of Budget.budgetPersonalCategories.controls; let i = index"
+						[formGroupName]="i"
+					>
+						<div class="d-flex align-items-center p-2 border rounded">
+							<div class="d-flex align-items-center gap-2" style="min-width: 200px">
+								<span
+									class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center"
+									[style.background-color]="cat.value.color"
+									style="width: 32px; height: 32px"
+								>
+									<i
+										class="bi"
+										[class]="cat.value.color + ' bi-' + cat.value.icon"
+									></i>
+								</span>
+								<span>{{ cat.value.name }}</span>
+							</div>
+							<div class="flex-grow-1 ms-3">
+								<input
+									type="number"
+									class="form-control"
+									placeholder="Enter limit"
+									formControlName="limit"
+									[class.border-danger]="
+										getError(cat.get('limit'), 'Limit').length > 0 &&
+										cat.get('limit').touched
+									"
+								/>
+								<div *ngIf="cat.get('limit').touched">
+									<div
+										*ngFor="let error of getError(cat.get('limit'), 'Limit')"
+										class="col-12 text-danger"
+									>
+										{{ error }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<div class="col-12 text-danger" *ngFor="let error of Budget.serverErrors">
+					{{ error }}
+				</div>
+				<div class="col-12 d-flex justify-content-end">
+					<button
+						type="button"
+						(click)="back()"
+						class="btn btn-sm mt-2 btn-secondary me-2"
+					>
+						Back
+					</button>
+
+					<button type="submit" class="btn btn-sm mt-2 btn-dark fw-bold">Save</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

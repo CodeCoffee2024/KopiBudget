@@ -8,19 +8,17 @@ import { HeaderNav, NavItem } from '../../../../domain/models/config';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './header-nav.component.html',
-  styleUrls: ['./header-nav.component.scss']
+  styleUrls: ['./header-nav.component.scss'],
 })
 export class HeaderNavComponent {
-	@Input() navs: NavItem[] = [];
-	HeaderNav = HeaderNav;
-	constructor(private router: Router) {}
-	currentNav(nav: string) {
-		const navigation = HeaderNav.find(
-			(it) => it.page == nav
-		);
-		return navigation ?? null;
-	}
-	goTo(link) {
-		return 'admin' + link;
-	}
+  @Input() navs: NavItem[] = [];
+  HeaderNav = HeaderNav;
+  constructor(private router: Router) {}
+  currentNav(nav: string) {
+    const navigation = HeaderNav.find((it) => it.page == nav);
+    return navigation ?? null;
+  }
+  goTo(link) {
+    return 'admin' + link;
+  }
 }

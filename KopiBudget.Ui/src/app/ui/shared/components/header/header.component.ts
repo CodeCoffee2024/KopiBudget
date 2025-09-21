@@ -8,21 +8,21 @@ import { AuthService } from '../../../../core/auth/auth.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-	constructor(
-		private authService: AuthService,
-		private route: Router
-	){}
-	@Input() isSidebarOpen = false;
-	@Input() isDesktop = false;
-	@Output() toggleSidebar = new EventEmitter<void>();
-	onToggle(): void {
-		this.toggleSidebar.emit();
-	}
-	logout() {
-		this.authService.logout();
-		this.route.navigate(['../../login']);
-	}
+  constructor(
+    private authService: AuthService,
+    private route: Router,
+  ) {}
+  @Input() isSidebarOpen = false;
+  @Input() isDesktop = false;
+  @Output() toggleSidebar = new EventEmitter<void>();
+  onToggle(): void {
+    this.toggleSidebar.emit();
+  }
+  logout() {
+    this.authService.logout();
+    this.route.navigate(['../../login']);
+  }
 }

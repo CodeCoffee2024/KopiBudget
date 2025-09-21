@@ -1,70 +1,70 @@
 <div class="container">
-    <div class="row mt-2">
-        <div class="col-12 d-flex align-items-center">
-            <span class="fs-5">Update transaction</span>
-        </div>
+  <div class="row mt-2">
+    <div class="col-12 d-flex align-items-center">
+      <span class="fs-5">Update transaction</span>
     </div>
-    <form [formGroup]="Transaction.form" (ngSubmit)="onSubmit()">
-        <ng-container *ngIf="isAccount">
-            <app-field-display [label]="'Account'" [value]="transaction.account?.name"></app-field-display>
-            <app-field-display [label]="'Category'" [value]="transaction.category?.name"></app-field-display>
-        </ng-container>
-        <ng-container *ngIf="!isAccount">
-            <app-field-display [label]="'Budget'" [value]="transaction.budget?.name"></app-field-display>
-            <app-field-display [label]="'Personal Category'" [value]="transaction.personalCategory?.name"></app-field-display>
-        </ng-container>
-        <app-input
-            [inputType]="InputTypes.Number"
-            inputId="amount"
-            [formGroup]="Transaction.form"
-            [controlName]="'amount'"
-            [label]="'Amount'"
-        ></app-input>
-        <app-input
-            [inputType]="InputTypes.Date"
-            inputId="date"
-            [formGroup]="Transaction.form"
-            [controlName]="'date'"
-            [label]="'Date'"
-        ></app-input>
-        <div class="form-check form-switch mt-2">
-            <input
-                class="form-check-input"
-                type="checkbox"
-                formControlName="inputTime"
-            />
+  </div>
+  <form [formGroup]="Transaction.form" (ngSubmit)="onSubmit()">
+    <ng-container *ngIf="isAccount">
+      <app-field-display
+        [label]="'Account'"
+        [value]="transaction.account?.name"
+      ></app-field-display>
+      <app-field-display
+        [label]="'Category'"
+        [value]="transaction.category?.name"
+      ></app-field-display>
+    </ng-container>
+    <ng-container *ngIf="!isAccount">
+      <app-field-display [label]="'Budget'" [value]="transaction.budget?.name"></app-field-display>
+      <app-field-display
+        [label]="'Personal Category'"
+        [value]="transaction.personalCategory?.name"
+      ></app-field-display>
+    </ng-container>
+    <app-input
+      [inputType]="InputTypes.Number"
+      inputId="amount"
+      [formGroup]="Transaction.form"
+      [controlName]="'amount'"
+      [label]="'Amount'"
+    ></app-input>
+    <app-input
+      [inputType]="InputTypes.Date"
+      inputId="date"
+      [formGroup]="Transaction.form"
+      [controlName]="'date'"
+      [label]="'Date'"
+    ></app-input>
+    <div class="form-check form-switch mt-2">
+      <input class="form-check-input" type="checkbox" formControlName="inputTime" />
 
-            <label class="form-check-label" for="inputTime">
-                Input time?
-            </label>
-        </div>
-        <app-input *ngIf="Transaction.form.get('inputTime').value"
-            [inputType]="InputTypes.Time"
-            inputId="time"
-            [formGroup]="Transaction.form"
-            [controlName]="'time'"
-            [label]="'Time'"
-        ></app-input>
+      <label class="form-check-label" for="inputTime"> Input time? </label>
+    </div>
+    <app-input
+      *ngIf="Transaction.form.get('inputTime').value"
+      [inputType]="InputTypes.Time"
+      inputId="time"
+      [formGroup]="Transaction.form"
+      [controlName]="'time'"
+      [label]="'Time'"
+    ></app-input>
 
-        <app-input
-            [inputType]="InputTypes.TextArea"
-            inputId="note"
-            [formGroup]="Transaction.form"
-            [controlName]="'note'"
-            [label]="'Note'"
-        ></app-input>
-        <div class="row mt-3 mb-3">
-            <div class="col-12 d-flex justify-content-end" >
+    <app-input
+      [inputType]="InputTypes.TextArea"
+      inputId="note"
+      [formGroup]="Transaction.form"
+      [controlName]="'note'"
+      [label]="'Note'"
+    ></app-input>
+    <div class="row mt-3 mb-3">
+      <div class="col-12 d-flex justify-content-end">
+        <button type="button" (click)="close()" class="btn btn-sm mt-2 btn-secondary me-2">
+          Close
+        </button>
 
-                <button type="button" (click)="close()" class="btn btn-sm mt-2 btn-secondary me-2">
-                    Close
-                </button>
-
-                <button type="submit" class="btn btn-sm mt-2 btn-dark fw-bold">
-                    Save
-                </button>
-            </div>
-        </div>
-    </form>
-
+        <button type="submit" class="btn btn-sm mt-2 btn-dark fw-bold">Save</button>
+      </div>
+    </div>
+  </form>
 </div>

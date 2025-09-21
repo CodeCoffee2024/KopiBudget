@@ -6,7 +6,7 @@ import {
   HostListener,
   Input,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -17,7 +17,7 @@ import { debounceTime } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './multi-select.component.html',
-  styleUrls: ['./multi-select.component.scss']
+  styleUrls: ['./multi-select.component.scss'],
 })
 export class MultiSelectComponent {
   @Input() label = 'Search';
@@ -26,10 +26,10 @@ export class MultiSelectComponent {
   @Input() field: string;
   @Input() disabledIf = false;
   @Input() hasSearchIcon = false;
-  @Input() searchOptions= []; // Options must be passed from parent
-  @Output() searchChanged = new EventEmitter<{ search: string; page: number, clear: boolean }>(); // Emits search event
+  @Input() searchOptions = []; // Options must be passed from parent
+  @Output() searchChanged = new EventEmitter<{ search: string; page: number; clear: boolean }>(); // Emits search event
   @Output() selectedItemsChange = new EventEmitter<[]>(); // Emits selected items
-	isDropdownOpen = false;
+  isDropdownOpen = false;
 
   @ViewChild('dropdownMenu', { static: false }) dropdownMenu!: ElementRef;
   @ViewChild('searchInput', { static: false }) searchInput!: ElementRef;
@@ -44,7 +44,7 @@ export class MultiSelectComponent {
 
   constructor(private elementRef: ElementRef) {
     this.selectedItems = this.selectedItems ?? [];
-    this.searchSubject.pipe(debounceTime(300)).subscribe(query => {
+    this.searchSubject.pipe(debounceTime(300)).subscribe((query) => {
       this.page = 1;
       this.clear = true;
       this.emitSearch();
@@ -54,12 +54,12 @@ export class MultiSelectComponent {
   onClickOutside(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isDropdownOpen = false;
-      this.searchQuery = "";
+      this.searchQuery = '';
     }
   }
   isFocused(focus) {
     this.focused = focus;
-		this.isDropdownOpen = true;
+    this.isDropdownOpen = true;
   }
 
   onScroll(): void {
@@ -97,7 +97,7 @@ export class MultiSelectComponent {
   }
 
   removeItem(item): void {
-    this.selectedItems = this.selectedItems.filter(i => i[this.field] !== item[this.field]);
+    this.selectedItems = this.selectedItems.filter((i) => i[this.field] !== item[this.field]);
     this.selectedItemsChange.emit(this.selectedItems);
   }
 }

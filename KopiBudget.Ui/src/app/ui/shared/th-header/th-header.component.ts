@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './th-header.component.html',
-  styleUrls: ['./th-header.component.scss']
+  styleUrls: ['./th-header.component.scss'],
 })
 export class ThHeaderComponent {
   @Input() name: string;
@@ -16,12 +16,11 @@ export class ThHeaderComponent {
   @Input() sortDirection: string;
   @Input() alignment: string;
   @Input() isSortable = false;
-  @Output() sortResult = new EventEmitter<{name, sortDirection}>();
+  @Output() sortResult = new EventEmitter<{ name; sortDirection }>();
   sort() {
     if (!this.isSortable) return;
     this.sortDirection = this.sortDirection == 'asc' ? 'desc' : 'asc';
-    this.sortResult.emit({name: this.name, sortDirection: this.sortDirection});
-
+    this.sortResult.emit({ name: this.name, sortDirection: this.sortDirection });
   }
   get isAsc(): boolean {
     return this.sortDirection == 'asc';

@@ -50,13 +50,12 @@ namespace KopiBudget.Domain.Entities
             return entity;
         }
 
-        public void Update(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? userId, Guid? updatedBy, DateTime? updatedOn)
+        public void Update(decimal amount, string name, DateTime startDate, DateTime endDate, Guid? updatedBy, DateTime? updatedOn)
         {
             Amount = amount;
             Name = name;
             StartDate = startDate;
             EndDate = endDate;
-            UserId = userId!.Value;
             SetUpdated(updatedBy!.Value, updatedOn!.Value);
         }
 
@@ -68,7 +67,9 @@ namespace KopiBudget.Domain.Entities
         public decimal SpentBudget() => Transactions.Sum(it => it.Amount);
 
         public decimal RemainingBudget() => Amount - Transactions.Sum(it => it.Amount);
+
         public string SpentBudgetPercentage() => ((SpentBudget() / Amount) * 100) + "%";
+
         public string RemainingBudgetPercentage() => (100 - ((SpentBudget() / Amount) * 100)) + "%";
 
         #endregion Public Methods

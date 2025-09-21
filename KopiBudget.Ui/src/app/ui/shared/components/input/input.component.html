@@ -1,87 +1,99 @@
 <!-- Regular Input (Text, Password, etc.) -->
 <div class="form-group input-container" *ngIf="inputType !== 'checkbox'">
-    <label *ngIf="label && !hideLabel" [for]="inputId" class="form-label font-weight-bold">
-        {{ label }}
-        <span *ngIf="isRequired" class="text-danger">*</span>
-    </label>
+  <label *ngIf="label && !hideLabel" [for]="inputId" class="form-label font-weight-bold">
+    {{ label }}
+    <span *ngIf="isRequired" class="text-danger">*</span>
+  </label>
 
-    <!-- Password Input with Show/Hide Toggle -->
-    <div class="input-group" *ngIf="inputType === 'password'; else normalInput">
+  <!-- Password Input with Show/Hide Toggle -->
+  <div class="input-group" *ngIf="inputType === 'password'; else normalInput">
+    <input
+      pInputText
+      class="form-control form-control-sm"
+      [id]="inputId"
+      [formControl]="formControl"
+      [type]="isPasswordVisible ? 'text' : 'password'"
+      [ngClass]="{
+        'border-danger': formControl.invalid && formControl.touched && formControl.dirty,
+      }"
+    />
+    <div class="input-group-append">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="togglePasswordVisibility()"
+      >
+        <i
+          class="fa"
+          [ngClass]="{ 'bi bi-eye': !isPasswordVisible, 'bi bi-eye-slash': isPasswordVisible }"
+        ></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Normal Text Input -->
+  <ng-template #normalInput>
+    <input
+      *ngIf="inputType !== 'textarea' && inputType !== 'radio'"
+      pInputText
+      class="form-control form-control-sm"
+      [id]="inputId"
+      [formControl]="formControl"
+      [type]="inputType"
+      [ngClass]="{
+        'border-danger': formControl.invalid && formControl.touched && formControl.dirty,
+      }"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      [attr.pattern]="inputType === 'number' ? '^\\d*(\\.\\d{0,2})?$' : null"
+    />
+    <textarea
+      *ngIf="inputType === 'textarea'"
+      [id]="inputId"
+      class="form-control"
+      [formControl]="formControl"
+      rows="3"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+    ></textarea>
+  </ng-template>
+  <div *ngIf="inputType === 'radio'" class="form-group">
+    <div class="d-flex gap-3">
+      <div class="form-check" *ngFor="let option of options">
         <input
-        pInputText
-        class="form-control form-control-sm"
-        [id]="inputId"
-        [formControl]="formControl"
-        [type]="isPasswordVisible ? 'text' : 'password'"
-        [ngClass]="{'border-danger': formControl.invalid && formControl.touched && formControl.dirty}"
+          class="form-check-input"
+          type="radio"
+          [id]="inputId + option.value"
+          [formControl]="formControl"
+          [value]="option.value"
         />
-        <div class="input-group-append">
-            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="togglePasswordVisibility()">
-                <i class="fa" [ngClass]="{'bi bi-eye': !isPasswordVisible, 'bi bi-eye-slash': isPasswordVisible}"></i>
-            </button>
-        </div>
+        <label class="form-check-label" [for]="inputId + option.value">{{ option.label }}</label>
+      </div>
     </div>
-
-    <!-- Normal Text Input -->
-    <ng-template #normalInput>
-        <input *ngIf="inputType !== 'textarea' && inputType !== 'radio'"
-        pInputText
-        class="form-control form-control-sm"
-        [id]="inputId"
-        [formControl]="formControl"
-        [type]="inputType"
-        [ngClass]="{'border-danger': formControl.invalid && formControl.touched && formControl.dirty}"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-        [attr.pattern]="inputType === 'number' ? '^\\d*(\\.\\d{0,2})?$' : null"
-        />
-        <textarea
-            *ngIf="inputType === 'textarea'"
-            [id]="inputId"
-            class="form-control"
-            [formControl]="formControl"
-            rows="3"
-            (input)="onInput($event)"
-            (blur)="onBlur()"
-        ></textarea>
-    </ng-template>
-    <div *ngIf="inputType === 'radio'" class="form-group">
-        <div class="d-flex gap-3">
-            <div class="form-check" *ngFor="let option of options">
-                <input
-                    class="form-check-input"
-                    type="radio"
-                    [id]="inputId + option.value"
-                    [formControl]="formControl"
-                    [value]="option.value"
-                />
-                <label class="form-check-label" [for]="inputId + option.value">{{option.label}}</label>
-            </div>
-        </div>
+  </div>
+  <div *ngIf="errors && formControl.invalid && formControl.dirty && formControl.touched">
+    <div *ngFor="let error of errors" class="text-danger">
+      {{ error }}
     </div>
-    <div *ngIf="errors && (formControl.invalid && formControl.dirty && formControl.touched)">
-        <div *ngFor="let error of errors" class="text-danger">
-        {{ error }}
-        </div>
-    </div>
+  </div>
 </div>
 
-    <!-- Checkbox Input -->
+<!-- Checkbox Input -->
 <div *ngIf="inputType === 'checkbox'" class="custom-control custom-checkbox">
-    <input
-        class="custom-control-input"
-        [id]="inputId"
-        [formControl]="formControl"
-        type="checkbox"
-        [ngClass]="{'p-invalid': formControl.invalid && formControl.touched && formControl.dirty}"
-    />
-    <label class="custom-control-label" [for]="inputId">
-        {{ label }}
-        <span *ngIf="isRequired" class="text-danger">*</span>
-    </label>
+  <input
+    class="custom-control-input"
+    [id]="inputId"
+    [formControl]="formControl"
+    type="checkbox"
+    [ngClass]="{ 'p-invalid': formControl.invalid && formControl.touched && formControl.dirty }"
+  />
+  <label class="custom-control-label" [for]="inputId">
+    {{ label }}
+    <span *ngIf="isRequired" class="text-danger">*</span>
+  </label>
 
-    <!-- Validation Message for Checkbox -->
-    <div *ngIf="formControl.hasError('required') && formControl.dirty" class="p-error text-danger">
-        {{ label }} is required.
-    </div>
+  <!-- Validation Message for Checkbox -->
+  <div *ngIf="formControl.hasError('required') && formControl.dirty" class="p-error text-danger">
+    {{ label }} is required.
+  </div>
 </div>

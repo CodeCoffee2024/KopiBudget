@@ -1,4 +1,4 @@
 export class PermissionDto {
-    name: string;
-    module: string;
+  name: string;
+  module: string;
 }

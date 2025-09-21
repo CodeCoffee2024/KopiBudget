@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { RegisterRequest } from '../../../core/auth/auth.model';
@@ -15,9 +21,9 @@ import { InputComponent } from '../../shared/components/input/input.component';
 @Component({
   selector: 'app-register',
   standalone: true,
-    imports: [CommonModule, InputComponent, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, InputComponent, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
   InputTypes = InputTypes;
@@ -29,41 +35,31 @@ export class RegisterComponent {
     private loadingservice: LoadingService,
     private toastService: ToastService,
     private router: Router,
-  ){
-    this.formErrorService.injectServerErrorControl(
-      this.form
-    );
-    this.formErrorService.clearServerErrorOnChange(
-      this.form
-    );
+  ) {
+    this.formErrorService.injectServerErrorControl(this.form);
+    this.formErrorService.clearServerErrorOnChange(this.form);
     this.titleService.setTitle('Login');
   }
 
-  form = this.fb.group({
-    userName: ['', [Validators.required]],
-    email: [
-      '',
-      [Validators.required, Validators.email],
-    ],
-    password: ['', Validators.required],
-    retypePassword: ['', Validators.required],
-    firstName: ['', Validators.required],
-    middleName: [''],
-    lastName: ['', Validators.required],
-  },
-			{
-				validators: this.mustMatchValidator(
-					'password',
-					'retypePassword'
-				),
-			});
+  form = this.fb.group(
+    {
+      userName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      retypePassword: ['', Validators.required],
+      firstName: ['', Validators.required],
+      middleName: [''],
+      lastName: ['', Validators.required],
+    },
+    {
+      validators: this.mustMatchValidator('password', 'retypePassword'),
+    },
+  );
 
   loading = false;
   errorMessage = '';
   onSubmit() {
-    this.formErrorService.clearServerErrorOnChange(
-      this.form
-    );
+    this.formErrorService.clearServerErrorOnChange(this.form);
     const payload: RegisterRequest = {
       username: this.form.value.userName!,
       password: this.form.value.password!,
@@ -78,54 +74,38 @@ export class RegisterComponent {
       .pipe(
         finalize(() => {
           this.loadingservice.hide();
-        })
+        }),
       )
       .subscribe({
         next: () => {
-          this.toastService.success("Account Created");
-          this.router.navigate(['../login'])
+          this.toastService.success('Account Created');
+          this.router.navigate(['../login']);
         },
         error: (error) => {
-          this.toastService.error(
-            'Error',
-            'Something went wrong.'
-          );
+          this.toastService.error('Error', 'Something went wrong.');
           this.form.markAllAsTouched();
           this.form.markAsDirty();
-          this.formErrorService.setServerErrors(this.form, [
-            error?.error?.errors,
-          ]);
+          this.formErrorService.setServerErrors(this.form, [error?.error?.errors]);
         },
       });
-    }
-	private mustMatchValidator(
-		passwordKey: string,
-		confirmPasswordKey: string
-	) {
-		return (
-			formGroup: AbstractControl
-		): ValidationErrors | null => {
-			const password = formGroup.get(passwordKey);
-			const confirmPassword = formGroup.get(
-				confirmPasswordKey
-			);
+  }
+  private mustMatchValidator(passwordKey: string, confirmPasswordKey: string) {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const password = formGroup.get(passwordKey);
+      const confirmPassword = formGroup.get(confirmPasswordKey);
 
-			if (!password || !confirmPassword) return null;
-			if (
-				confirmPassword.errors &&
-				!confirmPassword.errors[passwordKey]
-			)
-				return null;
+      if (!password || !confirmPassword) return null;
+      if (confirmPassword.errors && !confirmPassword.errors[passwordKey]) return null;
 
-			if (password.value !== confirmPassword.value) {
-				confirmPassword.setErrors({
-					mustMatch: passwordKey,
-				});
-			} else {
-				confirmPassword.setErrors(null);
-			}
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setErrors({
+          mustMatch: passwordKey,
+        });
+      } else {
+        confirmPassword.setErrors(null);
+      }
 
-			return null;
-		};
-	}
+      return null;
+    };
+  }
 }

@@ -51,7 +51,7 @@ namespace KopiBudget.Tests.Domain
             var budget = Budget.Create(amount, name, startDate, endDate, null, null, null);
 
             // Act
-            budget.Update(750, "Update Name", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1), null, null, null);
+            budget.Update(750, "Update Name", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow.AddDays(-1), null, null);
 
             // Assert
             Assert.Equal(750, budget.Amount);
@@ -70,7 +70,7 @@ namespace KopiBudget.Tests.Domain
             var entity = Budget.Create(amount, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null);
             // Act & Assert
             Assert.Throws<InvalidDateRangeException>(() =>
-                entity.Update(-10, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null, null));
+                entity.Update(-10, "Invalid", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), null, null));
         }
 
         #endregion Public Methods

@@ -1,5 +1,6 @@
 ﻿using KopiBudget.Api.Middleware.Authorization;
 using KopiBudget.Api.Shared;
+using KopiBudget.Application.Commands.Budget.BudgetDelete;
 using KopiBudget.Application.Queries.Budget.GetBudgets;
 using KopiBudget.Application.Requests;
 using KopiBudget.Common.Constants;
@@ -45,6 +46,24 @@ namespace KopiBudget.Api.Controllers
         public async Task<IActionResult> GetBudgets()
         {
             var result = await _sender.Send(new GetBudgetsQuery());
+            return HandleResponse(result);
+        }
+
+        [HttpPut("{id}")]
+        [PermissionAuthorize(Modules.BUDGET, Permissions.MODIFY)]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] BudgetRequest request, CancellationToken cancellationToken)
+        {
+            var command = request.SetUpdateCommand(UserId, id);
+            var result = await _sender.Send(command, cancellationToken);
+            return HandleResponse(result);
+        }
+
+        [HttpDelete("{id}")]
+        [PermissionAuthorize(Modules.BUDGET, Permissions.MODIFY)]
+        public async Task<IActionResult> Delete([FromRoute] string id, CancellationToken cancellationToken)
+        {
+            var command = new BudgetDeleteCommand(id);
+            var result = await _sender.Send(command, cancellationToken);
             return HandleResponse(result);
         }
 

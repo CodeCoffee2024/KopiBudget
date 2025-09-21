@@ -15,7 +15,7 @@ namespace KopiBudget.Infrastructure.Repositories
 
         public virtual async Task<BudgetPersonalCategory?> GetByBudgetIdAndPersonalCategoryIdAsync(Guid BudgetId, Guid PersonalCategoryId)
         {
-            return await _dbSet.Where(it => it.BudgetId == BudgetId && it.PersonalCategoryId == PersonalCategoryId).FirstOrDefaultAsync();
+            return await _dbSet.Include(it => it.Budget).Where(it => it.BudgetId == BudgetId && it.PersonalCategoryId == PersonalCategoryId).FirstOrDefaultAsync();
         }
 
         #endregion Public Constructors

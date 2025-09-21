@@ -24,6 +24,14 @@ namespace KopiBudget.Domain.Entities
         {
             return new BudgetPersonalCategory(personalCategoryId, budgetId, limit, transactionAmount);
         }
+        public void UpdateLimit(decimal limit)
+        {
+            if (limit <= 0)
+            {
+                throw new NegativeAmountException(limit, "Limit must be greater than zero.");
+            }
+            Limit = limit;
+        }
 
         public void AddToTransactionAmount(decimal transactionAmount)
         {
@@ -46,6 +54,7 @@ namespace KopiBudget.Domain.Entities
         }
         public decimal? SpentBudget() => TransactionAmount ?? 0;
         public decimal? RemainingBudget() => Limit ?? 0 - SpentBudget();
+        public decimal? RemainingLimit() => Budget!.Amount - Budget!.BudgetPersonalCategories.Sum(it => it.Limit) + Limit ?? 0;
         public string SpentBudgetPercentage() => ((SpentBudget() / Limit ?? 0) * 100) + "%";
         public string RemainingBudgetPercentage() => (100 - ((SpentBudget() / Limit ?? 0) * 100)) + "%";
     }

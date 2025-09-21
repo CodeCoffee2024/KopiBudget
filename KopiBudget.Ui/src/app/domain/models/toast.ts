@@ -1,9 +1,9 @@
 export enum ToastType {
-	CONFIRMATION,
+  CONFIRMATION,
 }
 
 export class ToastTypeTitle {
-	static readonly titles = {
-		[ToastType.CONFIRMATION]: 'Confirmation',
-	};
+  static readonly titles = {
+    [ToastType.CONFIRMATION]: 'Confirmation',
+  };
 }

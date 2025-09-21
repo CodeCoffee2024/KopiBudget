@@ -7,7 +7,7 @@ import { NullablePipe } from '../../pipes/nullable.pipe';
   standalone: true,
   imports: [CommonModule, NullablePipe],
   templateUrl: './field-display.component.html',
-  styleUrls: ['./field-display.component.scss']
+  styleUrls: ['./field-display.component.scss'],
 })
 export class FieldDisplayComponent {
   @Input() label: string;

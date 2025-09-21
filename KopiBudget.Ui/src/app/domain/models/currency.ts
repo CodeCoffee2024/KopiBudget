@@ -1,4 +1,4 @@
 export interface CurrencyDto {
-    code: string;
-    description: string;
+  code: string;
+  description: string;
 }

@@ -1,45 +1,39 @@
 <nav
-	class="sb-topnav navbar navbar-expand ps-3 pe-3"
-	[class]="isDesktop && isSidebarOpen ? 'open-sidebar' : ''"
+  class="sb-topnav navbar navbar-expand ps-3 pe-3"
+  [class]="isDesktop && isSidebarOpen ? 'open-sidebar' : ''"
 >
-	<div class="d-flex w-100 justify-content-between">
-		<button
-			class="btn btn-default ps-0 pe-0"
-			(click)="onToggle()"
-		>
-			<i class="bi bi-list fs-3"></i>
-		</button>
-		<div class="dropdown">
-			<button
-				class="btn p-0 border-0"
-				type="button"
-				id="profileDropdown"
-				data-bs-toggle="dropdown"
-				aria-expanded="false"
-			>
-				<div class="border-0 rounded-circle bg-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+  <div class="d-flex w-100 justify-content-between">
+    <button class="btn btn-default ps-0 pe-0" (click)="onToggle()">
+      <i class="bi bi-list fs-3"></i>
+    </button>
+    <div class="dropdown">
+      <button
+        class="btn p-0 border-0"
+        type="button"
+        id="profileDropdown"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <div
+          class="border-0 rounded-circle bg-dark d-flex align-items-center justify-content-center"
+          style="width: 40px; height: 40px"
+        >
+          <i class="bi bi-person text-white"></i>
+        </div>
+      </button>
 
-					<i class="bi bi-person text-white"></i>
-				</div>
-			</button>
-
-			<ul
-				class="dropdown-menu"
-				aria-labelledby="profileDropdown"
-			>
-				<li>
-					<a class="dropdown-item" href="#">Profile</a>
-				</li>
-				<li>
-					<a class="dropdown-item" href="#">Settings</a>
-				</li>
-				<li><hr class="dropdown-divider" /></li>
-				<li>
-					<a class="dropdown-item text-danger" (click)="logout()"
-						>Logout</a
-					>
-				</li>
-			</ul>
-		</div>
-	</div>
+      <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+        <li>
+          <a class="dropdown-item" href="#">Profile</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="#">Settings</a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a class="dropdown-item text-danger" (click)="logout()">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>

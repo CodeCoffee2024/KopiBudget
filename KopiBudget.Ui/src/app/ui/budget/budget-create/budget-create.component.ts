@@ -17,7 +17,7 @@ import { InputComponent } from '../../shared/components/input/input.component';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, InputComponent],
   templateUrl: './budget-create.component.html',
-  styleUrls: ['./budget-create.component.scss']
+  styleUrls: ['./budget-create.component.scss'],
 })
 export class BudgetCreateComponent {
   Budget: Budget = new Budget();
@@ -29,10 +29,8 @@ export class BudgetCreateComponent {
     private toastService: ToastService,
     private formErrorService: FormErrorService,
     private budgetService: BudgetService,
-    private activeModal: NgbActiveModal
-  ) {
-
-  }
+    private activeModal: NgbActiveModal,
+  ) {}
   getError(formControl, name) {
     return this.formErrorService.getFormControlErrors(formControl, name);
   }
@@ -43,14 +41,16 @@ export class BudgetCreateComponent {
       return;
     }
     this.formNav = 2;
-
   }
   back() {
     this.Budget.removeLimitRequired();
     this.formNav--;
   }
   onSubmitPersonalCategories() {
-    this.Budget.globalErrors = this.formErrorService.getFormControlErrors(this.Budget.budgetPersonalCategoryForm.get('budgetPersonalCategories'), "Category");
+    this.Budget.globalErrors = this.formErrorService.getFormControlErrors(
+      this.Budget.budgetPersonalCategoryForm.get('budgetPersonalCategories'),
+      'Category',
+    );
     if (!this.Budget.budgetPersonalCategoryForm.valid) {
       this.Budget.budgetPersonalCategoryForm.markAllAsTouched();
       this.Budget.budgetPersonalCategoryForm.markAsDirty();
@@ -59,35 +59,30 @@ export class BudgetCreateComponent {
     this.Budget.addLimitRequired();
     this.formNav = 3;
   }
-  onCategoryChange(item, category) {
-    console.log(item);
-    console.log(category);
-  }
   onSubmit() {
-    if (this.Budget.budgetPersonalCategoryForm.valid && this.Budget.summaryForm.valid && this.Budget.remainingAllocation >= 0)
-      console.log(this.Budget.toSubmit);
-    this.budgetService.create(this.Budget.toSubmit).pipe(
-        finalize(() => {
-          this.loadingService.hide();
-        })
-      )
-      .subscribe({
-        next: (result) => {
-          this.activeModal.close(result);
-        },
-        error: (error) => {
-          this.toastService.error(
-            'Error',
-            'Something went wrong.'
-          );
-          this.formErrorService.setServerErrors(this.Budget.summaryForm, [
-            error?.error?.errors,
-          ]);
-          console.log(this.Budget.summaryForm);
-        },
-      });
+    if (
+      this.Budget.budgetPersonalCategoryForm.valid &&
+      this.Budget.summaryForm.valid &&
+      this.Budget.remainingAllocation >= 0
+    )
+      this.budgetService
+        .create(this.Budget.toSubmit)
+        .pipe(
+          finalize(() => {
+            this.loadingService.hide();
+          }),
+        )
+        .subscribe({
+          next: (result) => {
+            this.activeModal.close(result);
+          },
+          error: (error) => {
+            this.toastService.error('Error', 'Something went wrong.');
+            this.formErrorService.setServerErrors(this.Budget.summaryForm, [error?.error?.errors]);
+          },
+        });
   }
   close() {
-		this.activeModal.close(null);
+    this.activeModal.close(null);
   }
 }
