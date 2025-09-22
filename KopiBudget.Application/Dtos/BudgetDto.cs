@@ -7,6 +7,7 @@
         public decimal Amount { get; set; }
         public decimal SpentBudget { get; set; }
         public decimal RemainingBudget { get; set; }
+        public decimal UnallocatedLimitAmount { get; set; }
         public string SpentBudgetPercentage { get; set; } = string.Empty;
         public string RemainingBudgetPercentage { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }

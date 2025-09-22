@@ -40,7 +40,7 @@ namespace KopiBudget.Api.Controllers
         [PermissionAuthorize(Modules.TRASACTION, Permissions.VIEW)]
         public async Task<IActionResult> GetTransactions([FromQuery] TransactionRequest request, CancellationToken cancellationToken)
         {
-            var req = request.ToQuery();
+            var req = request.ToQuery(UserId);
             var result = await _sender.Send(req, cancellationToken);
             return HandleResponse(result);
         }

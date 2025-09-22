@@ -14,11 +14,12 @@ namespace KopiBudget.Infrastructure.Repositories
         public BudgetRepository(AppDbContext context) : base(context)
         {
         }
-        public async override Task<IEnumerable<Budget>> GetAllAsync()
+        public async Task<IEnumerable<Budget>> GetAllByUserIdAsync(Guid UserId)
         {
             return await _context.Budgets
                 .Include(b => b.BudgetPersonalCategories)
                 .ThenInclude(bpc => bpc.PersonalCategory)
+                .Where(it => it.UserId == UserId)
                 .ToListAsync();
         }
         public async Task<PageResult<Budget>> GetPaginatedBudgetsAsync(int page, int pageSize, string? search, string orderBy, Expression<Func<Budget, bool>>? statusFilter = null)

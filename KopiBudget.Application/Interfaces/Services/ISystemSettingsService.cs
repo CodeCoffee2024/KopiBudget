@@ -10,6 +10,8 @@ namespace KopiBudget.Application.Interfaces.Services
 
         IEnumerable<CurrencyDto> GetAllCurrencies();
 
+        PersonalCategoryFieldDto GetAllPersonalCategoryFields();
+
         #endregion Public Methods
     }
 }

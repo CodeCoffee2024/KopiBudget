@@ -29,7 +29,8 @@ namespace KopiBudget.Application.Queries.PersonalCategory.PersonalCategoryDropdo
                     10,
                     request.Search.ToLower(),
                     "name",
-                    request.BudgetId
+                    request.BudgetId,
+                    request.UserId
                 );
 
                 return Result.Success(
@@ -48,7 +49,8 @@ namespace KopiBudget.Application.Queries.PersonalCategory.PersonalCategoryDropdo
                     10,
                     request.Search.ToLower(),
                     "name",
-                    request.BudgetIds
+                    request.BudgetIds,
+                    request.UserId
                 );
 
                 return Result.Success(

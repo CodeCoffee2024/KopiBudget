@@ -20,7 +20,7 @@ namespace KopiBudget.Application.Requests
 
         //public GetCategoryListQuery ToQuery() => new(Search, OrderBy, PageNumber, PageSize, Status);
 
-        public CategoryDropdownQuery ToDropdownQuery() => new(Search!, PageNumber, Exclude);
+        public CategoryDropdownQuery ToDropdownQuery(Guid UserId) => new(Search!, PageNumber, Exclude, UserId);
 
         #endregion Public Methods
     }

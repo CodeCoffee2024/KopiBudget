@@ -42,7 +42,7 @@ namespace KopiBudget.Application.Commands.Budget.BudgetUpdate
             var startDate = DateTime.SpecifyKind(DateTime.Parse(request.StartDate!), DateTimeKind.Local).ToUniversalTime();
             var endDate = DateTime.SpecifyKind(DateTime.Parse(request.EndDate!), DateTimeKind.Local).ToUniversalTime();
             var entity = await _repository.GetByIdAsync(id);
-            entity.Update(amount, request.Name, startDate, endDate, request.UserId, DateTime.UtcNow);
+            entity!.Update(amount, request.Name!, startDate, endDate, request.UserId, DateTime.UtcNow);
             if (amount > request.BudgetPersonalCategories!.Sum(it => Decimal.Parse(it.Limit!)))
             {
                 validationResult.Errors.Add(new ValidationFailure("Total amount", "Limits sum is greater than budget amount"));

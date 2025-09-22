@@ -64,11 +64,7 @@ export class BudgetUpdateComponent implements OnInit {
 		this.formNav = 3;
 	}
 	onSubmit() {
-		if (
-			this.Budget.budgetPersonalCategoryForm.valid &&
-			this.Budget.summaryForm.valid &&
-			this.Budget.remainingAllocation >= 0
-		)
+		if (this.Budget.budgetPersonalCategoryForm.valid && this.Budget.summaryForm.valid)
 			this.budgetService
 				.update(this.budget.id, this.Budget.toSubmit)
 				.pipe(

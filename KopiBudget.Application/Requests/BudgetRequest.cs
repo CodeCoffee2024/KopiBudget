@@ -24,7 +24,7 @@ namespace KopiBudget.Application.Requests
         public BudgetCreateCommand SetAddCommand(Guid UserId) =>
             new(UserId, Name, Amount, StartDate, EndDate, BudgetPersonalCategories);
 
-        public BudgetDropdownQuery ToDropdownQuery() => new(Search!, PageNumber, Exclude);
+        public BudgetDropdownQuery ToDropdownQuery(Guid UserId) => new(Search!, PageNumber, Exclude, UserId);
 
         public BudgetUpdateCommand SetUpdateCommand(Guid UserId, string Id) =>
              new(UserId, Id, Name, Amount, StartDate, EndDate, BudgetPersonalCategories);

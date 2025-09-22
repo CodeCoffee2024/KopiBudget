@@ -1,0 +1,79 @@
+<div class="container">
+	<div class="row mt-2 mb-2">
+		<div class="col-12 d-flex align-items-center">
+			<span class="fs-5">Update personal category</span>
+		</div>
+	</div>
+	<form [formGroup]="PersonalCategory.form" (ngSubmit)="onSubmit()">
+		<app-input
+			[inputType]="InputTypes.Text"
+			inputId="name"
+			[formGroup]="PersonalCategory.form"
+			[controlName]="'name'"
+			[label]="'Name'"
+		></app-input>
+		<div class="row mt-2">
+			<div class="col-12">
+				<small>Select an icon</small>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div
+				class="col-md-2 p-2 d-flex justify-content-center"
+				*ngFor="let icon of fields.icons; let i = index"
+				(click)="PersonalCategory.selectIcon(icon)"
+			>
+				<span
+					class="rounded-circle d-inline-flex align-items-center justify-content-center"
+					[class]="
+						PersonalCategory.isSelectedIcon(icon)
+							? 'bg-white border border-dark'
+							: 'bg-dark'
+					"
+					style="width: 40px; height: 40px"
+				>
+					<i
+						[ngClass]="[icon.value]"
+						[class]="PersonalCategory.isSelectedIcon(icon) ? 'text-dark' : 'text-light'"
+					></i>
+				</span>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<small>Select color</small>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div
+				class="col-md-2 p-2 d-flex justify-content-center"
+				*ngFor="let color of fields.colors; let i = index"
+				(click)="PersonalCategory.selectColor(color)"
+			>
+				<span
+					class="rounded-circle d-inline-flex align-items-center justify-content-center"
+					[ngClass]="{
+						'border border-dark': PersonalCategory.isSelectedColor(color),
+						'border border-light': !PersonalCategory.isSelectedColor(color),
+					}"
+					[ngStyle]="{ 'background-color': color.value }"
+					style="width: 40px; height: 40px"
+				>
+				</span>
+			</div>
+		</div>
+
+		<div class="row mb-3">
+			<div class="col-12 text-danger" *ngFor="let error of PersonalCategory.serverErrors">
+				{{ error }}
+			</div>
+			<div class="col-12 d-flex justify-content-end">
+				<button type="button" (click)="close()" class="btn btn-sm mt-2 btn-secondary me-2">
+					Close
+				</button>
+
+				<button type="submit" class="btn btn-sm mt-2 btn-dark fw-bold">Save</button>
+			</div>
+		</div>
+	</form>
+</div>

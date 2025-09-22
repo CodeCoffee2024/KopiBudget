@@ -21,7 +21,7 @@ namespace KopiBudget.Application.Queries.Budget.BudgetDropdown
                 : request.Exclude.Split(',').Select(x => x.Trim()).ToList();
 
             Expression<Func<Domain.Entities.Budget, bool>> filter = c =>
-                !excluded.Contains(c.Name);
+                !excluded.Contains(c.Name) && c.CreatedById == request.UserId;
 
             var pagedResult = await _repository.GetPaginatedBudgetsAsync(
                 request.PageNumber,

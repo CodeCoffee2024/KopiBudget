@@ -19,7 +19,8 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
             IEnumerable<string>? personalCategoryIds = null,
             string? type = null,
             string? dateFrom = null,
-            string? dateTo = null)
+            string? dateTo = null,
+            Guid? userId = null)
         {
             Search = search;
             OrderBy = orderBy;
@@ -32,6 +33,7 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
             personalCategoryIds = personalCategoryIds ?? Enumerable.Empty<string>();
             DateFrom = string.IsNullOrWhiteSpace(dateFrom) ? null : dateFrom;
             DateTo = string.IsNullOrWhiteSpace(dateTo) ? null : dateTo;
+            UserId = userId;
         }
 
         public IEnumerable<string> CategoryIds { get; set; } = Enumerable.Empty<string>();
@@ -43,6 +45,7 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
         public string? Type { get; set; } = string.Empty;
         public string? DateFrom { get; set; } = string.Empty;
         public string? DateTo { get; set; } = string.Empty;
+        public Guid? UserId { get; set; }
 
         #endregion Public Constructors
     }

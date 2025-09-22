@@ -52,7 +52,7 @@ namespace KopiBudget.Api.Controllers
         [HttpGet("Dropdown")]
         public async Task<IActionResult> Dropdown([FromQuery] CategoryRequest request)
         {
-            var query = request.ToDropdownQuery();
+            var query = request.ToDropdownQuery(UserId);
             var result = await _sender.Send(query);
             return HandleResponse(result);
         }

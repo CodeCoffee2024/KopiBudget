@@ -10,7 +10,7 @@
 			</p>
 			<button class="btn btn-sm w-100 mt-2 btn-dark fw-bold" (click)="addBudget()">
 				<i class="bi bi-plus me-2 text-white"></i>
-				<span class="text-white">Add a new budget</span>
+				<span class="text-white">Add a budget</span>
 			</button>
 		</div>
 		<div class="bg-white mt-2 rounded shadow-sm p-3">
@@ -54,6 +54,10 @@
 					</ul>
 				</div>
 			</div>
+			<button class="btn btn-sm w-100 mt-2 btn-dark fw-bold" (click)="addPersonalCategory()">
+				<i class="bi bi-plus me-2 text-white"></i>
+				<span class="text-white">Add personal category</span>
+			</button>
 		</div>
 	</div>
 	<div class="col-md-8 col-12" *ngIf="!isLoading && budgets.length > 0">

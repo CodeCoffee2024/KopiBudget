@@ -14,7 +14,7 @@ namespace KopiBudget.Application.Queries.Budget.GetBudgets
         {
             try
             {
-                var result = await _repository.GetAllAsync();
+                var result = await _repository.GetAllByUserIdAsync(request.UserId);
                 var mappedResult = _mapper.Map<IEnumerable<BudgetDto>>(result);
                 return Result.Success(mappedResult);
             }

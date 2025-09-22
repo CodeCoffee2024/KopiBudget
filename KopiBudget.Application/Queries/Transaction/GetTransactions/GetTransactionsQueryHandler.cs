@@ -40,6 +40,7 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
                 filter = c =>
                     c.BudgetId == null &&
                     c.Date >= dateFrom &&
+                    c.CreatedById == request.UserId &&
                     c.Date <= dateTo &&
                     (string.IsNullOrEmpty(request.Search) || c.Account.Name.Contains(request.Search)) &&
                     (categoryGuids.Count == 0 || categoryGuids.Contains(c.CategoryId!.Value)) &&
@@ -57,6 +58,7 @@ namespace KopiBudget.Application.Queries.Transaction.GetTransactions
                     c.BudgetId != null &&
                     c.Date >= dateFrom &&
                     c.Date <= dateTo &&
+                    c.CreatedById == request.UserId &&
                     (string.IsNullOrEmpty(request.Search) || c.Budget.Name.Contains(request.Search)) &&
                     (budgetGuids.Count == 0 || budgetGuids.Contains(c.BudgetId!.Value)) &&
                     (personalCategoryGuids.Count == 0 || personalCategoryGuids.Contains(c.PersonalCategoryId!.Value));

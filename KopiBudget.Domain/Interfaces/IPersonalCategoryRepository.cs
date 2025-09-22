@@ -8,17 +8,19 @@ namespace KopiBudget.Domain.Interfaces
     {
         #region Public Methods
 
-        Task<IEnumerable<PersonalCategory>> GetAllAsync();
+        Task<IEnumerable<PersonalCategory>> GetAllAsync(Guid userId);
 
         Task<bool> ExistsAsync(Guid id);
+
+        Task<PersonalCategory?> GetByNameAsync(string name);
 
         Task<PersonalCategory?> GetByIdAsync(Guid id);
 
         Task<PageResult<PersonalCategory>> GetPaginatedPersonalCategoriesAsync(int page, int pageSize, string? search, string orderBy, Expression<Func<PersonalCategory, bool>>? statusFilter);
 
-        Task<PageResult<PersonalCategory>> GetPaginatedPersonalCategoriesByBudgetIdAsync(int page, int pageSize, string? search, string orderBy, Guid budgetId);
+        Task<PageResult<PersonalCategory>> GetPaginatedPersonalCategoriesByBudgetIdAsync(int page, int pageSize, string? search, string orderBy, Guid budgetId, Guid userId);
 
-        Task<PageResult<PersonalCategory>> GetPaginatedPersonalCategoriesByBudgetIdsAsync(int page, int pageSize, string? search, string orderBy, string budgetIds);
+        Task<PageResult<PersonalCategory>> GetPaginatedPersonalCategoriesByBudgetIdsAsync(int page, int pageSize, string? search, string orderBy, string budgetIds, Guid userId);
 
         void Remove(PersonalCategory tag);
 

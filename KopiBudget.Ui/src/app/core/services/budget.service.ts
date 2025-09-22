@@ -7,49 +7,50 @@ import { mapItemsToGenericListing } from '../generics/listing-result.mapper.ts';
 import { GenericService } from './generic.service';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class BudgetService extends GenericService {
-  private controller = '/budget/';
-  constructor(private httpClient: HttpClient) {
-    super(httpClient);
-  }
-  create(payload): Observable<ApiResult<BudgetDto>> {
-    return this.post<ApiResult<BudgetDto>>(
-      `${this.controller}`,
-      payload,
-      this.getAuthorizationHeader(),
-    );
-  }
-  update(id, payload): Observable<ApiResult<BudgetDto>> {
-    return this.put<ApiResult<BudgetDto>>(
-      `${this.controller}${id}`,
-      payload,
-      this.getAuthorizationHeader(),
-    );
-  }
-  remove(id): Observable<NullApiResult> {
-    return this.delete<NullApiResult>(`${this.controller}${id}`);
-  }
+	private controller = '/budget/';
+	constructor(private httpClient: HttpClient) {
+		super(httpClient);
+	}
+	create(payload): Observable<ApiResult<BudgetDto>> {
+		return this.post<ApiResult<BudgetDto>>(
+			`${this.controller}`,
+			payload,
+			this.getAuthorizationHeader(),
+		);
+	}
+	update(id, payload): Observable<ApiResult<BudgetDto>> {
+		return this.put<ApiResult<BudgetDto>>(
+			`${this.controller}${id}`,
+			payload,
+			this.getAuthorizationHeader(),
+		);
+	}
 
-  getBudgets(listingOption): Observable<GenericListingResult<BudgetDto[]>> {
-    const queryParams = this.setQueryParameters(listingOption);
+	remove(id): Observable<NullApiResult> {
+		return this.delete<NullApiResult>(`${this.controller}${id}`);
+	}
 
-    return this.get<any>(`${this.controller}Budgets?${queryParams}`, null, true).pipe(
-      map((res) => mapItemsToGenericListing<BudgetDto[]>(res.data)),
-    );
-  }
-  getBudget(id): Observable<ApiResult<BudgetDto>> {
-    return this.get(`${this.controller}${id}`, null, true);
-  }
+	getBudgets(listingOption): Observable<GenericListingResult<BudgetDto[]>> {
+		const queryParams = this.setQueryParameters(listingOption);
 
-  getAll(): Observable<ApiResult<BudgetDto[]>> {
-    return this.get<any>(`${this.controller}`, null, true);
-  }
-  dropdown(dropdownListingOption): Observable<GenericListingResult<BudgetFragment[]>> {
-    const queryParams = this.setQueryParameters(dropdownListingOption);
-    return this.get<any>(`${this.controller}Dropdown?${queryParams}`, null, true).pipe(
-      map((res) => mapItemsToGenericListing<BudgetFragment[]>(res.data)),
-    );
-  }
+		return this.get<any>(`${this.controller}Budgets?${queryParams}`, null, true).pipe(
+			map((res) => mapItemsToGenericListing<BudgetDto[]>(res.data)),
+		);
+	}
+	getBudget(id): Observable<ApiResult<BudgetDto>> {
+		return this.get(`${this.controller}${id}`, null, true);
+	}
+
+	getAll(): Observable<ApiResult<BudgetDto[]>> {
+		return this.get<any>(`${this.controller}`, null, true);
+	}
+	dropdown(dropdownListingOption): Observable<GenericListingResult<BudgetFragment[]>> {
+		const queryParams = this.setQueryParameters(dropdownListingOption);
+		return this.get<any>(`${this.controller}Dropdown?${queryParams}`, null, true).pipe(
+			map((res) => mapItemsToGenericListing<BudgetFragment[]>(res.data)),
+		);
+	}
 }

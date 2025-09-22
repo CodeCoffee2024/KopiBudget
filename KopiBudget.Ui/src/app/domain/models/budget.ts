@@ -12,6 +12,7 @@ export class BudgetDto extends AuditDto {
 	endDate: Date;
 	spentBudget: number;
 	remainingBudget: number;
+	unallocatedLimitAmount: number;
 	spentBudgetPercentage: string;
 	remainingBudgetPercentage: string;
 	budgetPersonalCategories: BudgetPersonalCategoryFragment[] = [];

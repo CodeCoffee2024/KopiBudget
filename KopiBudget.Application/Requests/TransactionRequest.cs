@@ -37,7 +37,7 @@ namespace KopiBudget.Application.Requests
         public TransactionUpdateCommand SetUpdateCommand(Guid UserId, string Id) =>
             new(UserId, Id, CategoryId, AccountId, PersonalCategoryId, BudgetId, Type, Date, Time, Amount, Note!, InputTime);
 
-        public GetTransactionsQuery ToQuery() => new(Search, OrderBy, PageNumber, PageSize, AccountIds, CategoryIds, BudgetIds, PersonalCategoryIds, Type, DateFrom, DateTo);
+        public GetTransactionsQuery ToQuery(Guid UserId) => new(Search, OrderBy, PageNumber, PageSize, AccountIds, CategoryIds, BudgetIds, PersonalCategoryIds, Type, DateFrom, DateTo, UserId);
 
         //public AccountDropdownQuery ToDropdownQuery() => new(Search!, PageNumber);
 

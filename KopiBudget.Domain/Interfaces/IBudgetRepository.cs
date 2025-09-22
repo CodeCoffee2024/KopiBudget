@@ -8,7 +8,7 @@ namespace KopiBudget.Domain.Interfaces
     {
         #region Public Methods
 
-        Task<IEnumerable<Budget>> GetAllAsync();
+        Task<IEnumerable<Budget>> GetAllByUserIdAsync(Guid userId);
 
         Task<bool> ExistsAsync(Guid id);
         Task<bool> ExistsByNameAsync(string name);

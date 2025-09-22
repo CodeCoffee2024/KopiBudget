@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResult, NullApiResult } from '../../domain/models/api-result';
-import { BudgetPersonalCategoryFragment } from '../../domain/models/budget-personal-category';
+import { BudgetPersonalCategoryDto } from '../../domain/models/budget-personal-category';
 import { GenericService } from './generic.service';
 
 @Injectable({
@@ -13,8 +13,8 @@ export class BudgetPersonalCategoryService extends GenericService {
 	constructor(private httpClient: HttpClient) {
 		super(httpClient);
 	}
-	create(payload): Observable<ApiResult<BudgetPersonalCategoryFragment>> {
-		return this.post<ApiResult<BudgetPersonalCategoryFragment>>(
+	create(payload): Observable<ApiResult<BudgetPersonalCategoryDto>> {
+		return this.post<ApiResult<BudgetPersonalCategoryDto>>(
 			`${this.controller}`,
 			payload,
 			this.getAuthorizationHeader(),
@@ -24,8 +24,8 @@ export class BudgetPersonalCategoryService extends GenericService {
 		budgetId,
 		personalCategoryId,
 		payload,
-	): Observable<ApiResult<BudgetPersonalCategoryFragment>> {
-		return this.put<ApiResult<BudgetPersonalCategoryFragment>>(
+	): Observable<ApiResult<BudgetPersonalCategoryDto>> {
+		return this.put<ApiResult<BudgetPersonalCategoryDto>>(
 			`${this.controller}${budgetId}/${personalCategoryId}`,
 			payload,
 			this.getAuthorizationHeader(),

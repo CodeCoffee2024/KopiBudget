@@ -12,7 +12,7 @@ namespace KopiBudget.Application.Queries.PersonalCategory.GetPersonalCategories
 
         public async Task<Result<IEnumerable<PersonalCategoryDto>>> Handle(GetPersonalCategoriesQuery request, CancellationToken cancellationToken)
         {
-            var result = await _repository.GetAllAsync();
+            var result = await _repository.GetAllAsync(request.UserId);
 
             return Result.Success(_mapper.Map<IEnumerable<PersonalCategoryDto>>(result));
         }

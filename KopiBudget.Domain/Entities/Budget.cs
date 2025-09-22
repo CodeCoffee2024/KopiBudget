@@ -65,12 +65,13 @@ namespace KopiBudget.Domain.Entities
         }
 
         public decimal SpentBudget() => Transactions.Sum(it => it.Amount);
+        public decimal UnallocatedLimitAmount() => Amount - BudgetPersonalCategories.Sum(it => it.Limit!.Value);
 
         public decimal RemainingBudget() => Amount - Transactions.Sum(it => it.Amount);
 
-        public string SpentBudgetPercentage() => ((SpentBudget() / Amount) * 100) + "%";
+        public string SpentBudgetPercentage() => ((SpentBudget() / Amount) * 100).ToString("F2") + "%";
 
-        public string RemainingBudgetPercentage() => (100 - ((SpentBudget() / Amount) * 100)) + "%";
+        public string RemainingBudgetPercentage() => (100 - ((SpentBudget() / Amount) * 100)).ToString("F2") + "%";
 
         #endregion Public Methods
     }

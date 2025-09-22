@@ -47,10 +47,6 @@ namespace KopiBudget.Application.Commands.Budget.BudgetCreate
             var endDate = DateTime.SpecifyKind(DateTime.Parse(request.EndDate!), DateTimeKind.Local).ToUniversalTime();
             var entity = KopiBudget.Domain.Entities.Budget.Create(amount, request.Name!, startDate, endDate, request.UserId, request.UserId, DateTime.UtcNow);
 
-            if (amount != request.BudgetPersonalCategories!.Sum(it => Decimal.Parse(it.Limit!)))
-            {
-                validationResult.Errors.Add(new ValidationFailure("Total amount", "Limits sum is not equal to budget amount"));
-            }
             if (!validationResult.IsValid)
             {
                 return Result.Failure<BudgetDto>(Error.Validation, validationResult.ToErrorList());

@@ -6,10 +6,17 @@ import { ExchangeRateService } from '../../core/services/exchange-rate.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { ModalService } from '../../core/services/modal.service';
 import { PersonalCategoryService } from '../../core/services/personal-category.service';
+import { SystemService } from '../../core/services/system.service';
 import { ToastService } from '../../core/services/toast.service';
 import { BudgetConstants, BudgetDto } from '../../domain/models/budget';
 import { ExchangeRateDto } from '../../domain/models/exchange-rate';
-import { PersonalCategoryDto } from '../../domain/models/personal-category';
+import {
+	PersonalCategoryConstants,
+	PersonalCategoryDto,
+} from '../../domain/models/personal-category';
+import { ToastType } from '../../domain/models/toast';
+import { PersonalCategoryCreateComponent } from '../personal-category/personal-category-create/personal-category-create.component';
+import { PersonalCategoryUpdateComponent } from '../personal-category/personal-category-update/personal-category-update.component';
 import { BudgetCreateComponent } from './budget-create/budget-create.component';
 import { BudgetLimitSectionComponent } from './budget-limit-section/budget-limit-section.component';
 import { BudgetSectionComponent } from './budget-section/budget-section.component';
@@ -37,6 +44,7 @@ export class BudgetComponent implements OnInit {
 		private budgetService: BudgetService,
 		private exchangeRateService: ExchangeRateService,
 		private personalCategoryService: PersonalCategoryService,
+		private systemService: SystemService,
 		private toastService: ToastService,
 	) {}
 	ngOnInit(): void {
@@ -64,10 +72,9 @@ export class BudgetComponent implements OnInit {
 		});
 		if (result) {
 			this.toastService.success('Success', BudgetConstants.CREATESUCCESS);
-			// this.loadAccounts();
+			this.loadBudgets();
 		}
 	}
-	async onEdit(category) {}
 	loadBudgets() {
 		forkJoin({
 			personalCategories: this.personalCategoryService.getAll(),
@@ -87,5 +94,88 @@ export class BudgetComponent implements OnInit {
 				error: () => {},
 			});
 	}
-	onDelete(category) {}
+	async onEdit(category) {
+		this.isLoading = true;
+		this.loadingService.show();
+
+		this.systemService
+			.getPersonalCategoryFields()
+			.pipe(
+				finalize(() => {
+					this.isLoading = false;
+					this.loadingService.hide();
+				}),
+			)
+			.subscribe({
+				next: async (fields) => {
+					const modalResult = await this.modalService.open(
+						PersonalCategoryUpdateComponent,
+						{
+							personalCategories: this.personalCategories,
+							fields: fields.data,
+							category: category,
+						},
+					);
+
+					if (modalResult) {
+						this.toastService.success('Success', BudgetConstants.CREATESUCCESS);
+						// this.loadAccounts();
+					}
+				},
+				error: (err) => {
+					this.toastService.error('Error', 'Failed to load personal category fields');
+					console.error(err);
+				},
+			});
+	}
+	onDelete(category) {
+		this.toastService
+			.confirm(ToastType.CONFIRMATION, PersonalCategoryConstants.DELETECONFIRMATION)
+			.then((it) => {
+				if (it) {
+					this.isLoading = true;
+					this.loadingService.show();
+					this.personalCategoryService.remove(category.id).subscribe(() => {
+						this.toastService.success(
+							'Success',
+							PersonalCategoryConstants.DELETESUCCESS,
+						);
+						this.loadBudgets();
+					});
+				}
+			});
+	}
+	async addPersonalCategory() {
+		this.isLoading = true;
+		this.loadingService.show();
+
+		this.systemService
+			.getPersonalCategoryFields()
+			.pipe(
+				finalize(() => {
+					this.isLoading = false;
+					this.loadingService.hide();
+				}),
+			)
+			.subscribe({
+				next: async (fields) => {
+					const modalResult = await this.modalService.open(
+						PersonalCategoryCreateComponent,
+						{
+							personalCategories: this.personalCategories,
+							fields: fields.data,
+						},
+					);
+
+					if (modalResult) {
+						this.toastService.success('Success', BudgetConstants.CREATESUCCESS);
+						this.loadBudgets();
+					}
+				},
+				error: (err) => {
+					this.toastService.error('Error', 'Failed to load personal category fields');
+					console.error(err);
+				},
+			});
+	}
 }

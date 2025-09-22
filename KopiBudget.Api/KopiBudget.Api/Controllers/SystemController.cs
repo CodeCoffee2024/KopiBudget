@@ -1,6 +1,7 @@
 ﻿using KopiBudget.Api.Shared;
 using KopiBudget.Application.Queries.System.GetCurrencyList;
 using KopiBudget.Application.Queries.System.GetModuleGroupList;
+using KopiBudget.Application.Queries.System.GetPersonalCategoryIconList;
 using KopiBudget.Application.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,6 +30,13 @@ namespace KopiBudget.Api.Controllers
         public async Task<IActionResult> GetCurrencies()
         {
             var result = await _sender.Send(new GetCurrencyListQuery());
+            return HandleResponse(result);
+        }
+
+        [HttpGet("GetPersonalCategoryFields")]
+        public async Task<IActionResult> GetPersonalCategoryFields()
+        {
+            var result = await _sender.Send(new GetPersonalCategoryIconListQuery());
             return HandleResponse(result);
         }
 

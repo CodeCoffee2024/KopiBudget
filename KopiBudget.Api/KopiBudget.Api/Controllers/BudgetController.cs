@@ -37,7 +37,7 @@ namespace KopiBudget.Api.Controllers
         [HttpGet("Dropdown")]
         public async Task<IActionResult> Dropdown([FromQuery] BudgetRequest request)
         {
-            var query = request.ToDropdownQuery();
+            var query = request.ToDropdownQuery(UserId);
             var result = await _sender.Send(query);
             return HandleResponse(result);
         }
@@ -45,7 +45,7 @@ namespace KopiBudget.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBudgets()
         {
-            var result = await _sender.Send(new GetBudgetsQuery());
+            var result = await _sender.Send(new GetBudgetsQuery(UserId));
             return HandleResponse(result);
         }
 

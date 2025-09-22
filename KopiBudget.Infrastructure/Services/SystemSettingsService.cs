@@ -33,6 +33,24 @@ namespace KopiBudget.Infrastructure.Services
             });
         }
 
+        public PersonalCategoryFieldDto GetAllPersonalCategoryFields()
+        {
+            return new PersonalCategoryFieldDto
+            {
+                Colors = PersonalCategories.COLORSLIST.Select(c => new PersonalCategoryColorDto
+                {
+                    Key = c.Key,
+                    Value = c.Value
+                }).ToList(),
+
+                Icons = PersonalCategories.ICONSLIST.Select(c => new PersonalCategoryIconDto
+                {
+                    Key = c.Key,
+                    Value = c.Value
+                }).ToList()
+            };
+        }
+
         #endregion Public Methods
     }
 }

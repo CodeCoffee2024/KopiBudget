@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { finalize } from 'rxjs';
+import { finalize, switchMap } from 'rxjs';
 import { BudgetPersonalCategoryService } from '../../../core/services/budget-personal-category.service';
+import { BudgetService } from '../../../core/services/budget.service';
 import { LoadingService } from '../../../core/services/loading.service';
 import { ModalService } from '../../../core/services/modal.service';
 import { PersonalCategoryService } from '../../../core/services/personal-category.service';
@@ -10,6 +11,7 @@ import { BudgetDto } from '../../../domain/models/budget';
 import { BudgetPersonalCategoryConstants } from '../../../domain/models/budget-personal-category';
 import { ExchangeRateDto } from '../../../domain/models/exchange-rate';
 import { ToastType } from '../../../domain/models/toast';
+import { BudgetPersonalCategoryCreateComponent } from '../budget-personal-category-create/budget-personal-category-create.component';
 import { BudgetPersonalCategoryLimitUpdateComponent } from '../budget-personal-category-limit-update/budget-personal-category-limit-update.component';
 
 @Component({
@@ -29,6 +31,7 @@ export class BudgetLimitSectionComponent implements OnChanges {
 	constructor(
 		private modalService: ModalService,
 		private personalCategoryService: PersonalCategoryService,
+		private budgetService: BudgetService,
 		private loadingService: LoadingService,
 		private budgetPersonalCategoryService: BudgetPersonalCategoryService,
 		private toastService: ToastService,
@@ -99,6 +102,46 @@ export class BudgetLimitSectionComponent implements OnChanges {
 							this.refreshData.emit(true);
 						});
 				}
+			});
+	}
+	addLimit() {
+		this.loadingService.show();
+
+		this.budgetService
+			.getBudget(this.selectedBudget.id)
+			.pipe(
+				switchMap((budgetRes) => {
+					// Stop early if no unallocated amount
+					if (budgetRes.data.unallocatedLimitAmount <= 0) {
+						return []; // return EMPTY observable
+					}
+
+					return this.personalCategoryService.getAll().pipe(
+						switchMap(async (personalCategoriesRes) => {
+							const result = await this.modalService.open(
+								BudgetPersonalCategoryCreateComponent,
+								{
+									personalCategories: personalCategoriesRes.data,
+									budget: this.selectedBudget,
+								},
+							);
+
+							if (result) {
+								this.toastService.success(
+									'Success',
+									BudgetPersonalCategoryConstants.CREATESUCCESS,
+								);
+								this.refreshData.emit(true);
+							}
+						}),
+					);
+				}),
+				finalize(() => this.loadingService.hide()),
+			)
+			.subscribe({
+				error: () => {
+					this.toastService.error('Error', 'Something went wrong.');
+				},
 			});
 	}
 }

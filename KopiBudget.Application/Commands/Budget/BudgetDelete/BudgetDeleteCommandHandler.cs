@@ -28,7 +28,7 @@ namespace KopiBudget.Application.Commands.Budget.BudgetDelete
             }
             else
             {
-                return Result.Failure(Error.Notfound("Transaction"));
+                return Result.Failure(Error.Notfound("Budget"));
             }
             await _unitOfWork.SaveChangesAsync();
             return Result.Success();
