@@ -1,15 +1,19 @@
 export enum DashboardPermissions {
-    View = 'Dashboard:View'
+	View = 'Dashboard:View',
 }
 export enum AccountPermissions {
-    View = 'Account:View',
-    Modify = 'Account:Modify'
+	View = 'Accounts:View',
+	Modify = 'Accounts:Modify',
 }
 export enum BudgetPermissions {
-    View = 'Budget:View',
-    Modify = 'Budget:Modify'
+	View = 'Budgets:View',
+	Modify = 'Budgets:Modify',
 }
 export enum TransactionPermissions {
-    View = 'Transaction:View',
-    Modify = 'Transaction:Modify'
+	View = 'Transactions:View',
+	Modify = 'Transactions:Modify',
+}
+export enum UserPermissions {
+	View = 'Users:View',
+	Modify = 'Users:Modify',
 }
