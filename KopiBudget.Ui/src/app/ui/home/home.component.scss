@@ -78,8 +78,8 @@
 }
 
 .btn-primary:hover {
-	background-color: #5a3d2b;
-	border-color: #5a3d2b;
+	background-color: var(--default-text-color);
+	border-color: var(--default-text-color);
 }
 
 .btn-outline-primary {
