@@ -25,7 +25,7 @@ namespace KopiBudget.Application.Requests
         public AccountUpdateCommand SetUpdateCommand(Guid UserId, string Id) =>
             new(UserId, Id, CategoryId, Name!, Balance!.Value, IsDebt);
 
-        public AccountDropdownQuery ToDropdownQuery() => new(Search!, PageNumber, Exclude);
+        public AccountDropdownQuery ToDropdownQuery(Guid UserId) => new(Search!, PageNumber, Exclude, UserId);
 
         #endregion Public Methods
     }

@@ -1,298 +1,362 @@
 <div class="row" *ngIf="!isLoading">
-    <div class="col-md-7 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
-        <div class="bg-white p-2">
+	<div class="col-md-7 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
+		<div class="bg-white p-2">
+			<div class="row">
+				<div *ngIf="accounts.length > 0" class="container mt-3">
+					<div *ngIf="!isLoading && accounts?.length" class="container mt-3">
+						<div
+							#accountCarousel
+							id="accountCarousel"
+							class="carousel slide"
+							data-bs-interval="false"
+						>
+							<div class="carousel-inner">
+								<div
+									class="carousel-item"
+									*ngFor="let account of accounts; let i = index"
+									[class.active]="i === 0"
+								>
+									<div class="d-flex justify-content-center">
+										<app-account-card
+											[name]="account.name"
+											[balance]="account.balance"
+										>
+										</app-account-card>
+									</div>
+								</div>
+							</div>
+						</div>
 
-            <div class="row ">
-                <div *ngIf="accounts.length > 0" class="container mt-3">
-                    <div *ngIf="!isLoading && accounts?.length" class="container mt-3">
-                        <div #accountCarousel id="accountCarousel" class="carousel slide" data-bs-interval="false">
-                            <div class="carousel-inner">
-                            <div
-                                class="carousel-item"
-                                *ngFor="let account of accounts; let i = index"
-                                [class.active]="i === 0"
-                            >
-                                <div class="d-flex justify-content-center">
-                                <app-account-card
-                                    [name]="account.name"
-                                    [balance]="account.balance">
-                                </app-account-card>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
+						<div class="d-flex justify-content-center align-items-center mt-3 gap-3">
+							<button class="btn btn-sm btn-outline-dark" (click)="prev()">
+								<i class="bi bi-caret-left-fill"></i>
+							</button>
 
-                        <div class="d-flex justify-content-center align-items-center mt-3 gap-3">
-                            <button class="btn btn-sm btn-outline-dark" (click)="prev()">
-                            <i class="bi bi-caret-left-fill"></i>
-                            </button>
+							<small>{{ currentIndex + 1 }} of {{ accounts.length }}</small>
 
-                            <small>{{ currentIndex + 1 }} of {{ accounts.length }}</small>
-
-                            <button class="btn btn-sm btn-outline-dark" (click)="next()">
-                            <i class="bi bi-caret-right-fill"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-12 p-3">
-                    Add all your transactions to keep track of them, so you can easily review and manage your finances in the future.
-                </div>
-            </div>
-            <div class="row mt-2 pb-2">
-                <div class="col-12">
-                    <button class="btn btn-sm w-100 mt-2 btn-dark fw-bold" (click)="addTransaction()">
-                        <i class="bi bi-plus me-2 text-white"></i>
-                        <span class="text-white">Add new transaction</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-5 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
-        <div class="bg-white p-1">
-            <app-exchange-rate *ngIf="exchangeRates" (reload)="reload($event)" [exchangeRates]="exchangeRates"></app-exchange-rate>
-        </div>
-    </div>
+							<button class="btn btn-sm btn-outline-dark" (click)="next()">
+								<i class="bi bi-caret-right-fill"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row mt-2">
+				<div class="col-12 p-3">
+					Add all your transactions to keep track of them, so you can easily review and
+					manage your finances in the future.
+				</div>
+			</div>
+			<div class="row mt-2 pb-2">
+				<div class="col-12">
+					<button
+						class="btn btn-sm w-100 mt-2 btn-dark fw-bold"
+						(click)="addTransaction()"
+					>
+						<i class="bi bi-plus me-2 text-white"></i>
+						<span class="text-white">Add new transaction</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-5 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
+		<div class="bg-white p-1">
+			<app-exchange-rate
+				*ngIf="exchangeRates"
+				(reload)="reload($event)"
+				[exchangeRates]="exchangeRates"
+			></app-exchange-rate>
+		</div>
+	</div>
 </div>
 <div class="row mt-2" *ngIf="!isLoading">
-    <div class="col-12 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
-        <div class="bg-white p-3">
-        <div class="row">
-            <div class="col-12">
-            <span class="fs-5 fw-bold d-block">Transaction History</span>
-            </div>
-        </div>
+	<div class="col-12 pt-2 pt-md-0 pb-0 ps-md-2 pe-md-0">
+		<div class="bg-white p-3">
+			<div class="row">
+				<div class="col-12">
+					<span class="fs-5 fw-bold d-block">Transaction History</span>
+				</div>
+			</div>
 
-        <!-- Tabs -->
-        <ul class="nav nav-tabs mt-3" id="transactionTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-            <button
-                class="nav-link"
-                [class.active]="activeTab === TransactionTypes.ACCOUNT"
-                (click)="setTab(TransactionTypes.ACCOUNT)">
-                Account
-            </button>
-            </li>
-            <li class="nav-item" role="presentation">
-            <button
-                class="nav-link"
-                [class.active]="activeTab === TransactionTypes.BUDGET"
-                (click)="setTab(TransactionTypes.BUDGET)">
-                Budget
-            </button>
-            </li>
-        </ul>
+			<!-- Tabs -->
+			<ul class="nav nav-tabs mt-3" id="transactionTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						[class.active]="activeTab === TransactionTypes.ACCOUNT"
+						(click)="setTab(TransactionTypes.ACCOUNT)"
+					>
+						Account
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						[class.active]="activeTab === TransactionTypes.BUDGET"
+						(click)="setTab(TransactionTypes.BUDGET)"
+					>
+						Budget
+					</button>
+				</li>
+			</ul>
 
-        <!-- Tab Content -->
-        <div class="tab-content mt-3" id="transactionTabsContent">
+			<!-- Tab Content -->
+			<div class="tab-content mt-3" id="transactionTabsContent">
+				<!-- Account Transactions -->
+				<div
+					class="tab-pane fade"
+					[class.show]="activeTab === TransactionTypes.ACCOUNT"
+					[class.active]="activeTab === TransactionTypes.ACCOUNT"
+				>
+					<ng-container *ngIf="activeTab === TransactionTypes.ACCOUNT && !isLoading">
+						<app-transaction-search
+							[type]="activeTab"
+							(refresh)="refreshList($event)"
+						></app-transaction-search>
+						<div class="table-responsive mt-3">
+							<table class="table table-bordered table-hover align-middle">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>
+											<app-th-header
+												[name]="'Account'"
+												[description]="'Account'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'Amount'"
+												[description]="'Amount'"
+												[isSortable]="true"
+												[class]="'justify-content-end'"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'Category'"
+												[description]="'Category'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'Date'"
+												[description]="'Date'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'CreatedOn'"
+												[description]="'Date Created'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let result of results; let i = index">
+										<td class="text-center">{{ 1 + i }}</td>
+										<td>{{ result.account.name }}</td>
+										<td class="text-end">
+											{{ result.amount | number: '1.2-2' }}
+										</td>
+										<td>
+											<span class="badge bg-secondary text-white">{{
+												result.category.name
+											}}</span>
+										</td>
+										<td>{{ result.date | date: 'y-MM-dd hh:mm a' }}</td>
+										<td>{{ result.createdOn | date: 'y-MM-dd' }}</td>
+										<td class="text-center">
+											<div class="dropdown">
+												<button
+													class="btn btn-sm btn-light"
+													data-bs-toggle="dropdown"
+												>
+													<i class="bi bi-three-dots-vertical"></i>
+												</button>
+												<ul class="dropdown-menu dropdown-menu-end">
+													<li>
+														<a
+															class="dropdown-item"
+															(click)="onEdit(result)"
+															>Edit</a
+														>
+													</li>
+													<li>
+														<a
+															class="dropdown-item text-danger"
+															(click)="onDelete(result)"
+															>Delete</a
+														>
+													</li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+									<tr *ngIf="results.length === 0">
+										<td colspan="7" class="text-center">
+											No account transactions found.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<app-listing-pagination
+							[listingData]="listingData"
+							(changePage)="onPageChange($event)"
+						>
+						</app-listing-pagination>
+					</ng-container>
+				</div>
 
-            <!-- Account Transactions -->
-            <div
-                class="tab-pane fade"
-                [class.show]="activeTab === TransactionTypes.ACCOUNT"
-                [class.active]="activeTab === TransactionTypes.ACCOUNT">
-                <ng-container *ngIf="activeTab === TransactionTypes.ACCOUNT && !isLoading">
-                    <app-transaction-search [type]="activeTab" (refresh)="refreshList($event)"></app-transaction-search>
-                    <div class="table-responsive mt-3">
-                    <table class="table table-bordered table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'Account'"
-                                        [description]="'Account'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'Amount'"
-                                        [description]="'Amount'"
-                                        [isSortable]="true"
-                                        [class]="'justify-content-end'"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'Category'"
-                                        [description]="'Category'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'Date'"
-                                        [description]="'Date'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'CreatedOn'"
-                                        [description]="'Date Created'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let result of results; let i = index">
-                            <td class="text-center">{{ 1 + i }}</td>
-                            <td>{{ result.account.name }}</td>
-                            <td class="text-end">{{ result.amount | number: '1.2-2' }}</td>
-                            <td>
-                            <span class="badge bg-secondary text-white">{{ result.category.name }}</span>
-                            </td>
-                            <td>{{ result.date | date:'y-MM-dd hh:mm a' }}</td>
-                            <td>{{ result.createdOn | date:'y-MM-dd' }}</td>
-                            <td class="text-center">
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" (click)="onEdit(result)">Edit</a></li>
-                                <li><a class="dropdown-item text-danger" (click)="onDelete(result)">Delete</a></li>
-                                </ul>
-                            </div>
-                            </td>
-                        </tr>
-                        <tr *ngIf="results.length === 0">
-                            <td colspan="7" class="text-center">No account transactions found.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    </div>
-                    <app-listing-pagination
-                    [listingData]="listingData"
-                    (changePage)="onPageChange($event)">
-                    </app-listing-pagination>
-                </ng-container>
-            </div>
-
-            <!-- Budget Transactions -->
-            <div
-                class="tab-pane fade"
-                [class.show]="activeTab === TransactionTypes.BUDGET"
-                [class.active]="activeTab === TransactionTypes.BUDGET">
-                <ng-container *ngIf="activeTab == TransactionTypes.BUDGET && !isLoading">
-                    <app-transaction-search [type]="activeTab" (refresh)="refreshList($event)"></app-transaction-search>
-                    <div class="table-responsive mt-3">
-                    <table class="table table-bordered table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'Budget'"
-                                        [description]="'Budget'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'Amount'"
-                                        [description]="'Amount'"
-                                        [isSortable]="true"
-                                        [class]="'justify-content-end'"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'PersonalCategory'"
-                                        [description]="'Personal Category'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'Date'"
-                                        [description]="'Date'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th>
-                                    <app-th-header
-                                        [name]="'CreatedOn'"
-                                        [description]="'Date Created'"
-                                        [isSortable]="true"
-                                        [orderBy]="listingOption.orderBy"
-                                        [sortDirection]="listingOption.sortDirection"
-                                        (sortResult)="sortEvent($event)"
-                                    ></app-th-header>
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let result of results; let i = index">
-                            <td class="text-center">{{ 1 + i }}</td>
-                            <td>{{ result.budget.name }}</td>
-                            <td class="text-end">{{ result.amount | number: '1.2-2' }}</td>
-                            <td>
-                            <span class="badge bg-secondary text-white">{{ result.personalCategory.name }}</span>
-                            </td>
-                            <td>{{ result.date | date:'y-MM-dd hh:mm a' }}</td>
-                            <td>{{ result.createdOn | date:'y-MM-dd' }}</td>
-                            <td class="text-center">
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" (click)="onEdit(result)">Edit</a></li>
-                                <li><a class="dropdown-item text-danger" (click)="onDelete(result)">Delete</a></li>
-                                </ul>
-                            </div>
-                            </td>
-                        </tr>
-                        <tr *ngIf="results.length === 0">
-                            <td colspan="7" class="text-center">No budget transactions found.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    </div>
-                    <app-listing-pagination
-                    [listingData]="listingData"
-                    (changePage)="onPageChange($event)">
-                    </app-listing-pagination>
-                </ng-container>
-            </div>
-
-        </div>
-        </div>
-    </div>
+				<!-- Budget Transactions -->
+				<div
+					class="tab-pane fade"
+					[class.show]="activeTab === TransactionTypes.BUDGET"
+					[class.active]="activeTab === TransactionTypes.BUDGET"
+				>
+					<ng-container *ngIf="activeTab == TransactionTypes.BUDGET && !isLoading">
+						<app-transaction-search
+							[type]="activeTab"
+							(refresh)="refreshList($event)"
+						></app-transaction-search>
+						<div class="table-responsive mt-3">
+							<table class="table table-bordered table-hover align-middle">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>
+											<app-th-header
+												[name]="'Budget'"
+												[description]="'Budget'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'Amount'"
+												[description]="'Amount'"
+												[isSortable]="true"
+												[class]="'justify-content-end'"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'PersonalCategory'"
+												[description]="'Personal Category'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'Date'"
+												[description]="'Date'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th>
+											<app-th-header
+												[name]="'CreatedOn'"
+												[description]="'Date Created'"
+												[isSortable]="true"
+												[orderBy]="listingOption.orderBy"
+												[sortDirection]="listingOption.sortDirection"
+												(sortResult)="sortEvent($event)"
+											></app-th-header>
+										</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let result of results; let i = index">
+										<td class="text-center">{{ 1 + i }}</td>
+										<td>{{ result.budget.name }}</td>
+										<td class="text-end">
+											{{ result.amount | number: '1.2-2' }}
+										</td>
+										<td>
+											<span class="badge bg-secondary text-white">{{
+												result.personalCategory.name
+											}}</span>
+										</td>
+										<td>{{ result.date | date: 'y-MM-dd hh:mm a' }}</td>
+										<td>{{ result.createdOn | date: 'y-MM-dd' }}</td>
+										<td class="text-center">
+											<div class="dropdown">
+												<button
+													class="btn btn-sm btn-light"
+													data-bs-toggle="dropdown"
+												>
+													<i class="bi bi-three-dots-vertical"></i>
+												</button>
+												<ul class="dropdown-menu dropdown-menu-end">
+													<li>
+														<a
+															class="dropdown-item"
+															(click)="onEdit(result)"
+															>Edit</a
+														>
+													</li>
+													<li>
+														<a
+															class="dropdown-item text-danger"
+															(click)="onDelete(result)"
+															>Delete</a
+														>
+													</li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+									<tr *ngIf="results.length === 0">
+										<td colspan="7" class="text-center">
+											No budget transactions found.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<app-listing-pagination
+							[listingData]="listingData"
+							(changePage)="onPageChange($event)"
+						>
+						</app-listing-pagination>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

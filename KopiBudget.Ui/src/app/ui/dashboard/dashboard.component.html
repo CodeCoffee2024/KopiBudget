@@ -1,1 +1,177 @@
-<p>dashboard works!</p>
+<div class="row" *ngIf="!isLoading">
+	<div class="col-md-6 col-12">
+		<div class="d-flex gap-3 mb-3">
+			<div class="col-12 p-3 bg-white rounded">
+				<div class="fs-2 fw-bold">Good day, {{ firstName }}</div>
+				<div>
+					Take a look at your activity in the dashboard. Analyze current financial
+					situation and move towards your financial goals.
+				</div>
+			</div>
+		</div>
+		<div class="d-flex flex-column gap-3 mb-3 bg-white">
+			<ul class="nav nav-tabs mt-3" id="categoryTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						[class.active]="activeTab === TransactionTypes.ACCOUNT"
+						(click)="setTab(TransactionTypes.ACCOUNT)"
+					>
+						Account
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						[class.active]="activeTab === TransactionTypes.BUDGET"
+						(click)="setTab(TransactionTypes.BUDGET)"
+					>
+						Budget
+					</button>
+				</li>
+			</ul>
+			<!-- Tab Content -->
+			<div class="tab-content mt-3" id="transactionTabsContent">
+				<!-- Account Transactions -->
+				<div
+					class="tab-pane fade"
+					[class.show]="activeTab === TransactionTypes.ACCOUNT"
+					[class.active]="activeTab === TransactionTypes.ACCOUNT"
+				>
+					<ng-container *ngIf="activeTab === TransactionTypes.ACCOUNT && !isLoading">
+						<div class="row mt-3 bg-white rounded g-0">
+							<div class="col-12 p-3">
+								<app-chart
+									[chartData]="getPersonalCategoryValues"
+									[chartType]="'pie'"
+									[chartCategories]="getPersonalCategoryLabels"
+									[chartTitle]="'Expenses per category'"
+									(colors)="colors($event, TransactionTypes.ACCOUNT)"
+								>
+								</app-chart>
+							</div>
+
+							<div class="col-12 d-flex justify-content-center flex-column p-3">
+								<div class="row mb-2">
+									<div
+										class="col-12 col-sm-6 p-2"
+										*ngFor="let item of expensesPerCategory; let i = index"
+									>
+										<div
+											class="py-2 ps-2"
+											[style.borderLeftColor]="colorsUsedCategory[i]"
+											style="border-left: 4px solid"
+										>
+											<div>
+												<small class="text-muted fw-bold">{{
+													item.label
+												}}</small>
+											</div>
+											<div>
+												<span class="fs-6"
+													>{{ item.value.toFixed(2).toLocaleString() }}
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-container>
+				</div>
+
+				<!-- Budget Transactions -->
+				<div
+					class="tab-pane fade"
+					[class.show]="activeTab === TransactionTypes.BUDGET"
+					[class.active]="activeTab === TransactionTypes.BUDGET"
+				>
+					<ng-container *ngIf="activeTab == TransactionTypes.BUDGET && !isLoading">
+						<div class="row mt-3 bg-white rounded g-0">
+							<div class="col-12 p-3">
+								<app-chart
+									[chartData]="getPersonalCategoryValues"
+									[chartType]="'pie'"
+									[chartCategories]="getPersonalCategoryLabels"
+									[chartTitle]="'Expenses per personal category'"
+									(colors)="colors($event, TransactionTypes.BUDGET)"
+								>
+								</app-chart>
+							</div>
+
+							<div class="col-12 d-flex justify-content-center flex-column p-3">
+								<div class="row mb-2">
+									<div
+										class="col-12 col-sm-6 p-2"
+										*ngFor="
+											let item of expensesPerPersonalCategory;
+											let i = index
+										"
+									>
+										<div
+											class="py-2 ps-2"
+											[style.borderLeftColor]="colorsUsedPersonal[i]"
+											style="border-left: 4px solid"
+										>
+											<div>
+												<small class="text-muted fw-bold">{{
+													item.label
+												}}</small>
+											</div>
+											<div>
+												<span class="fs-6"
+													>{{ item.value.toFixed(2).toLocaleString() }}
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6 col-12">
+		<div class="d-flex gap-3 mb-3">
+			<div class="flex-fill p-3 bg-white rounded">
+				<div>
+					<small class="text-muted">Balance</small>
+				</div>
+				<div>
+					<span class="fs-6 fw-bold">{{ balance | number: '1.2-2' }}</span>
+				</div>
+				<div class="d-flex align-items-center gap-1">
+					<app-diff-badge
+						[current]="balancePrevious"
+						[previous]="balance"
+					></app-diff-badge>
+					<span style="font-size: 12px">than a month ago</span>
+				</div>
+			</div>
+			<div class="flex-fill p-3 bg-white rounded">
+				<div>
+					<small class="text-muted">Expenses</small>
+				</div>
+				<div>
+					<span class="fs-6 fw-bold">{{ expense | number: '1.2-2' }}</span>
+				</div>
+				<div class="d-flex align-items-center gap-1">
+					<app-diff-badge
+						[current]="expensePrevious"
+						[previous]="expense"
+					></app-diff-badge>
+					<span style="font-size: 12px">than a month ago</span>
+				</div>
+			</div>
+		</div>
+
+		<app-budget-section
+			*ngIf="budgets.length > 0"
+			[budgets]="budgets"
+			[hideOptions]="true"
+			[exchangeRate]="exchangeRate"
+		></app-budget-section>
+	</div>
+</div>

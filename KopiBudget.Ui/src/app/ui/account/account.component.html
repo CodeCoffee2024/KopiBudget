@@ -1,63 +1,66 @@
 <div class="row">
-    <div class="col-md-6 col-12 mb-3">
-        <div class="bg-white p-3 rounded shadow-sm h-100">
-        <p>
-            Create a new account, update your financial information daily,
-            and track your expenses
-        </p>
-        <button class="btn btn-sm w-100 mt-2 btn-dark fw-bold" (click)="addAccount()">
-            <i class="bi bi-plus me-2 text-white"></i>
-            <span class="text-white">Add a new account</span>
-        </button>
-        </div>
-    </div>
+	<div class="col-md-6 col-12 mb-3">
+		<div class="bg-white p-3 rounded h-100">
+			<p>
+				Create a new account, update your financial information daily, and track your
+				expenses
+			</p>
+			<button class="btn btn-sm w-100 mt-2 btn-dark fw-bold" (click)="addAccount()">
+				<i class="bi bi-plus me-2 text-white"></i>
+				<span class="text-white">Add a new account</span>
+			</button>
+		</div>
+	</div>
 </div>
 
 <div class="row">
-    <div class="col-md-6 col-12 mb-3">
-        <div class="bg-white p-3 rounded shadow-sm h-100">
-            <span class="fs-3 fw-bold d-block mb-3">Assets</span>
-            <div class="row" *ngIf="assets.length > 0; else noAssets">
-                <div
-                class="col-12 d-flex justify-content-center mb-3"
-                *ngFor="let account of assets">
-                <app-account-card
-                    [name]="account.name"
-                    [balance]="account.balance"
-                    (editEvent)="onEdit(account)"
-                    (deleteEvent)="onDelete(account)"
-                    >
-                </app-account-card>
-                </div>
-            </div>
-            <ng-template #noAssets>
-                <div class="d-flex justify-content-center">
-                    <p class="text-muted text-center mb-0">You have no assets.</p>
-                </div>
-            </ng-template>
-        </div>
-    </div>
+	<div class="col-md-6 col-12 mb-3">
+		<div class="bg-white p-3 rounded h-100">
+			<span class="fs-3 fw-bold d-block mb-3">Assets</span>
+			<div class="row" *ngIf="assets.length > 0; else noAssets">
+				<div
+					class="col-12 d-flex justify-content-center mb-3"
+					*ngFor="let account of assets"
+				>
+					<app-account-card
+						[name]="account.name"
+						[balance]="account.balance"
+						(editEvent)="onEdit(account)"
+						(deleteEvent)="onDelete(account)"
+					>
+					</app-account-card>
+				</div>
+			</div>
+			<ng-template #noAssets>
+				<div class="d-flex justify-content-center">
+					<p class="text-muted text-center mb-0">You have no assets.</p>
+				</div>
+			</ng-template>
+		</div>
+	</div>
 
-    <div class="col-md-6 col-12 mb-3">
-        <div class="bg-white p-3 rounded shadow-sm h-100">
-        <span class="fs-3 fw-bold d-block mb-3">Debts</span>
-        <div class="row" *ngIf="debts.length > 0; else noDebts">
-            <div
-            class="col-12 d-flex justify-content-center mb-3"
-            *ngFor="let account of debts">
-                <app-account-card
-                    [name]="account.name"
-                    [balance]="account.balance"
-                    (editEvent)="onEdit(account)"
-                    (deleteEvent)="onDelete(account)"
-                    >
-                </app-account-card>
-            </div>
-        </div>
-        <ng-template #noDebts>
-            <div class="d-flex justify-content-center">
-                <p class="text-muted text-center mb-0">You have no debts.</p>
-            </div>
-        </ng-template>
-    </div>
+	<div class="col-md-6 col-12 mb-3">
+		<div class="bg-white p-3 rounded h-100">
+			<span class="fs-3 fw-bold d-block mb-3">Debts</span>
+			<div class="row" *ngIf="debts.length > 0; else noDebts">
+				<div
+					class="col-12 d-flex justify-content-center mb-3"
+					*ngFor="let account of debts"
+				>
+					<app-account-card
+						[name]="account.name"
+						[balance]="account.balance"
+						(editEvent)="onEdit(account)"
+						(deleteEvent)="onDelete(account)"
+					>
+					</app-account-card>
+				</div>
+			</div>
+			<ng-template #noDebts>
+				<div class="d-flex justify-content-center">
+					<p class="text-muted text-center mb-0">You have no debts.</p>
+				</div>
+			</ng-template>
+		</div>
+	</div>
 </div>

@@ -83,6 +83,9 @@ export class AuthService extends GenericService {
 	getToken(): string | null {
 		return localStorage.getItem(this.tokenKey);
 	}
+	get user(): AuthUser {
+		return JSON.parse(localStorage.getItem(this.userKey));
+	}
 
 	setSession(response: LoginResponse) {
 		localStorage.setItem(this.tokenKey, response.token);

@@ -8,11 +8,12 @@ namespace KopiBudget.Application.Queries.Account.AccountDropdown
     {
         #region Public Constructors
 
-        public AccountDropdownQuery(string search, int pageNumber = 1, string? exclude = "")
+        public AccountDropdownQuery(string search, int pageNumber = 1, string? exclude = "", Guid? userId = null)
         {
             Search = search;
             Exclude = exclude;
             PageNumber = pageNumber;
+            UserId = userId;
         }
 
         #endregion Public Constructors
@@ -22,6 +23,7 @@ namespace KopiBudget.Application.Queries.Account.AccountDropdown
         public string Search { get; set; }
         public string? Exclude { get; set; } = string.Empty;
         public int PageNumber { get; set; }
+        public Guid? UserId { get; set; }
 
         #endregion Properties
     }

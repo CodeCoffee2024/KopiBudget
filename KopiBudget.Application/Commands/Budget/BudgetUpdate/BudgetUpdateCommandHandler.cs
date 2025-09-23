@@ -43,10 +43,6 @@ namespace KopiBudget.Application.Commands.Budget.BudgetUpdate
             var endDate = DateTime.SpecifyKind(DateTime.Parse(request.EndDate!), DateTimeKind.Local).ToUniversalTime();
             var entity = await _repository.GetByIdAsync(id);
             entity!.Update(amount, request.Name!, startDate, endDate, request.UserId, DateTime.UtcNow);
-            if (amount > request.BudgetPersonalCategories!.Sum(it => Decimal.Parse(it.Limit!)))
-            {
-                validationResult.Errors.Add(new ValidationFailure("Total amount", "Limits sum is greater than budget amount"));
-            }
             var existsByName = await _repository.GetByNameAsync(request.Name!);
             if (existsByName != null && existsByName.Id != id)
             {
