@@ -85,6 +85,12 @@ export class DashboardComponent implements OnInit {
 	get getPersonalCategoryLabels() {
 		return this.expensesPerPersonalCategory?.map((it) => it.label);
 	}
+	get getCategoryValues() {
+		return this.expensesPerCategory?.map((it) => it.value);
+	}
+	get getCategoryLabels() {
+		return this.expensesPerCategory?.map((it) => it.label);
+	}
 	colors(colors, type) {
 		if (type == TransactionTypes.BUDGET) {
 			this.colorsUsedPersonal = colors;

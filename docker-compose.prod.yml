@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16
+    container_name: kopibudget-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: kopibudget
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kopibudget-network
+
+  api:
+    image: codecoffee2024/kopibudget-api:latest
+    container_name: kopibudget-api
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=kopibudget;Username=dev;Password=dev
+    networks:
+      - kopibudget-network
+
+  ui:
+    image: codecoffee2024/kopibudget-ui:latest
+    container_name: kopibudget-ui
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+    networks:
+      - kopibudget-network
+
+networks:
+  kopibudget-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

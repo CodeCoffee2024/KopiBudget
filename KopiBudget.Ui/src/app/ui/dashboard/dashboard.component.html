@@ -42,9 +42,9 @@
 						<div class="row mt-3 bg-white rounded g-0">
 							<div class="col-12 p-3">
 								<app-chart
-									[chartData]="getPersonalCategoryValues"
+									[chartData]="getCategoryValues"
 									[chartType]="'pie'"
-									[chartCategories]="getPersonalCategoryLabels"
+									[chartCategories]="getCategoryLabels"
 									[chartTitle]="'Expenses per category'"
 									(colors)="colors($event, TransactionTypes.ACCOUNT)"
 								>

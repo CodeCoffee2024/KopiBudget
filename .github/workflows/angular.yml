@@ -31,8 +31,20 @@ jobs:
           cd KopiBudget.Ui
           npm run build -- --configuration=github
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: KopiBudget.Ui/dist/kopi-budget.ui
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            # Pull latest images
+            docker pull codecoffee2024/kopibudget-ui:latest
+            docker pull codecoffee2024/kopibudget-api:latest
+
+            # Deploy with compose
+            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml up -d
+
+            # Clean up
+            docker system prune -f
