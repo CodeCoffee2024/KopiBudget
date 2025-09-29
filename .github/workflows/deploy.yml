@@ -1,4 +1,4 @@
-name: Deploy Angular app to GitHub Pages
+name: Deploy KopiBudget to EC2 with Subdomains
 
 on:
   push:
@@ -29,7 +29,17 @@ jobs:
       - name: Build Angular app
         run: |
           cd KopiBudget.Ui
-          npm run build -- --configuration=github
+          npm run build -- --configuration=production --base-href=/
+
+      - name: Build UI Docker image
+        run: |
+          cd KopiBudget.Ui
+          docker build -t codecoffee2024/kopibudget-ui:latest .
+
+      - name: Push UI Docker image
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push codecoffee2024/kopibudget-ui:latest
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -40,16 +50,24 @@ jobs:
         run: dotnet nuget locals all --clear
 
       - name: Restore Dependencies
-        working-directory: ./KopiBudget.Api/KopiBudget.Api
+        working-directory: ./KopiBudget.Api
         run: dotnet restore
 
       - name: Build
-        working-directory: ./KopiBudget.Api/KopiBudget.Api
+        working-directory: ./KopiBudget.Api
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        working-directory: ./KopiBudget.Api/KopiBudget.Api
+        working-directory: ./KopiBudget.Api
         run: dotnet test --configuration Release --no-build --verbosity normal
+
+      - name: Build API Docker image
+        run: |
+          docker build -t codecoffee2024/kopibudget-api:latest .
+
+      - name: Push API Docker image
+        run: |
+          docker push codecoffee2024/kopibudget-api:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
@@ -58,11 +76,142 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            # Create necessary directories
+            mkdir -p /home/ec2-user/kopibudget/conf.d
+
+            # Copy nginx config if it doesn't exist
+            if [ ! -f /home/ec2-user/kopibudget/nginx.conf ]; then
+              cat > /home/ec2-user/kopibudget/nginx.conf << 'EOF'
+            events {
+                worker_connections 1024;
+            }
+
+            http {
+                include /etc/nginx/mime.types;
+                default_type application/octet-stream;
+
+                upstream ui_backend {
+                    server kopibudget-ui:80;
+                }
+
+                upstream api_backend {
+                    server kopibudget-api:8080;
+                }
+
+                server {
+                    listen 80;
+                    server_name app.yourdomain.com;  # Change to your UI subdomain
+
+                    location / {
+                        proxy_pass http://ui_backend;
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                    }
+                }
+
+                server {
+                    listen 80;
+                    server_name api.yourdomain.com;  # Change to your API subdomain
+
+                    location / {
+                        proxy_pass http://api_backend;
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+
+                        add_header 'Access-Control-Allow-Origin' '*' always;
+                        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+                        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type' always;
+
+                        if ($request_method = 'OPTIONS') {
+                            return 204;
+                        }
+                    }
+                }
+
+                server {
+                    listen 80 default_server;
+                    server_name _;
+                    return 404;
+                }
+            }
+            EOF
+            fi
+
+            # Copy docker-compose if it doesn't exist
+            if [ ! -f /home/ec2-user/kopibudget/docker-compose.prod.yml ]; then
+              cat > /home/ec2-user/kopibudget/docker-compose.prod.yml << 'EOF'
+            version: "3.8"
+
+            services:
+              db:
+                image: postgres:16
+                container_name: kopibudget-postgres
+                restart: unless-stopped
+                environment:
+                  POSTGRES_USER: dev
+                  POSTGRES_PASSWORD: dev
+                  POSTGRES_DB: kopibudget
+                volumes:
+                  - postgres_data:/var/lib/postgresql/data
+                networks:
+                  - kopibudget-network
+
+              api:
+                image: codecoffee2024/kopibudget-api:latest
+                container_name: kopibudget-api
+                restart: unless-stopped
+                depends_on:
+                  - db
+                environment:
+                  - ASPNETCORE_ENVIRONMENT=Production
+                  - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=kopibudget;Username=dev;Password=dev
+                networks:
+                  - kopibudget-network
+
+              ui:
+                image: codecoffee2024/kopibudget-ui:latest
+                container_name: kopibudget-ui
+                restart: unless-stopped
+                depends_on:
+                  - api
+                networks:
+                  - kopibudget-network
+
+              nginx-proxy:
+                image: nginx:alpine
+                container_name: nginx-proxy
+                restart: unless-stopped
+                ports:
+                  - "80:80"
+                  - "443:443"
+                volumes:
+                  - ./nginx.conf:/etc/nginx/nginx.conf
+                  - ./conf.d:/etc/nginx/conf.d
+                depends_on:
+                  - ui
+                  - api
+                networks:
+                  - kopibudget-network
+
+            networks:
+              kopibudget-network:
+                driver: bridge
+
+            volumes:
+              postgres_data:
+            EOF
+            fi
+
             # Pull latest images
             docker pull codecoffee2024/kopibudget-ui:latest
             docker pull codecoffee2024/kopibudget-api:latest
 
             # Deploy with compose
+            cd /home/ec2-user/kopibudget
             docker-compose -f docker-compose.prod.yml down
             docker-compose -f docker-compose.prod.yml up -d
 
