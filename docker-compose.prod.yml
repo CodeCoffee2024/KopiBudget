@@ -35,16 +35,16 @@ services:
     networks:
       - kopibudget-network
 
+  # Nginx Reverse Proxy for subdomains on different ports
   nginx-proxy:
     image: nginx:alpine
-    container_name: nginx-proxy
+    container_name: kopibudget-nginx-proxy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:8080" # UI subdomain port
+      - "8081:8081" # API subdomain port
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./conf.d:/etc/nginx/conf.d
     depends_on:
       - ui
       - api
