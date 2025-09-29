@@ -31,6 +31,26 @@ jobs:
           cd KopiBudget.Ui
           npm run build -- --configuration=github
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Clear NuGet cache
+        run: dotnet nuget locals all --clear
+
+      - name: Restore Dependencies
+        working-directory: ./KopiBudget.Api/KopiBudget.Api
+        run: dotnet restore
+
+      - name: Build
+        working-directory: ./KopiBudget.Api/KopiBudget.Api
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        working-directory: ./KopiBudget.Api/KopiBudget.Api
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
