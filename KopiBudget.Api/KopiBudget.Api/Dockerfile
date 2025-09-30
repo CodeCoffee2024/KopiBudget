@@ -1,37 +1,30 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy from current context (KopiBudget.Api directory)
-COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "./"]
+# Copy solution file
+COPY *.sln ./
+
+# Copy csproj files (note the nested structure)
+COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/KopiBudget.Api/"]
 COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
 COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
 COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
 COPY ["KopiBudget.Common/KopiBudget.Common.csproj", "KopiBudget.Common/"]
 
-RUN dotnet restore "./KopiBudget.Api.csproj"
+# Restore dependencies
+RUN dotnet restore "KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj"
 
-# Copy everything from the root context
-COPY .. .
+# Copy the rest of the source code
+COPY . .
 
-# Remove test projects
-RUN rm -rf ../KopiBudget.Tests/
+WORKDIR "/src/KopiBudget.Api/KopiBudget.Api"
 
-WORKDIR "/src/KopiBudget.Api"
-RUN dotnet build "./KopiBudget.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# Build and publish
+RUN dotnet publish "KopiBudget.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./KopiBudget.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+# Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "KopiBudget.Api.dll"]
