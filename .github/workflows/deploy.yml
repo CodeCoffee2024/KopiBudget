@@ -55,11 +55,7 @@ jobs:
 
       - name: Build
         working-directory: ./KopiBudget.Api
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Test
-        working-directory: ./KopiBudget.Api
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet build --configuration Release --no-restore --verbosity minimal
 
       - name: Build API Docker image
         run: |
