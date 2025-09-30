@@ -73,6 +73,26 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            # Install Docker Compose if not present
+            if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+                echo "=== Installing Docker Compose ==="
+                sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                sudo chmod +x /usr/local/bin/docker-compose
+                sudo ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
+            fi
+
+            # Check which compose command is available
+            if command -v docker-compose &> /dev/null; then
+                COMPOSE_CMD="docker-compose"
+            elif docker compose version &> /dev/null; then
+                COMPOSE_CMD="docker compose"
+            else
+                echo "ERROR: No Docker Compose command available"
+                exit 1
+            fi
+
+            echo "Using compose command: $COMPOSE_CMD"
+
             # Create necessary directory
             mkdir -p /home/ec2-user/kopibudget
 
@@ -202,8 +222,8 @@ jobs:
             echo "=== Stopping and removing old containers ==="
             cd /home/ec2-user/kopibudget
 
-            # Use docker compose (with space) instead of docker-compose
-            docker compose -f docker-compose.prod.yml down --remove-orphans || true
+            # Use the detected compose command
+            $COMPOSE_CMD -f docker-compose.prod.yml down --remove-orphans || true
 
             # Remove old images to force using new ones
             echo "=== Cleaning up old images ==="
@@ -211,7 +231,7 @@ jobs:
 
             # Deploy with compose
             echo "=== Starting services with Docker Compose ==="
-            docker compose -f docker-compose.prod.yml up -d
+            $COMPOSE_CMD -f docker-compose.prod.yml up -d
 
             # Wait a moment for containers to start
             sleep 15
@@ -224,7 +244,7 @@ jobs:
             docker images | grep codecoffee2024
 
             echo "=== Container status ==="
-            docker compose -f docker-compose.prod.yml ps
+            $COMPOSE_CMD -f docker-compose.prod.yml ps
 
             echo "=== Checking container logs ==="
             # Check if containers exist before trying to get logs
