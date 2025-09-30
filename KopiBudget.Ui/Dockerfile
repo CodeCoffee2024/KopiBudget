@@ -17,7 +17,7 @@ FROM nginx:alpine
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy custom nginx config to the correct location
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Copy built app
 COPY --from=build /app/dist/kopibudget_ui /usr/share/nginx/html
