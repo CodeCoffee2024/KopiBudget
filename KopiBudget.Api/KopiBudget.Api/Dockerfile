@@ -7,14 +7,27 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Copy ONLY the projects that actually exist
 COPY ["KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
+# Remove or comment out these lines if they don't exist:
+COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
+COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
+COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
+COPY ["KopiBudget.Common/KopiBudget.Common.csproj", "KopiBudget.Common/"]
+
 RUN dotnet restore "./KopiBudget.Api/KopiBudget.Api.csproj"
+
+# Copy source code
 COPY . .
+
+# Remove test projects to avoid build issues
+RUN rm -rf KopiBudget.Tests/
+
 WORKDIR "/src/KopiBudget.Api"
 RUN dotnet build "./KopiBudget.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
