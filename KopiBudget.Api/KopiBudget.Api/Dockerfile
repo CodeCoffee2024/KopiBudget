@@ -10,12 +10,12 @@ WORKDIR /src
 
 # Copy from current context (KopiBudget.Api directory)
 COPY ["KopiBudget.Api/KopiBudget.Api/KopiBudget.Api.csproj", "./"]
-COPY ["../KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
+COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
 COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
 COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
 COPY ["KopiBudget.Common/KopiBudget.Common.csproj", "KopiBudget.Common/"]
 
-RUN dotnet restore "./KopiBudget.Api/KopiBudget.Api.csproj"
+RUN dotnet restore "./KopiBudget.Api.csproj"
 
 # Copy everything from the root context
 COPY .. .
