@@ -9,7 +9,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy from current context (KopiBudget.Api directory)
-COPY ["KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
+COPY ["KopiBudget.Api.csproj", "KopiBudget.Api/"]
 COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
 COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
 COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
