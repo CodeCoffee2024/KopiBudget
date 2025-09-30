@@ -193,19 +193,28 @@ jobs:
               postgres_data:
             EOF
 
-            # Pull latest images (force pull to ensure we get the newest)
+            # Pull latest images
+            echo "=== Pulling latest Docker images ==="
             docker pull codecoffee2024/kopibudget-ui:latest
             docker pull codecoffee2024/kopibudget-api:latest
 
-            # Stop and remove all containers (force removal)
+            # Stop and remove all containers (ignore errors if containers don't exist)
+            echo "=== Stopping and removing old containers ==="
             cd /home/ec2-user/kopibudget
-            docker-compose -f docker-compose.prod.yml down --remove-orphans
+
+            # Use docker compose (with space) instead of docker-compose
+            docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
             # Remove old images to force using new ones
+            echo "=== Cleaning up old images ==="
             docker image prune -f
 
-            # Deploy with compose (this will use the newly pulled images)
-            docker-compose -f docker-compose.prod.yml up -d
+            # Deploy with compose
+            echo "=== Starting services with Docker Compose ==="
+            docker compose -f docker-compose.prod.yml up -d
+
+            # Wait a moment for containers to start
+            sleep 15
 
             # Verify deployment
             echo "=== Current running containers ==="
@@ -214,6 +223,35 @@ jobs:
             echo "=== Recent images ==="
             docker images | grep codecoffee2024
 
-            echo "=== Container logs ==="
-            docker logs kopibudget-ui --tail 20
-            docker logs kopibudget-api --tail 20
+            echo "=== Container status ==="
+            docker compose -f docker-compose.prod.yml ps
+
+            echo "=== Checking container logs ==="
+            # Check if containers exist before trying to get logs
+            if docker ps | grep -q kopibudget-ui; then
+                echo "=== kopibudget-ui logs ==="
+                docker logs kopibudget-ui --tail 20
+            else
+                echo "kopibudget-ui container not running"
+            fi
+
+            if docker ps | grep -q kopibudget-api; then
+                echo "=== kopibudget-api logs ==="
+                docker logs kopibudget-api --tail 20
+            else
+                echo "kopibudget-api container not running"
+            fi
+
+            if docker ps | grep -q kopibudget-nginx-proxy; then
+                echo "=== kopibudget-nginx-proxy logs ==="
+                docker logs kopibudget-nginx-proxy --tail 20
+            else
+                echo "kopibudget-nginx-proxy container not running"
+            fi
+
+            if docker ps | grep -q kopibudget-postgres; then
+                echo "=== kopibudget-postgres logs ==="
+                docker logs kopibudget-postgres --tail 10
+            else
+                echo "kopibudget-postgres container not running"
+            fi
