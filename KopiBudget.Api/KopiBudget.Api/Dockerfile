@@ -15,10 +15,10 @@ WORKDIR /src
 # Copy ONLY the projects that actually exist
 COPY ["KopiBudget.Api/KopiBudget.Api.csproj", "KopiBudget.Api/"]
 # Remove or comment out these lines if they don't exist:
-COPY ["KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
-COPY ["KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
-COPY ["KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
-COPY ["KopiBudget.Common/KopiBudget.Common.csproj", "KopiBudget.Common/"]
+COPY ["../KopiBudget.Application/KopiBudget.Application.csproj", "KopiBudget.Application/"]
+COPY ["../KopiBudget.Infrastructure/KopiBudget.Infrastructure.csproj", "KopiBudget.Infrastructure/"]
+COPY ["../KopiBudget.Domain/KopiBudget.Domain.csproj", "KopiBudget.Domain/"]
+COPY ["../KopiBudget.Common/KopiBudget.Common.csproj", "KopiBudget.Common/"]
 
 RUN dotnet restore "./KopiBudget.Api/KopiBudget.Api.csproj"
 
