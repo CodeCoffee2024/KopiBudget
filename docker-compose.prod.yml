@@ -44,7 +44,7 @@ services:
       - "8080:8080" # UI subdomain port
       - "8081:8081" # API subdomain port
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf # FIXED: Mount to conf.d
     depends_on:
       - ui
       - api

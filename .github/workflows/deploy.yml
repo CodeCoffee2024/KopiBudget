@@ -149,7 +149,7 @@ jobs:
             }
             EOF
 
-                        cat > /home/ec2-user/kopibudget/docker-compose.prod.yml << 'EOF'
+            cat > /home/ec2-user/kopibudget/docker-compose.prod.yml << 'EOF'
             version: "3.8"
 
             services:
