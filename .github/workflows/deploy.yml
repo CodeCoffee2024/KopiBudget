@@ -59,6 +59,7 @@ jobs:
 
       - name: Build API Docker image
         run: |
+          cd KopiBudget.Api
           docker build -t codecoffee2024/kopibudget-api:latest .
 
       - name: Push API Docker image
