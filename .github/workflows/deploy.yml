@@ -99,14 +99,6 @@ jobs:
             # ALWAYS overwrite the configuration files to ensure they're updated
             cat > /home/ec2-user/kopibudget/nginx.conf << 'EOF'
 
-            upstream ui_backend {
-                server kopibudget-ui:80;
-            }
-
-            upstream api_backend {
-                server kopibudget-api:8080;
-            }
-
             server {
                 listen 8080;
                 server_name kopibudget.jhonmorales.com;
