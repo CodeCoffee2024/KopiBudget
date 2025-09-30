@@ -98,7 +98,6 @@ jobs:
 
             # ALWAYS overwrite the configuration files to ensure they're updated
             cat > /home/ec2-user/kopibudget/nginx.conf << 'EOF'
-            include /etc/nginx/mime.types;
 
             upstream ui_backend {
                 server kopibudget-ui:80;
