@@ -79,9 +79,8 @@ jobs:
             # Create necessary directory
             mkdir -p /home/ec2-user/kopibudget
 
-            # Copy nginx config if it doesn't exist
-            if [ ! -f /home/ec2-user/kopibudget/nginx.conf ]; then
-              cat > /home/ec2-user/kopibudget/nginx.conf << 'EOF'
+            # ALWAYS overwrite the configuration files to ensure they're updated
+            cat > /home/ec2-user/kopibudget/nginx.conf << 'EOF'
             events {
                 worker_connections 1024;
             }
@@ -135,11 +134,8 @@ jobs:
                 }
             }
             EOF
-            fi
 
-            # Copy docker-compose if it doesn't exist
-            if [ ! -f /home/ec2-user/kopibudget/docker-compose.prod.yml ]; then
-              cat > /home/ec2-user/kopibudget/docker-compose.prod.yml << 'EOF'
+                        cat > /home/ec2-user/kopibudget/docker-compose.prod.yml << 'EOF'
             version: "3.8"
 
             services:
@@ -199,16 +195,28 @@ jobs:
             volumes:
               postgres_data:
             EOF
-            fi
 
-            # Pull latest images
+            # Pull latest images (force pull to ensure we get the newest)
             docker pull codecoffee2024/kopibudget-ui:latest
             docker pull codecoffee2024/kopibudget-api:latest
 
-            # Deploy with compose
+            # Stop and remove all containers (force removal)
             cd /home/ec2-user/kopibudget
-            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml down --remove-orphans
+
+            # Remove old images to force using new ones
+            docker image prune -f
+
+            # Deploy with compose (this will use the newly pulled images)
             docker-compose -f docker-compose.prod.yml up -d
 
-            # Clean up
-            docker system prune -f
+            # Verify deployment
+            echo "=== Current running containers ==="
+            docker ps
+
+            echo "=== Recent images ==="
+            docker images | grep codecoffee2024
+
+            echo "=== Container logs ==="
+            docker logs kopibudget-ui --tail 20
+            docker logs kopibudget-api --tail 20
